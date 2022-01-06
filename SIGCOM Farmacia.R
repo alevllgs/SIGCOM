@@ -2,12 +2,17 @@ library(readxl)
 library(tidyverse)
 
 
-f_amb <- janitor::clean_names(read_excel("BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/06 f_ambulatoria.xlsx"))
-f_cron <- janitor::clean_names(read_excel("BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/07 f_cronicos.xlsx"))
-f_hosp <- janitor::clean_names(read_excel("BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/08 f_hospitalizados.xlsx"))
-f_rec <- janitor::clean_names(read_excel("BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/09 f_receton.xlsx"))
+mes_archivo <- "11 Noviembre"
+ruta_base <- "C:/Users/control.gestion3/OneDrive/"
+resto <- "BBDD Produccion/PERC/PERC 2021/"
 
-M2_Pab_EqMed <- ("BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx")
+
+f_amb <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/06 f_ambulatoria.xlsx")))
+f_cron <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/07 f_cronicos.xlsx")))
+f_hosp <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/08 f_hospitalizados.xlsx")))
+f_rec <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/09 f_receton.xlsx")))
+
+M2_Pab_EqMed <- (paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx"))
 
 
 f_rec$folio <- row.names(f_rec)
@@ -616,5 +621,5 @@ colnames(farmacia_perc)[1] <- "PERC ASOCIADO"
 colnames(farmacia_perc)[2] <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
 colnames(farmacia_perc)[3] <- "593_1-SERVICIO FARMACEUTICO | Receta"
 
-openxlsx::write.xlsx(farmacia_perc,"BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/95_Farmacia.xlsx", overwrite = T)
-openxlsx::write.xlsx(gasto_farmacia,"BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/900_gasto_farmacia.xlsx", overwrite = T)
+openxlsx::write.xlsx(farmacia_perc,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/95_Farmacia.xlsx"), overwrite = T)
+openxlsx::write.xlsx(gasto_farmacia,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx"), overwrite = T)
