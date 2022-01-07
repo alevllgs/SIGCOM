@@ -11,8 +11,13 @@ library(xlsx)
 # Cubo 09 -----------------------------------------------------------------
 
 fecha_mes <- "2021-11-01"
-Arch_cubo9 <- "BBDD Produccion/PERC/Cubos 9/Cubo_9 2021-11.xlsx"
-C9_BBDD <- "BBDD Produccion/PERC/Cubos 9/Cubo_9 BBDD.xlsx"
+
+fecha_solo_mes <- str_sub(fecha_mes,1,7)
+ruta_base <- "C:/Users/control.gestion3/OneDrive/"
+
+
+Arch_cubo9 <- paste0(ruta_base,"BBDD Produccion/PERC/Cubos 9/Cubo_9 ",fecha_solo_mes,".xlsx")
+C9_BBDD <- paste0(ruta_base,"BBDD Produccion/PERC/Cubos 9/Cubo_9 BBDD.xlsx")
 
 Cubo_9M <- read_xlsx(Arch_cubo9, na = " ",col_names = TRUE)
 Cubo_9 <- read_xlsx(C9_BBDD, na = " ",col_names = TRUE)
@@ -281,7 +286,7 @@ i1 <- inner_join(i1,p1) %>%
 
 informe <- rbind(i1, i2, i3, i4)
 
-openxlsx::write.xlsx(informe,"BBDD Produccion/PERC/PERC 2021/informe_mensual.xlsx", 
+openxlsx::write.xlsx(informe,paste0(ruta_base,"BBDD Produccion/PERC/PERC 2021/informe_mensual.xlsx"), 
                      colNames = TRUE, sheetName = "Informe", overwrite = TRUE)
 
 rm(i1, i2, i3, i4, p1, p2, p3, p4, Cubo_9, informe)
