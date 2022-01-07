@@ -8,14 +8,18 @@ library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
 
-SIGFE <- read_excel("BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/01 Ejecucion Presupuestaria.xlsx")
-M2_Pab_EqMed <- "BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx"
-ConsumoxCC <- "BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/02 Consumo x CC del mes.xlsx"
-Cant_RRHH <- "BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/04 SIRH R.xlsx"
-Farmacia <- "BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/900_gasto_farmacia.xlsx"
-graba <- "BBDD Produccion/PERC/PERC 2021/11 Noviembre/01, 02, 03, 04 , 05, 06 y 07/SIGFE R.xlsx"
+mes_archivo <- "11 Noviembre"
+ruta_base <- "C:/Users/control.gestion3/OneDrive/"
+resto <- "BBDD Produccion/PERC/PERC 2021/"
 
-CxCC_H <- "BBDD Produccion/PERC/PERC 2021/Insumos de info anual/CxCC_historico.xlsx"
+SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xlsx"))
+M2_Pab_EqMed <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx")
+ConsumoxCC <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/02 Consumo x CC del mes.xlsx")
+Cant_RRHH <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/04 SIRH R.xlsx")
+Farmacia <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx")
+graba <- paste0(ruta_base,resto,mes_archivo,"/01, 02, 03, 04 , 05, 06 y 07/SIGFE R.xlsx")
+
+CxCC_H <- paste0(ruta_base,resto,mes_archivo,"/Insumos de info anual/CxCC_historico.xlsx")
 
 
 insumos <- c("22",
