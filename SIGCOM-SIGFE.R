@@ -437,6 +437,9 @@ CAE_prorratear$prop <- CAE_prorratear$M2/sum(CAE_prorratear$M2)
 
 M2Pab$prop <- M2Pab$M2/sum(M2Pab$M2)
 
+M2_clinico <- M2 %>% filter(Area !="Apoyo")
+M2_clinico$prop <- M2_clinico$M2/sum(M2_clinico$M2)
+
 # Prorrateo Gastos Generales por M2 ---------------------------------------
 a <- "48-SERVICIO DE AGUA"
 if(a %in% SIGFE$SIGCOM){
@@ -1617,8 +1620,8 @@ if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
           GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
             summarise(Devengado = sum(Devengado)) %>% 
             filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
+          GG2 <- GG2 %>% summarise("Centro de Costo" = M2_clinico$CC, 
+                                   Devengado = Devengado*M2_clinico$prop, 
                                    "Cuenta"=b, "Tipo" = 2)
           GG1 <- rbind(GG1,GG2)} 
 
@@ -2788,7 +2791,7 @@ rm(CAE_prorratear, cant_RRHH, CCC, CxCC, CxCC_H, df, EqMed,
    EqMedCorrec, EqMedPrev, Farm, GG2, GG3, GG33, GG4, GG44, M2, M2Pab, SIGFE,
    `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, a,
    am, c, Cant_RRHH, ConsumoxCC, ggenerales, graba, insumos, M2_Pab_EqMed,
-   Metros_pabellon, q, qx, RRHH_sigfe, b)
+   Metros_pabellon, q, qx, RRHH_sigfe, b, M2_clinico)
 
 sum(Compras_Servicios$Devengado)
 
