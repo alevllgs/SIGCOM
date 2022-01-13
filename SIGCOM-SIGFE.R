@@ -2749,11 +2749,6 @@ GG1 <- rbind(GG33,GG44,GG1)
 #con esta formula puedo prorratear los que estan en 
 # CAE prorratear, hospitalizacion prorratear, pab prorratear y M2
 
-#### Falta aplicar esta formula a:
-#### Pabellón Prorratear
-#### CAE Prorratear
-
-
 
 #aca solo busca en sigfe (cuando hay devengo y no CxCC) y debo conectarlo 
 # con el CxCC Historial

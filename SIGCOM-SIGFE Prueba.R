@@ -441,132 +441,46 @@ M2_clinico <- M2 %>% filter(Area !="Apoyo")
 M2_clinico$prop <- M2_clinico$M2/sum(M2_clinico$M2)
 
 # Prorrateo Gastos Generales por M2 ---------------------------------------
-a <- "48-SERVICIO DE AGUA"
-if(a %in% SIGFE$SIGCOM){
-  GG1 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == a)
-  GG1 <- GG1 %>% summarise("Centro de Costo" = M2$CC, 
-                           Devengado = Devengado*M2$prop, 
-                           "Cuenta"=a, "Tipo" = 1)} else {GG1 <-  data.frame(
-                             "Centro de Costo" = c("eliminar"), 
-                             "Devengado" = 0, 
-                             "Cuenta" = c("eliminar"),
-                             "Tipo" = 1)
-                           colnames(GG1)[1] <- "Centro de Costo"
-                           }
-
-b <- "182-SERVICIO DE VIGILANCIA Y SEGURIDAD"
-if(b %in% SIGFE$SIGCOM){
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                           Devengado = Devengado*M2$prop, 
-                           "Cuenta"=b, "Tipo" = 1)
-  GG1 <- rbind(GG1,GG2)}
-
-b <- "170-SERVICIO DE ASEO"
-if(b %in% SIGFE$SIGCOM){
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                           Devengado = Devengado*M2$prop, 
-                           "Cuenta"=b, "Tipo" = 1)
-  GG1 <- rbind(GG1,GG2)}
-
-b <- "92-SERVICIO DE ENERGÍA"
-if(b %in% SIGFE$SIGCOM){
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                           Devengado = Devengado*M2$prop, 
-                           "Cuenta"=b, "Tipo" = 1)
-  GG1 <- rbind(GG1,GG2)}
-
-b <- "179-SERVICIO DE MENSAJERIA Y/O CORREO"
-if(b %in% SIGFE$SIGCOM){
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                           Devengado = Devengado*M2$prop, 
-                           "Cuenta"=b, "Tipo" = 1)
-  GG1 <- rbind(GG1,GG2)}
-
-b <- "100-GAS PROPANO"
-if(b %in% SIGFE$SIGCOM){
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                           Devengado = Devengado*M2$prop, 
-                           "Cuenta"=b, "Tipo" = 1)
-  GG1 <- rbind(GG1,GG2)}
-
-b <- "133-MANTENIMIENTO PLANTA FÍSICA"
-if(b %in% SIGFE$SIGCOM){
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                           Devengado = Devengado*M2$prop, 
-                           "Cuenta"=b, "Tipo" = 1)
-  GG1 <- rbind(GG1,GG2)}
 
 
-b <- "158-PUBLICIDAD Y PROPAGANDA"
-if(b %in% SIGFE$SIGCOM){
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                           Devengado = Devengado*M2$prop, 
-                           "Cuenta"=b, "Tipo" = 1)
-  GG1 <- rbind(GG1,GG2)
-}
+cuentas <- c("48-SERVICIO DE AGUA",
+             "182-SERVICIO DE VIGILANCIA Y SEGURIDAD",
+             "170-SERVICIO DE ASEO",
+             "92-SERVICIO DE ENERGÍA",
+             "179-SERVICIO DE MENSAJERIA Y/O CORREO",
+             "100-GAS PROPANO",
+             "133-MANTENIMIENTO PLANTA FÍSICA",
+             "158-PUBLICIDAD Y PROPAGANDA",
+             "93-ENLACES DE TELECOMUNICACIONES",
+             "188-SERVICIOS GENERALES",
+             "192-SERVICIO DE TELECOMUNICACIONES",
+             "128-MANTENIMIENTO DE PRADOS Y JARDINES")
 
-b <- "93-ENLACES DE TELECOMUNICACIONES"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                         Devengado = Devengado*M2$prop, 
-                         "Cuenta"=b, "Tipo" = 1)
-GG1 <- rbind(GG1,GG2)}
 
-b <- "188-SERVICIOS GENERALES"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                         Devengado = Devengado*M2$prop, 
-                         "Cuenta"=b, "Tipo" = 1)
-GG1 <- rbind(GG1,GG2)}
+GG1 <- data.frame(
+  "Centro de Costo" = "eliminar", 
+  "Devengado" = 0, 
+  "Cuenta" = "eliminar",
+  "Tipo" = 1)
+colnames(GG1)[1] <- "Centro de Costo"
+GG1_nulo <- GG1
 
-b <- "192-SERVICIO DE TELECOMUNICACIONES"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                         Devengado = Devengado*M2$prop, 
-                         "Cuenta"=b, "Tipo" = 1)
-GG1 <- rbind(GG1,GG2)}
 
-b <- "128-MANTENIMIENTO DE PRADOS Y JARDINES"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                         Devengado = Devengado*M2$prop, 
-                         "Cuenta"=b, "Tipo" = 1)
-GG1 <- rbind(GG1,GG2)}
+for (i in cuentas) {
+  if(i %in% SIGFE$SIGCOM){
+    GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
+                             Devengado = Devengado*M2$prop, 
+                             "Cuenta"=i, "Tipo" = 1) 
+    GG1 <- rbind(GG1,GG2) %>% filter(Cuenta!="eliminar")}
+    else {GG2 <- GG1_nulo
+    GG1 <- rbind(GG1,GG2) %>% filter(Cuenta!="eliminar")}
+      
+                               
+    }
+
 
 # Gastos Generales con Asignación Directa ---------------------------------
 

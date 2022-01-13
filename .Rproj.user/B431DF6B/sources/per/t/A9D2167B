@@ -1,0 +1,26 @@
+{
+    "id": "A9D2167B",
+    "path": "~/GitHub/SIGCOM/SIGCOM-SIGFE Prueba.R",
+    "project_path": "SIGCOM-SIGFE Prueba.R",
+    "type": "r_source",
+    "hash": "1458312304",
+    "contents": "",
+    "dirty": false,
+    "created": 1642078816706.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "456,53",
+        "scrollLine": "433"
+    },
+    "folds": "8|14|191|0|\n484|42|547|0|\n548|25|646|0|\n647|15|841|0|\n842|17|1033|0|\n1034|23|1616|0|\n1617|10|2277|0|\n2278|28|2711|0|\n",
+    "lastKnownWriteTime": 1642099316,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1642099316092,
+    "read_only": false,
+    "read_only_alternatives": []
+}
