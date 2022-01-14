@@ -437,8 +437,7 @@ CAE_prorratear$prop <- CAE_prorratear$M2/sum(CAE_prorratear$M2)
 
 M2Pab$prop <- M2Pab$M2/sum(M2Pab$M2)
 
-M2_clinico <- M2 %>% filter(Area !="Apoyo")
-M2_clinico$prop <- M2_clinico$M2/sum(M2_clinico$M2)
+
 
 # Prorrateo Gastos Generales por M2 ---------------------------------------
 
@@ -1048,7 +1047,28 @@ cuentas <- c("52-ARRENDAMIENTOS",
              "132-MANTENIMIENTO MUEBLES Y ENSERES",
              "135-MANTENIMIENTO Y REPARACION DE VEHICULOS", 
              "147-OTROS MANTENIMIENTOS",
-             "151-PASAJES, FLETES Y BODEGAJE")
+             "151-PASAJES, FLETES Y BODEGAJE",
+             
+             "149-PASAJES Y TRASLADOS DE PACIENTES",
+             "178-SERVICIO DE LAVANDERÍA")
+
+cuentas_total <- c("52-ARRENDAMIENTOS", 
+                   "129-MANTENIMIENTO EQUIPO DE CÓMPUTO",
+                   "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
+                   "132-MANTENIMIENTO MUEBLES Y ENSERES",
+                   "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
+                   "147-OTROS MANTENIMIENTOS",
+                   "151-PASAJES, FLETES Y BODEGAJE")
+
+cuentas_clinico <- c("149-PASAJES Y TRASLADOS DE PACIENTES",
+                     "178-SERVICIO DE LAVANDERÍA")
+
+cuentas_qx <- c("63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS",
+             "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO",
+             "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO")
+
+cuentas_cae <- c("61-COMPRA DE CONSULTAS MÉDICAS",
+             "62-COMPRA DE CONSULTAS NO MÉDICAS")
  
 
 for (i in cuentas) {
@@ -1346,15 +1366,32 @@ if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
                                "Cuenta"=b, "Tipo" = 2) 
       GG1 <- rbind(GG1,GG2)} else 
         if(b %in% SIGFE$SIGCOM){
+ 
+          proporcion_exacta <- ifelse(i %in% cuentas_cae, "prorrateo_cae",
+                                      ifelse(i %in% cuentas_clinico, "prorrateo_clinico",
+                                             ifelse(i %in% cuentas_qx, "prorrateo_qx", "todos")))
+         
+          if (proporcion_exacta == "prorrateo_cae")
+            {M2_exacto <- M2 %>% filter(Area == "Consultas")} 
+          else if (proporcion_exacta == "prorrateo_clinico")
+            {M2_exacto <- M2 %>% filter(Area != "Apoyo")}
+          else if (proporcion_exacta == "prorrateo_qx")
+            {M2_exacto <- M2 %>% filter(Area == "Quirofanos")}
+          else 
+            {M2_exacto <- M2 %>% filter(Area!="No_existe")}
+          
+          M2_exacto$prop <- M2_exacto$M2/sum(M2_exacto$M2)
+          
           GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
             summarise(Devengado = sum(Devengado)) %>% 
             filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2_clinico$CC, 
-                                   Devengado = Devengado*M2_clinico$prop, 
+          GG2 <- GG2 %>% summarise("Centro de Costo" = M2_exacto$CC, 
+                                   Devengado = Devengado*M2_exacto$prop, 
                                    "Cuenta"=b, "Tipo" = 2)
           GG1 <- rbind(GG1,GG2)} 
 
-
+#el codigo que aparece desde la linea 1368 sirve para hacer prorrateos inteligentes, de acuerdo a la cuenta que se esta tratando
+#se deberia poder incorporar en el FOR de la linea 1113 
 
 
 
