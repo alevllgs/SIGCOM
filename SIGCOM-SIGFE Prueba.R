@@ -469,7 +469,8 @@ GG1 <- data.frame(
   "Tipo" = 1)
 colnames(GG1)[1] <- "Centro de Costo"
 GG1_nulo <- GG1
-
+GG44 <- GG1_nulo
+GG33 <- GG1_nulo
 
 for (i in cuentas) {
   if(i %in% SIGFE$SIGCOM){
@@ -1209,389 +1210,81 @@ GG1 <- GG1 %>% filter(`Centro de Costo`!="Pabellón Prorratear" &
 
 #PABELLON
 
-qx <- "464-QUIRÓFANOS CARDIOVASCULAR"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- GG2
+qx <- c("464-QUIRÓFANOS CARDIOVASCULAR",
+        "467-QUIRÓFANOS DIGESTIVA",
+        "475-QUIRÓFANOS NEUROCIRUGÍA",
+        "478-QUIRÓFANOS OFTALMOLOGÍA",
+        "480-QUIRÓFANOS OTORRINOLARINGOLOGÍA",
+        "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
+        "486-QUIRÓFANOS UROLOGÍA",
+        "493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
+        "495-QUIRÓFANOS CIRUGÍA VASCULAR",
+        "473-QUIRÓFANOS MENOR AMBULATORIA",
+        "471-QUIRÓFANOS MAYOR AMBULATORIA")
 
-qx <- "467-QUIRÓFANOS DIGESTIVA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
 
-qx <- "475-QUIRÓFANOS NEUROCIRUGÍA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
+for (i in qx) {
+  # qx <- "464-QUIRÓFANOS CARDIOVASCULAR"
+  q <- sum(ifelse(M2Pab$CC == i, M2Pab$prop, 0))
+  GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
+    summarise("Centro de Costo" = i,
+              Devengado = Devengado*q,
+              "Cuenta"= Cuenta,"Tipo" = 2)
+  GG44 <- rbind(GG44, GG2) %>% filter(Cuenta!="eliminar")
+}
 
-qx <- "478-QUIRÓFANOS OFTALMOLOGÍA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
 
-qx <- "480-QUIRÓFANOS OTORRINOLARINGOLOGÍA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
-
-qx <- "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
-
-qx <- "486-QUIRÓFANOS UROLOGÍA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
-
-qx <- "493-QUIRÓFANOS CIRUGÍA PLÁSTICA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
-
-qx <- "495-QUIRÓFANOS CIRUGÍA VASCULAR"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
-
-qx <- "473-QUIRÓFANOS MENOR AMBULATORIA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
-
-qx <- "471-QUIRÓFANOS MAYOR AMBULATORIA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-  summarise("Centro de Costo" = qx,
-            Devengado = Devengado*q,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG44 <- rbind(GG44, GG2)
+am <- c("240-PROCEDIMIENTO DE CARDIOLOGÍA",
+        "244-PROCEDIMIENTO DE NEUMOLOGÍA",
+        "249-PROCEDIMIENTOS DE DERMATOLOGÍA",
+        "250-PROCEDIMIENTOS DE GASTROENTEROLOGÍA",
+        "260-PROCEDIMIENTO ONCOLOGÍA",
+        "261-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA",
+        "262-PROCEDIMIENTOS DE TRAUMATOLOGÍA",
+        "269-PROCEDIMIENTOS DE NEUROLOGÍA",
+        "351-CONSULTA CIRUGÍA PEDIÁTRICA",
+        "230-CONSULTA NUTRICIÓN",
+        "275-CONSULTA REUMATOLOGÍA",
+        "276-CONSULTA CARDIOLOGÍA",
+        "277-CONSULTA DERMATOLOGÍA",
+        "280-CONSULTA PSIQUIATRÍA",
+        "281-CONSULTA ENDOCRINOLOGÍA",
+        "282-CONSULTA NEUMOLOGÍA",
+        "284-CONSULTA INFECTOLOGÍA",
+        "285-CONSULTA NEFROLOGÍA",
+        "286-CONSULTA GENÉTICA",
+        "289-CONSULTA FISIATRÍA",
+        "290-CONSULTA GASTROENTEROLOGÍA",
+        "292-CONSULTA NEUROCIRUGÍA",
+        "296-CONSULTA ANESTESIOLOGIA",
+        "306-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+        "311-CONSULTA UROLOGÍA",
+        "316-CONSULTA CIRUGÍA PLÁSTICA",
+        "317-CONSULTA OFTALMOLOGÍA",
+        "319-CONSULTA OTORRINOLARINGOLOGÍA",
+        "328-CONSULTA PEDIATRÍA GENERAL",
+        "331-CONSULTA NEUROLOGÍA PEDIÁTRICA",
+        "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+        "353-CONSULTA GINECOLOGICA",
+        "356-CONSULTA ODONTOLOGÍA",
+        "359-TELEMEDICINA")
 
 
 
-#AMBULATORIA
-am <- "240-PROCEDIMIENTO DE CARDIOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-
-GG33 <- GG2
-
-am <- "244-PROCEDIMIENTO DE NEUMOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "249-PROCEDIMIENTOS DE DERMATOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "250-PROCEDIMIENTOS DE GASTROENTEROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "260-PROCEDIMIENTO ONCOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "261-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "262-PROCEDIMIENTOS DE TRAUMATOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "269-PROCEDIMIENTOS DE NEUROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "351-CONSULTA CIRUGÍA PEDIÁTRICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "230-CONSULTA NUTRICIÓN"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "275-CONSULTA REUMATOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "276-CONSULTA CARDIOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "277-CONSULTA DERMATOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "280-CONSULTA PSIQUIATRÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "281-CONSULTA ENDOCRINOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "282-CONSULTA NEUMOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "284-CONSULTA INFECTOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "285-CONSULTA NEFROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "286-CONSULTA GENÉTICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "289-CONSULTA FISIATRÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "290-CONSULTA GASTROENTEROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "292-CONSULTA NEUROCIRUGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "296-CONSULTA ANESTESIOLOGIA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "306-CONSULTA HEMATOLOGÍA ONCOLÓGICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "311-CONSULTA UROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "316-CONSULTA CIRUGÍA PLÁSTICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "317-CONSULTA OFTALMOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "319-CONSULTA OTORRINOLARINGOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "328-CONSULTA PEDIATRÍA GENERAL"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "331-CONSULTA NEUROLOGÍA PEDIÁTRICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "353-CONSULTA GINECOLOGICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "356-CONSULTA ODONTOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
-am <- "359-TELEMEDICINA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-  summarise("Centro de Costo" = am,
-            Devengado = Devengado*a,
-            "Cuenta"= Cuenta,"Tipo" = 2)
-GG33 <- rbind(GG33, GG2)
-
+for (i in am) {
+  # qx <- "464-QUIRÓFANOS CARDIOVASCULAR"
+  # am <- "359-TELEMEDICINA"
+  a <- sum(ifelse(CAE_prorratear$CC == i, CAE_prorratear$prop, 0))
+  GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
+    summarise("Centro de Costo" = i,
+              Devengado = Devengado*a,
+              "Cuenta"= Cuenta,"Tipo" = 2)
+  GG33 <- rbind(GG33, GG2) %>% filter(Cuenta!="eliminar")
+}
 
 GG1 <- rbind(GG33,GG44,GG1)
 
-#con esta formula puedo prorratear los que estan en 
-# CAE prorratear, hospitalizacion prorratear, pab prorratear y M2
-
-#### Falta aplicar esta formula a:
-#### Pabellón Prorratear
-#### CAE Prorratear
-
-
-
-#aca solo busca en sigfe (cuando hay devengo y no CxCC) y debo conectarlo 
-# con el CxCC Historial
-#en el CxCC Historial debe incluir c/u de los Items presupuestarios
-    
-#estudiar los for    
   
-
 #Redondeo el Devengado 
 GG1 <- GG1 %>%  filter (Devengado != 0) %>% 
   summarise("Centro de Costo"= `Centro de Costo`,"Devengado" = round(Devengado),
@@ -1617,12 +1310,12 @@ diferencia
 
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
 
-rm(Farm, GG2, GG3, GG33, GG4, GG44, M2, M2Pab, 
-   `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, a,
-   am, Cant_RRHH, ConsumoxCC, ggenerales, graba, insumos, M2_Pab_EqMed,
-   Metros_pabellon, q, qx, RRHH_sigfe, b, SIGFE2, GG1_nulo, cuentas, 
-   cuentas_cae, cuentas_clinico, cuentas_qx, cuentas_total, EqMed, EqMedCorrec, 
-   EqMedPrev, CAE_prorratear, Cant_RRHH, i, resto, ruta_base, mes_archivo, df, CxCC, CxCC_H, CCC)
+rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`,a, am, b, 
+   Cant_RRHH, ConsumoxCC, cuenta_insumos, cuentas, cuentas_cae, cuentas_clinico, 
+   cuentas_qx, cuentas_total, Farmacia, ggenerales, graba, i, insumos, M2_Pab_EqMed,
+   mes_archivo, Metros_pabellon, proporcion_exacta, q, qx, resto, RRHH_sigfe, ruta_base,
+   CAE_prorratear, cant_RRHH, CCC, CxCC, CxCC_H, df, EqMed, EqMedCorrec,
+   EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2)
 
 sum(Compras_Servicios$Devengado)
 
