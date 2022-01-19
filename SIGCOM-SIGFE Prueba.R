@@ -1054,7 +1054,26 @@ cuentas <- c("52-ARRENDAMIENTOS",
              "147-OTROS MANTENIMIENTOS",
              "151-PASAJES, FLETES Y BODEGAJE",
              "149-PASAJES Y TRASLADOS DE PACIENTES",
-             "178-SERVICIO DE LAVANDERÍA")
+             "178-SERVICIO DE LAVANDERÍA",
+             "3-COMBUSTIBLES Y LUBRICANTES", 
+             "8-EQUIPOS MENORES", 
+             "9-GASES MEDICINALES",
+             "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
+             "15-MATERIAL DE ODONTOLOGÍA",
+             "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
+             "18-MATERIAL MEDICO QUIRURGICO",
+             "21-MATERIALES DE CURACIÓN",
+             "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
+             "25-MATERIALES DE USO O CONSUMO",
+             "27-MATERIALES INFORMATICOS",
+             "28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
+             "29-MATERIALES Y ELEMENTOS DE ASEO",
+             "31-MENAJE PARA OFICINA, CASINO Y OTROS",
+             "35-OTROS INSUMOS Y MATERIALES",
+             "41-PRODUCTOS QUÍMICOS",
+             "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
+             "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
+             "46-VÍVERES")
 
 cuentas_total <- c("52-ARRENDAMIENTOS", 
                    "129-MANTENIMIENTO EQUIPO DE CÓMPUTO",
@@ -1062,7 +1081,27 @@ cuentas_total <- c("52-ARRENDAMIENTOS",
                    "132-MANTENIMIENTO MUEBLES Y ENSERES",
                    "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
                    "147-OTROS MANTENIMIENTOS",
-                   "151-PASAJES, FLETES Y BODEGAJE")
+                   "151-PASAJES, FLETES Y BODEGAJE",
+                   
+                   "3-COMBUSTIBLES Y LUBRICANTES", 
+                   "8-EQUIPOS MENORES", 
+                   "9-GASES MEDICINALES",
+                   "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
+                   "15-MATERIAL DE ODONTOLOGÍA",
+                   "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
+                   "18-MATERIAL MEDICO QUIRURGICO",
+                   "21-MATERIALES DE CURACIÓN",
+                   "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
+                   "25-MATERIALES DE USO O CONSUMO",
+                   "27-MATERIALES INFORMATICOS",
+                   "28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
+                   "29-MATERIALES Y ELEMENTOS DE ASEO",
+                   "31-MENAJE PARA OFICINA, CASINO Y OTROS",
+                   "35-OTROS INSUMOS Y MATERIALES",
+                   "41-PRODUCTOS QUÍMICOS",
+                   "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
+                   "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
+                   "46-VÍVERES")
 
 cuentas_clinico <- c("149-PASAJES Y TRASLADOS DE PACIENTES",
                      "178-SERVICIO DE LAVANDERÍA")
@@ -1073,6 +1112,26 @@ cuentas_qx <- c("63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS",
 
 cuentas_cae <- c("61-COMPRA DE CONSULTAS MÉDICAS",
              "62-COMPRA DE CONSULTAS NO MÉDICAS")
+
+cuenta_insumos <- c("3-COMBUSTIBLES Y LUBRICANTES", 
+                    "8-EQUIPOS MENORES", 
+                    "9-GASES MEDICINALES",
+                    "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
+                    "15-MATERIAL DE ODONTOLOGÍA",
+                    "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
+                    "18-MATERIAL MEDICO QUIRURGICO",
+                    "21-MATERIALES DE CURACIÓN",
+                    "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
+                    "25-MATERIALES DE USO O CONSUMO",
+                    "27-MATERIALES INFORMATICOS",
+                    "28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
+                    "29-MATERIALES Y ELEMENTOS DE ASEO",
+                    "31-MENAJE PARA OFICINA, CASINO Y OTROS",
+                    "35-OTROS INSUMOS Y MATERIALES",
+                    "41-PRODUCTOS QUÍMICOS",
+                    "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
+                    "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
+                    "46-VÍVERES")
  
 
 for (i in cuentas) {
@@ -1131,669 +1190,6 @@ for (i in cuentas) {
   else  {GG2 <- GG1_nulo
   GG1 <- rbind(GG1,GG2) %>% filter(Cuenta!="eliminar")}
   }
-
-
-
-
-# Insumos -----------------------------------------------------------------
-#Tipo -1 por M2 0 por CxCC 6 por Consumo Historico
-b <- "3-COMBUSTIBLES Y LUBRICANTES"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-    CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-      select(CC, Total) %>% 
-      group_by (CC) %>% 
-      summarise(Total =sum(Total)) %>%
-      mutate("prop" = Total/sum(Total))
-    GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-      summarise(Devengado = sum(Devengado)) %>% 
-      filter(SIGCOM == b)
-    GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                             Devengado = Devengado*CCC$prop, 
-                             "Cuenta"=b, "Tipo" = 6) 
-    GG1 <- rbind(GG1,GG2)} else 
-      if(b %in% SIGFE$SIGCOM){
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                               Devengado = Devengado*M2$prop, 
-                               "Cuenta"=b, "Tipo" = -1)
-      GG1 <- rbind(GG1,GG2)} 
-
-b <- "8-EQUIPOS MENORES"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "9-GASES MEDICINALES"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "15-MATERIAL DE ODONTOLOGÍA"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "18-MATERIAL MEDICO QUIRURGICO"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "21-MATERIALES DE CURACIÓN"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS"
-    if(b %in% SIGFE$SIGCOM){
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                               Devengado = Devengado*M2$prop, 
-                               "Cuenta"=b, "Tipo" = -1)
-      GG1 <- rbind(GG1,GG2)} 
-
-b <- "25-MATERIALES DE USO O CONSUMO"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "27-MATERIALES INFORMATICOS"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "29-MATERIALES Y ELEMENTOS DE ASEO"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "31-MENAJE PARA OFICINA, CASINO Y OTROS"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "35-OTROS INSUMOS Y MATERIALES"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "41-PRODUCTOS QUÍMICOS"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
-
-b <- "46-VÍVERES"
-if(b %in% SIGFE$SIGCOM & b %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == b) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=b, "Tipo" = 0) 
-  GG1 <- rbind(GG1,GG2)} else
-    if(b %in% SIGFE$SIGCOM & b %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == b) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == b)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=b, "Tipo" = 6) 
-      GG1 <- rbind(GG1,GG2)} else 
-        if(b %in% SIGFE$SIGCOM){
-          GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-            summarise(Devengado = sum(Devengado)) %>% 
-            filter(SIGCOM == b)
-          GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                                   Devengado = Devengado*M2$prop, 
-                                   "Cuenta"=b, "Tipo" = -1)
-          GG1 <- rbind(GG1,GG2)} 
 
 
 # Centros de Costo Globales -----------------------------------------------
