@@ -2,9 +2,10 @@ library(readxl)
 library(tidyverse)
 
 
-mes_archivo <- "11 Noviembre"
+mes_archivo <- "12 Diciembre"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2021/"
+
 
 
 f_amb <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/06 f_ambulatoria.xlsx")))
@@ -150,9 +151,9 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="SERVICIO DENTAL CAE"~"356-CONSULTA ODONTOLOGÍA",
              servicio=="SERVICIO POLI-OFTALMOLOGIA"~"317-CONSULTA OFTALMOLOGÍA",
              servicio=="GASTO GENERAL LACTANTES"~"328-CONSULTA PEDIATRÍA GENERAL",
-             servicio=="ODONTOLOGIA(DENTAL)"~"328-CONSULTA PEDIATRÍA GENERAL", 
-             
-             
+             servicio=="ODONTOLOGIA(DENTAL)"~"356-CONSULTA ODONTOLOGÍA",
+             servicio=="SALUD MENTAL MEDIANA ESTADIA"~"149-HOSPITALIZACIÓN PSIQUIATRÍA",
+             servicio=="ORTODONCIA"~"356-CONSULTA ODONTOLOGÍA",
              TRUE ~ "Asignar CC"
 ))
 
@@ -214,371 +215,84 @@ CAE_prorratear$prop <- CAE_prorratear$M2/sum(CAE_prorratear$M2)
 M2Pab$prop <- M2Pab$M2/sum(M2Pab$M2)
 
 
-qx <- "464-QUIRÓFANOS CARDIOVASCULAR"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- GG2
+GG44 <- data.frame(
+  "Centro de Costo" = "eliminar",
+  "Devengado" = 0,
+  "Cuenta" = "eliminar",
+  "Tipo" = 1)
+colnames(GG1)[1] <- "Centro de Costo"
+farmacia3 <- GG44
 
-qx <- "467-QUIRÓFANOS DIGESTIVA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
 
-qx <- "475-QUIRÓFANOS NEUROCIRUGÍA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
+qx <- c("464-QUIRÓFANOS CARDIOVASCULAR",
+        "467-QUIRÓFANOS DIGESTIVA",
+        "475-QUIRÓFANOS NEUROCIRUGÍA",
+        "478-QUIRÓFANOS OFTALMOLOGÍA",
+        "480-QUIRÓFANOS OTORRINOLARINGOLOGÍA",
+        "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
+        "486-QUIRÓFANOS UROLOGÍA",
+        "493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
+        "495-QUIRÓFANOS CIRUGÍA VASCULAR",
+        "473-QUIRÓFANOS MENOR AMBULATORIA",
+        "471-QUIRÓFANOS MAYOR AMBULATORIA")
 
-qx <- "478-QUIRÓFANOS OFTALMOLOGÍA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
 
-qx <- "480-QUIRÓFANOS OTORRINOLARINGOLOGÍA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
+for (i in qx) {
+  q <- sum(ifelse(M2Pab$CC == i, M2Pab$prop, 0))
+  GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
+    summarise(servicio = i,
+              folio = folio,
+              valorizacion = valorizacion*q)
+  GG44 <- rbind(GG44, GG2) %>% filter(Cuenta!="eliminar")
+}
 
-qx <- "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
 
-qx <- "486-QUIRÓFANOS UROLOGÍA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
 
-qx <- "493-QUIRÓFANOS CIRUGÍA PLÁSTICA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
+am <- c("240-PROCEDIMIENTO DE CARDIOLOGÍA",
+        "244-PROCEDIMIENTO DE NEUMOLOGÍA",
+        "249-PROCEDIMIENTOS DE DERMATOLOGÍA",
+        "250-PROCEDIMIENTOS DE GASTROENTEROLOGÍA",
+        "260-PROCEDIMIENTO ONCOLOGÍA",
+        "261-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA",
+        "262-PROCEDIMIENTOS DE TRAUMATOLOGÍA",
+        "269-PROCEDIMIENTOS DE NEUROLOGÍA",
+        "351-CONSULTA CIRUGÍA PEDIÁTRICA",
+        "230-CONSULTA NUTRICIÓN",
+        "275-CONSULTA REUMATOLOGÍA",
+        "276-CONSULTA CARDIOLOGÍA",
+        "277-CONSULTA DERMATOLOGÍA",
+        "280-CONSULTA PSIQUIATRÍA",
+        "281-CONSULTA ENDOCRINOLOGÍA",
+        "282-CONSULTA NEUMOLOGÍA",
+        "284-CONSULTA INFECTOLOGÍA",
+        "285-CONSULTA NEFROLOGÍA",
+        "286-CONSULTA GENÉTICA",
+        "289-CONSULTA FISIATRÍA",
+        "290-CONSULTA GASTROENTEROLOGÍA",
+        "292-CONSULTA NEUROCIRUGÍA",
+        "296-CONSULTA ANESTESIOLOGIA",
+        "306-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+        "311-CONSULTA UROLOGÍA",
+        "316-CONSULTA CIRUGÍA PLÁSTICA",
+        "317-CONSULTA OFTALMOLOGÍA",
+        "319-CONSULTA OTORRINOLARINGOLOGÍA",
+        "328-CONSULTA PEDIATRÍA GENERAL",
+        "331-CONSULTA NEUROLOGÍA PEDIÁTRICA",
+        "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+        "353-CONSULTA GINECOLOGICA",
+        "356-CONSULTA ODONTOLOGÍA",
+        "359-TELEMEDICINA")
 
-qx <- "495-QUIRÓFANOS CIRUGÍA VASCULAR"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
 
-qx <- "473-QUIRÓFANOS MENOR AMBULATORIA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
 
-qx <- "471-QUIRÓFANOS MAYOR AMBULATORIA"
-q <- sum(ifelse(M2Pab$CC == qx, M2Pab$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Pabellon prorratear") %>% 
-  summarise(servicio = qx,
-            folio = folio,
-            valorizacion = valorizacion*q)
-GG44 <- rbind(GG44, GG2)
-
-GG44 <- GG44 %>% mutate(servicio = case_when(servicio ==	"478-QUIRÓFANOS OFTALMOLOGÍA"	~	"471-QUIRÓFANOS MAYOR AMBULATORIA",
-                                                    servicio ==	"480-QUIRÓFANOS OTORRINOLARINGOLOGÍA"	~	"471-QUIRÓFANOS MAYOR AMBULATORIA",
-                                                    TRUE ~ servicio))
-
-#AMBULATORIO
-am <- "240-PROCEDIMIENTO DE CARDIOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-
-farmacia3 <- GG2
-
-am <- "244-PROCEDIMIENTO DE NEUMOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "249-PROCEDIMIENTOS DE DERMATOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "250-PROCEDIMIENTOS DE GASTROENTEROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "260-PROCEDIMIENTO ONCOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "261-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "262-PROCEDIMIENTOS DE TRAUMATOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "269-PROCEDIMIENTOS DE NEUROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "351-CONSULTA CIRUGÍA PEDIÁTRICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "230-CONSULTA NUTRICIÓN"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "275-CONSULTA REUMATOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "276-CONSULTA CARDIOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "277-CONSULTA DERMATOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "280-CONSULTA PSIQUIATRÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "281-CONSULTA ENDOCRINOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "282-CONSULTA NEUMOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "284-CONSULTA INFECTOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "285-CONSULTA NEFROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "286-CONSULTA GENÉTICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "289-CONSULTA FISIATRÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "290-CONSULTA GASTROENTEROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "292-CONSULTA NEUROCIRUGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "296-CONSULTA ANESTESIOLOGIA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "306-CONSULTA HEMATOLOGÍA ONCOLÓGICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "311-CONSULTA UROLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "316-CONSULTA CIRUGÍA PLÁSTICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "317-CONSULTA OFTALMOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "319-CONSULTA OTORRINOLARINGOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "328-CONSULTA PEDIATRÍA GENERAL"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "331-CONSULTA NEUROLOGÍA PEDIÁTRICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "353-CONSULTA GINECOLOGICA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "356-CONSULTA ODONTOLOGÍA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
-
-am <- "359-TELEMEDICINA"
-a <- sum(ifelse(CAE_prorratear$CC == am, CAE_prorratear$prop, 0))
-GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
-  summarise(servicio = am,
-            folio = folio,
-            valorizacion = valorizacion*a)
-farmacia3 <- rbind(farmacia3, GG2)
+for (i in am) {
+  a <- sum(ifelse(CAE_prorratear$CC == i, CAE_prorratear$prop, 0))
+  GG2 <- farmacia %>% filter(perc=="Cae Prorratear") %>% 
+    summarise(servicio = i,
+              folio = folio,
+              valorizacion = valorizacion*a)
+  farmacia3 <- rbind(farmacia3, GG2) %>% filter(Cuenta!="eliminar")
+}
 
 
 farmacia3 <- rbind(farmacia3,GG44)
