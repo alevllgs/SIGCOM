@@ -7,18 +7,19 @@ library(openxlsx)
 library(xlsx)
 
 Fecha_filtro <- "2021-12-01"
-archivoBS <- "BBDD Produccion/REM/Serie BS/2021/2021-12 REM serie BS.xlsx"
-remota <- "BBDD Produccion/REM/Atenciones Remotas/2021/REMOTA DICIEMBRE.xlsx"
+archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2021/2021-12 REM serie BS.xlsx"
+remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2021/REMOTA DICIEMBRE.xlsx"
 Sheet_remota <- "PM REMOTA"
-Censo <- "BBDD Produccion/REM/CENSO/2021/Censo-hrrio 2021.xlsx"
+Censo <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/2021/Censo-hrrio 2021.xlsx"
 Sheet_censo <- "DIC"
-Graba <- "BBDD Produccion/PERC/PERC 2021/12 Diciembre/Complemento Subir/05.xlsx"
+rango_censo <- "B6:P21"
+Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Complemento Subir/05.xlsx"
 
 
 # Captura de producción ambulatoria ---------------------------------------
 
 
-A07_PERC <- read_excel("BBDD Produccion/Ambulatorio/A07 BBDD.xlsx")
+A07_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A07 BBDD.xlsx")
 A07_PERC$Fecha=as.character(A07_PERC$Fecha)
 A07_PERC <- A07_PERC %>% select(Fecha, Especialidad, Total) %>% 
   filter(Fecha == Fecha_filtro) %>%
@@ -88,7 +89,7 @@ A07_PERC <- A07_PERC %>% select(Fecha, Especialidad, Total) %>%
   summarise("Valor" = sum(Total))
   
 
-A09I_PERC <- read_excel("BBDD Produccion/Ambulatorio/A09 BBDD_03.xlsx")
+A09I_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A09 BBDD_03.xlsx")
 A09I_PERC$Fecha=as.character(A09I_PERC$Fecha)
 A09I_PERC <- A09I_PERC %>% filter(Fecha == Fecha_filtro) %>% 
   filter(`TIPO DE INGRESO O EGRESO`=="CONSULTA NUEVA" | `TIPO DE INGRESO O EGRESO`=="CONTROL") %>% 
@@ -101,7 +102,7 @@ Produccion_SIGCOM <- rbind(A07_PERC, A09I_PERC) %>%
 
   
 # Captura producción de Urgencia ------------------------------------------
-A08_PERC <- read_excel("BBDD Produccion/Urgencia/A08 BBDD_01.xlsx")
+A08_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Urgencia/A08 BBDD_01.xlsx")
 A08_PERC$Fecha=as.character(A08_PERC$Fecha)
 A08_PERC <- A08_PERC %>% filter(Fecha == Fecha_filtro & `Tipo de Atención`=="ATENCIÓN MÉDICA NIÑO Y ADULTO") %>% 
   group_by(Fecha) %>% 
@@ -109,7 +110,7 @@ A08_PERC <- A08_PERC %>% filter(Fecha == Fecha_filtro & `Tipo de Atención`=="AT
   
 # Captura de producción del CENSO -----------------------------------------
 
-Censo_hrrio_BBDD <- read_excel(Censo,sheet = Sheet_censo, range = "B6:P21")
+Censo_hrrio_BBDD <- read_excel(Censo,sheet = Sheet_censo, range = rango_censo)
 Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA` <- 
   as.double(Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA`)
 
@@ -210,7 +211,7 @@ Censo_Critico <- rbind(Censo_Critico, Egreso)
 
 # TELEMEDICINA ------------------------------------------------------------
 
-telemedicina <- read_excel("BBDD Produccion/Ambulatorio/A30 BBDD.xlsx")
+telemedicina <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A30 BBDD.xlsx")
 telemedicina$Fecha=as.character(telemedicina$Fecha)
 
 telemedicina <- telemedicina %>% 
@@ -517,6 +518,8 @@ At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control A
     UNIDAD_ATENCION_DESC == "Oncologia Infantil" ~ "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
     UNIDAD_ATENCION_DESC == "Maxilofacial" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
     UNIDAD_ATENCION_DESC == "Neurocirugia Infantil" ~ "292__15121 - CONSULTA NEUROCIRUGÍA",
+    UNIDAD_ATENCION_DESC == "Prematuros *" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
+    UNIDAD_ATENCION_DESC == "Medicina fisica y rehabilitacion Infantil" ~ "289__15118 - CONSULTA FISIATRÍA",
     TRUE ~ "Asignar Centro de Costo"),"Unidades de Producción" = "3__Atención", Valor=n)
 
 
@@ -531,7 +534,7 @@ openxlsx::write.xlsx(Produccion_SIGCOM,Graba,
                      colNames = TRUE, sheetName = "5", overwrite = TRUE)
 
 rm(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, B_qx, P,At_remota, 
-   archivoBS, Fecha_filtro, remota, Sheet_remota, Egreso)
+   archivoBS, Fecha_filtro, remota, Sheet_remota, Egreso, Censo, Graba, rango_censo, Sheet_remota)
 
 #Ojo debo crear el CC de Procedimientos de Oftalmologia.
 # Debo eliminar la produccion de los CC de procedimientos de Uro y Gine

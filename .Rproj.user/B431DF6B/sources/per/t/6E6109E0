@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM-Produccion.R",
     "project_path": "SIGCOM-Produccion.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "1343025958",
     "contents": "",
     "dirty": false,
     "created": 1643025592577.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "14,53",
+        "cursorPosition": "0,0",
         "scrollLine": "0"
     },
-    "folds": "17|36|101|2|\n",
-    "lastKnownWriteTime": 1643043600,
+    "folds": "18|36|102|2|\n211|15|231|0|\n232|8|365|0|\n366|17|486|0|\n",
+    "lastKnownWriteTime": 1643049777,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1643043600682,
+    "last_content_update": 1643049777658,
     "read_only": false,
     "read_only_alternatives": []
 }
