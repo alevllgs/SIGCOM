@@ -14,12 +14,14 @@ resto <- "BBDD Produccion/PERC/PERC 2021/"
 
 
 SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xls"), skip = 6)
-M2_Pab_EqMed <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx")
+M2 <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx")
 ConsumoxCC <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/02 Consumo x CC del mes.xlsx")
 Cant_RRHH <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/04 SIRH R.xlsx")
 Farmacia <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx")
 graba <- paste0(ruta_base,resto,mes_archivo,"/01, 02, 03, 04 , 05, 06 y 07/SIGFE R.xlsx")
 CxCC_H <- paste0(ruta_base,resto,"/Insumos de info anual/CxCC_historico.xlsx")
+M2Pab <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/89_Pabellon.xlsx")
+EqMed <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/99_Equipos_Medicos.xlsx")
 
 SIGFE2 <- str_split_fixed(SIGFE$`Concepto Presupuestario`, " ", n=2)
 SIGFE <- cbind(SIGFE, SIGFE2)
@@ -409,8 +411,8 @@ SIGFE <- SIGFE %>% select(cod_sigfe, Devengado) %>%
   filter(SIGCOM != "Familia" & Devengado>0)
 
 # M2 --------------------------------------------------------------
-M2 <- read_excel(M2_Pab_EqMed,sheet = "M2")
-M2Pab <- read_excel(M2_Pab_EqMed,sheet = "Pabellon")
+M2 <- read_excel(M2)
+M2Pab <- read_excel(M2Pab)
 M2Pab <- mutate_all(M2Pab, ~replace(., is.na(.), 0))
 Metros_pabellon <- 11*45
 
@@ -442,7 +444,6 @@ CAE_prorratear <- M2 %>% filter(Area == "Consultas" | Area == "Procedimientos")
 CAE_prorratear$prop <- CAE_prorratear$M2/sum(CAE_prorratear$M2)
 
 M2Pab$prop <- M2Pab$M2/sum(M2Pab$M2)
-
 
 
 # Prorrateo Gastos Generales por M2 ---------------------------------------
@@ -579,7 +580,7 @@ GG1 <- rbind(GG1,GG2)}
 
 
 # EQUIPOS MEDICOS
-EqMed <- read_excel(M2_Pab_EqMed,sheet = "Mantenimiento", na = " ")
+EqMed <- read_excel(EqMed, na = " ")
 EqMed <- mutate_all(EqMed, ~replace(., is.na(.), 0))
 
 EqMedPrev <- EqMed %>%  filter (`PERC ASOCIADO` != 0) %>% 
@@ -1114,6 +1115,8 @@ cuentas_qx <- c("63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS",
 cuentas_cae <- c("61-COMPRA DE CONSULTAS MÉDICAS",
              "62-COMPRA DE CONSULTAS NO MÉDICAS")
 
+cuentas_no_critico <- c("60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS")
+
 cuenta_insumos <- c("3-COMBUSTIBLES Y LUBRICANTES", 
                     "8-EQUIPOS MENORES", 
                     "9-GASES MEDICINALES",
@@ -1168,13 +1171,16 @@ for (i in cuentas) {
   else if (i %in% SIGFE$SIGCOM){
     proporcion_exacta <- ifelse(i %in% cuentas_cae, "prorrateo_cae",
                                 ifelse(i %in% cuentas_clinico, "prorrateo_clinico",
-                                       ifelse(i %in% cuentas_qx, "prorrateo_qx", "todos")))
+                                       ifelse(i %in% cuentas_qx, "prorrateo_qx", 
+                                              ifelse(i %in% cuentas_no_critico, "prorrateo_no_critico", "todos"))))
     
     if (proporcion_exacta == "prorrateo_cae"){M2_exacto <- M2 %>% filter(Area == "Consultas")} 
     else if (proporcion_exacta == "prorrateo_clinico"){
       M2_exacto <- M2 %>% filter(Area != "Apoyo")}
     else if (proporcion_exacta == "prorrateo_qx"){
       M2_exacto <- M2 %>% filter(Area == "Quirofanos")}
+    else if (proporcion_exacta == "prorrateo_no_critico"){
+      M2_exacto <- M2 %>% filter(Area == "Hospitalización")}
     else{
       M2_exacto <- M2 %>% filter(Area!="No_existe")}
     
@@ -1315,7 +1321,7 @@ rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`,a, a
    cuentas_qx, cuentas_total, Farmacia, ggenerales, graba, i, insumos, M2_Pab_EqMed,
    mes_archivo, Metros_pabellon, proporcion_exacta, q, qx, resto, RRHH_sigfe, ruta_base,
    CAE_prorratear, cant_RRHH, CCC, CxCC, CxCC_H, df, EqMed, EqMedCorrec,
-   EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2)
+   EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2, cuentas_no_critico)
 
 sum(Compras_Servicios$Devengado)
 

@@ -6,13 +6,13 @@ library(dplyr)
 library(openxlsx)
 library(xlsx)
 
-Fecha_filtro <- "2021-11-01"
-archivoBS <- "BBDD Produccion/REM/Serie BS/2021/2021-11 REM serie BS.xlsx"
-remota <- "BBDD Produccion/REM/Atenciones Remotas/2021/REMOTA NOVIEMBRE.xlsx"
+Fecha_filtro <- "2021-12-01"
+archivoBS <- "BBDD Produccion/REM/Serie BS/2021/2021-12 REM serie BS.xlsx"
+remota <- "BBDD Produccion/REM/Atenciones Remotas/2021/REMOTA DICIEMBRE.xlsx"
 Sheet_remota <- "PM REMOTA"
 Censo <- "BBDD Produccion/REM/CENSO/2021/Censo-hrrio 2021.xlsx"
-Sheet_censo <- "NOV"
-Graba <- "BBDD Produccion/PERC/PERC 2021/11 Noviembre/Complemento Subir/05.xlsx"
+Sheet_censo <- "DIC"
+Graba <- "BBDD Produccion/PERC/PERC 2021/12 Diciembre/Complemento Subir/05.xlsx"
 
 
 # Captura de producción ambulatoria ---------------------------------------

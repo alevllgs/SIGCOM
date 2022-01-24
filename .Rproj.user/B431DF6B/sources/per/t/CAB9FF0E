@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM-SIGFE Prueba.R",
     "project_path": "SIGCOM-SIGFE Prueba.R",
     "type": "r_source",
-    "hash": "2363525405",
+    "hash": "2348421999",
     "contents": "",
     "dirty": false,
     "created": 1642599232611.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "1284,27",
-        "scrollLine": "1263"
+        "cursorPosition": "1301,117",
+        "scrollLine": "1285"
     },
-    "folds": "8|14|197|0|\n198|17|409|0|\n410|5|446|0|\n490|42|553|0|\n653|15|847|0|\n848|17|1038|0|\n",
-    "lastKnownWriteTime": 1642617075,
+    "folds": "8|14|199|0|\n200|17|411|0|\n448|36|490|0|\n491|42|554|0|\n555|25|653|0|\n654|15|848|0|\n849|17|1039|0|\n1040|23|1200|0|\n",
+    "lastKnownWriteTime": 1643043570,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1642688503716,
+    "last_content_update": 1643043570437,
     "read_only": false,
     "read_only_alternatives": []
 }
