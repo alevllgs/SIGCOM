@@ -1307,10 +1307,10 @@ GG1 <- GG1 %>% mutate(`Centro de Costo` = case_when(`Centro de Costo` ==	"478-QU
 # Separa Odonto de la urgencia --------------------------------------------
 
 ODOURG <- GG1 %>% filter(`Centro de Costo`== "216-EMERGENCIAS PEDIÁTRICAS" & Cuenta=="15-MATERIAL DE ODONTOLOGÍA")
-ODOURG[1,1] <- "Odonto"
+ODOURG[1,1] <- "357-EMERGENCIAS ODONTOLOGICAS"
 
 ODOURG1 <- GG1 %>% filter(`Centro de Costo`== "216-EMERGENCIAS PEDIÁTRICAS") %>% 
-  mutate(`Centro de Costo`="Odonto", Devengado = round(Devengado*0.1)) %>% 
+  mutate(`Centro de Costo`="357-EMERGENCIAS ODONTOLOGICAS", Devengado = round(Devengado*0.1)) %>% 
   filter(Cuenta!="15-MATERIAL DE ODONTOLOGÍA")
 
 URG <- GG1 %>% filter(`Centro de Costo`== "216-EMERGENCIAS PEDIÁTRICAS") %>% 
@@ -1320,6 +1320,8 @@ URG <- GG1 %>% filter(`Centro de Costo`== "216-EMERGENCIAS PEDIÁTRICAS") %>%
 GG1 <- GG1 %>% filter(`Centro de Costo`!= "216-EMERGENCIAS PEDIÁTRICAS")
 GG1 <- rbind(ODOURG, ODOURG1, URG, GG1)
 
+
+# Datos finales -----------------------------------------------------------
 
 sum(SIGFE$Devengado)
   
@@ -1339,7 +1341,7 @@ rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`,a, a
    mes_archivo, Metros_pabellon, proporcion_exacta, q, qx, resto, RRHH_sigfe, ruta_base,
    CAE_prorratear, cant_RRHH, CCC, CxCC, CxCC_H, df, EqMed, EqMedCorrec,
    EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2, cuentas_no_critico,
-   ODOURG, ODOURG1, URG, Sheet_censo)
+   ODOURG, ODOURG1, URG)
 
 diferencia <- sum(SIGFE$Devengado)-sum(GG1$Devengado)-sum(Compras_Servicios$Devengado)
 diferencia

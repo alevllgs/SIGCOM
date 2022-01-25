@@ -1,5 +1,6 @@
 library(readxl)
 library(tidyverse)
+library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
@@ -18,40 +19,74 @@ cola_ruta_registro_b <- " REM serie BS.xlsx"
 
 graba <- paste0(ruta_base,resto,mes_archivo,"/01, 02, 03, 04 , 05, 06 y 07/06_COSTOS_INDIRECTOS.xlsx")
 
-rehabilitacion_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_ruta_registros,cola_ruta_registro_a), sheet = "A28", range = "A168:B191", col_names = FALSE)
+rehabilitacion_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_ruta_registros,cola_ruta_registro_a), 
+                                  sheet = "A28", range = "A168:B191", col_names = FALSE)
 
-cmenor_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), sheet = "B17", range = "B344:K363", col_names = FALSE, na = "0")
+cmenor_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
+                          sheet = "B17", range = "B344:K363", col_names = FALSE, na = "0")
 
 farmacia_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/95_Farmacia.xlsx"))
 
-aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx", sheet = "M2") %>% mutate(`PERC ASOCIADO`=CC, Cantidad = M2) %>% filter(`PERC ASOCIADO`!="648-ASEO") %>% select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="648_1-ASEO | Metro cuadrado"))
+aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx"), 
+                               sheet = "M2") %>% 
+                          mutate(`PERC ASOCIADO`=CC, Cantidad = M2) %>% filter(`PERC ASOCIADO`!="648-ASEO") %>% 
+                          select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="648_1-ASEO | Metro cuadrado")
 
-aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx", sheet = "M2") %>% mutate(`PERC ASOCIADO`=CC, Cantidad = M2) %>% filter(`PERC ASOCIADO`!="648-ASEO") %>% select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="648_1-ASEO | Metro cuadrado"))
+aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx"), 
+                               sheet = "M2") %>% 
+                          mutate(`PERC ASOCIADO`=CC, Cantidad = M2) %>% 
+                          filter(`PERC ASOCIADO`!="648-ASEO") %>% 
+                          select(`PERC ASOCIADO`, Cantidad) %>% 
+                          mutate(Item ="648_1-ASEO | Metro cuadrado")
 
-anatomia_patologica_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/96_Anatomia_Patologica.xlsx", sheet = "Noviembre 2021", range = "C4:D80") %>% mutate(Cantidad = `544_1-ANATOMÍA PATOLÓGICA | Estudio`) %>% filter(`PERC ASOCIADO`!="544-ANATOMÍA PATOLÓGICA" & Cantidad>0) %>% select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="544_1-ANATOMÍA PATOLÓGICA | Estudio"))
+anatomia_patologica_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/96_Anatomia_Patologica.xlsx"), 
+                                              sheet = "Noviembre 2021", range = "C4:D80") %>% 
+                                         mutate(Cantidad = `544_1-ANATOMÍA PATOLÓGICA | Estudio`) %>% 
+                                         filter(`PERC ASOCIADO`!="544-ANATOMÍA PATOLÓGICA" & Cantidad>0) %>% 
+                                         select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="544_1-ANATOMÍA PATOLÓGICA | Estudio")
 
-imagenologia_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/92_Imagenologia.xlsx", range = "C1:D79")  %>% mutate(Cantidad = `541_1-TOMOGRAFÍA | Estudio`) %>% filter(`PERC ASOCIADO`!="542-IMAGENOLOGÍA" & Cantidad>0) %>% select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="542_1-IMAGENOLOGÍA | Estudio"))
+imagenologia_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/92_Imagenologia.xlsx"), 
+                                       range = "C1:D79")  %>% 
+                                  mutate(Cantidad = `541_1-TOMOGRAFÍA | Estudio`) %>% 
+                                  filter(`PERC ASOCIADO`!="542-IMAGENOLOGÍA" & Cantidad>0) %>% 
+                                  select(`PERC ASOCIADO`, Cantidad) %>% 
+                                  mutate(Item ="542_1-IMAGENOLOGÍA | Estudio")
 
-laboratorio_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/93_Laboratorio.xlsx", range = "C1:I79") %>% mutate(Cantidad = Totales) %>% filter(`PERC ASOCIADO`!="518-LABORATORIO CLÍNICO" & Cantidad>0) %>% select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="518_1-LABORATORIO CLÍNICO | Exámen"))
+laboratorio_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/93_Laboratorio.xlsx"), 
+                                      range = "C1:I79") %>% 
+                                 mutate(Cantidad = Totales) %>% 
+                                 filter(`PERC ASOCIADO`!="518-LABORATORIO CLÍNICO" & Cantidad>0) %>% 
+                                 select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="518_1-LABORATORIO CLÍNICO | Exámen")
 
-UMT_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/91_UMT.xlsx", 
-                       range = "C1:E78", na = "0") %>% mutate_all(., ~replace(., is.na(.), 0)))
+UMT_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/91_UMT.xlsx"), 
+                       range = "C1:E78", na = "0") %>% 
+                         mutate_all(., ~replace(., is.na(.), 0))
 
-esterilizacion_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/90_Esterilizacion.xlsx", 
-                                  range = "C1:F77"))
+esterilizacion_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/90_Esterilizacion.xlsx"), 
+                                  range = "C1:F77")
 
-transporte_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/97_Transporte.xlsx", 
-                       range = "C1:F82", na = "0") %>% mutate_all(., ~replace(., is.na(.), 0)))
+transporte_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/97_Transporte.xlsx"), 
+                       range = "C1:F82", na = "0") %>% 
+                         mutate_all(., ~replace(., is.na(.), 0))
 
-psicosocial_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/94_Psicosocial.xlsx", 
-                               range = "C1:D77")  %>% mutate(Cantidad = Total) %>% filter(`PERC ASOCIADO`!="99544-TRABAJO SOCIAL" & Cantidad>0) %>% select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="99544_1-TRABAJO SOCIAL | Atención"))
+psicosocial_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/94_Psicosocial.xlsx"), 
+                               range = "C1:D77")  %>% 
+                                 mutate(Cantidad = Total) %>% 
+                                 filter(`PERC ASOCIADO`!="99544-TRABAJO SOCIAL" & Cantidad>0) %>% 
+                                 select(`PERC ASOCIADO`, Cantidad) %>% 
+                                 mutate(Item ="99544_1-TRABAJO SOCIAL | Atención")
 
 alimentacion_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/98_Alimentacion.xlsx"), 
-                                range = "A06:D21") %>% mutate(Cantidad = `652_1-SERVICIO DE ALIMENTACIÓN | Ración paciente (Desayuno, almuerzo, once y cena)`+ `654_1-SERVICIO DIETÉTICOS DE LECHE | Ración paciente (Mamaderas y matraces)`, Item = "652_1-SERVICIO DE ALIMENTACIÓN | Ración paciente") %>% select(`PERC ASOCIADO`, Cantidad, Item) %>% filter(Cantidad>0 & `PERC ASOCIADO`!="652-SERVICIO DE ALIMENTACIÓN
+                                range = "A06:D21") %>% 
+                                mutate(Cantidad = `652_1-SERVICIO DE ALIMENTACIÓN | Ración paciente (Desayuno, almuerzo, once y cena)`+ `654_1-SERVICIO DIETÉTICOS DE LECHE | Ración paciente (Mamaderas y matraces)`, Item = "652_1-SERVICIO DE ALIMENTACIÓN | Ración paciente") %>% 
+                                select(`PERC ASOCIADO`, Cantidad, Item) %>% filter(Cantidad>0 & `PERC ASOCIADO`!="652-SERVICIO DE ALIMENTACIÓN
 ")
 
 equipos_medicos_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/99_Equipos_Medicos.xlsx"), 
-                                   range = "C1:D77") %>% mutate(Cantidad = Total, Item = "665_1-MANTENIMIENTO | Órden") %>% filter(Cantidad>0 & `PERC ASOCIADO`!="665-MANTENIMIENTO") %>% select(`PERC ASOCIADO`, Cantidad, Item)
+                                   range = "C1:D77") %>% 
+  mutate(Cantidad = Total, Item = "665_1-MANTENIMIENTO | Órden") %>% 
+  filter(Cantidad>0 & `PERC ASOCIADO`!="665-MANTENIMIENTO") %>% 
+  select(`PERC ASOCIADO`, Cantidad, Item)
 
 
 procedimientos_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Complemento Subir/05.xlsx")) %>% 
@@ -88,36 +123,47 @@ procedimientos_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Complemen
 
 # UMT ---------------------------------------------------------------------
 
-UMT1 <- UMT_perc  %>% mutate(Cantidad =`575_1-BANCO DE SANGRE | Transfusión`) %>% select(`PERC ASOCIADO`, Cantidad)
+UMT1 <- UMT_perc  %>% mutate(Cantidad =`575_1-BANCO DE SANGRE | Transfusión`) %>% 
+  select(`PERC ASOCIADO`, Cantidad)
 UMT1$Item <- "575_1-BANCO DE SANGRE | Unidad"
 
 
-UMT2 <- UMT_perc  %>% mutate(Cantidad =`575_2-BANCO DE SANGRE | Exámen`) %>% select(`PERC ASOCIADO`, Cantidad)
+UMT2 <- UMT_perc  %>% mutate(Cantidad =`575_2-BANCO DE SANGRE | Exámen`) %>% 
+  select(`PERC ASOCIADO`, Cantidad)
 UMT2$Item <- "575_2-BANCO DE SANGRE | Exámen"
 
-UMT_perc <- rbind(UMT1, UMT2) %>% filter(`PERC ASOCIADO`!="575-BANCO DE SANGRE" & Cantidad>0)
+UMT_perc <- rbind(UMT1, UMT2) %>% 
+  filter(`PERC ASOCIADO`!="575-BANCO DE SANGRE" & Cantidad>0)
 
 
 # Esterilizacion ----------------------------------------------------------
 
-esterilizacion <- esterilizacion_perc  %>% mutate(Cantidad =`662_2-CENTRAL DE ESTERILIZACIÓN | Metro cúbico`) %>% select(`PERC ASOCIADO`, Cantidad)
+esterilizacion <- esterilizacion_perc  %>% 
+  mutate(Cantidad =`662_2-CENTRAL DE ESTERILIZACIÓN | Metro cúbico`) %>% 
+  select(`PERC ASOCIADO`, Cantidad)
 esterilizacion$Item <- "662_2-CENTRAL DE ESTERILIZACIÓN | Metro cúbico"
 
 
-lavanderia <- esterilizacion_perc  %>% mutate(Cantidad =`657_1-LAVANDERIA Y ROPERIA | Kilo`) %>% select(`PERC ASOCIADO`, Cantidad)
+lavanderia <- esterilizacion_perc  %>% 
+  mutate(Cantidad =`657_1-LAVANDERIA Y ROPERIA | Kilo`) %>% 
+  select(`PERC ASOCIADO`, Cantidad)
 lavanderia$Item <- "657_1-LAVANDERIA Y ROPERIA | Kilo"
 
-esterilizacion_perc <- esterilizacion %>% filter(`PERC ASOCIADO`!="662-CENTRAL DE ESTERILIZACIÓN" & `PERC ASOCIADO`!="657-LAVANDERIA Y ROPERIA" & Cantidad>0) #no esta conectada lavanderia xq no es un CC 
+esterilizacion_perc <- esterilizacion %>% 
+  filter(`PERC ASOCIADO`!="662-CENTRAL DE ESTERILIZACIÓN" & `PERC ASOCIADO`!="657-LAVANDERIA Y ROPERIA" & Cantidad>0) #no esta conectada lavanderia xq no es un CC 
 
   
 
 # Farmacia ----------------------------------------------------------------
 
-farmacia1 <- farmacia_perc  %>% mutate(Cantidad =`593_2-SERVICIO FARMACEUTICO | Prescripción`) %>% select(`PERC ASOCIADO`, Cantidad)
+farmacia1 <- farmacia_perc  %>% 
+  mutate(Cantidad =`593_2-SERVICIO FARMACEUTICO | Prescripción`) %>% select(`PERC ASOCIADO`, Cantidad)
 farmacia1$Item <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
 
 
-farmacia2 <- farmacia_perc  %>% mutate(Cantidad =`593_1-SERVICIO FARMACEUTICO | Receta`) %>% select(`PERC ASOCIADO`, Cantidad)
+farmacia2 <- farmacia_perc  %>% 
+  mutate(Cantidad =`593_1-SERVICIO FARMACEUTICO | Receta`) %>% 
+  select(`PERC ASOCIADO`, Cantidad)
 farmacia2$Item <- "593_1-SERVICIO FARMACEUTICO | Receta"
 
 farmacia_perc <- rbind(farmacia1, farmacia2)
@@ -191,8 +237,6 @@ cmenor_perc <- cmenor_perc %>%
 
 
 
-
-
 # Transporte --------------------------------------------------------------
 
 t1 <- transporte_perc  %>% mutate(Cantidad =`664_1-TRANSPORTE GENERAL | Traslado`) %>% select(`PERC ASOCIADO`, Cantidad)
@@ -217,6 +261,21 @@ unidades <- unidades %>% mutate(`PERC ASOCIADO` = case_when(
   `PERC ASOCIADO`=="478-QUIRÓFANOS OFTALMOLOGÍA" ~ "471-QUIRÓFANOS MAYOR AMBULATORIA",
   `PERC ASOCIADO`=="480-QUIRÓFANOS OTORRINOLARINGOLOGÍA" ~ "471-QUIRÓFANOS MAYOR AMBULATORIA",
   TRUE ~ `PERC ASOCIADO`), Cantidad = round(Cantidad))
+
+
+
+# Separar Odonto Urgencia -------------------------------------------------
+
+
+ODOURG1 <- unidades %>% filter(`PERC ASOCIADO`== "216-EMERGENCIAS PEDIÁTRICAS") %>% 
+  mutate(`PERC ASOCIADO` ="357-EMERGENCIAS ODONTOLOGICAS", Cantidad = round(Cantidad*0.1))
+
+URG <- unidades %>% filter(`PERC ASOCIADO`== "216-EMERGENCIAS PEDIÁTRICAS") %>% 
+  mutate(Cantidad = round(Cantidad*0.9))
+
+unidades <- unidades %>% filter(`PERC ASOCIADO`!= "216-EMERGENCIAS PEDIÁTRICAS")
+unidades <- rbind(ODOURG1, URG, unidades)
+
 
 #CONTRALORIA
 
@@ -264,4 +323,4 @@ openxlsx::write.xlsx(unidades, graba, colNames = TRUE, sheetName = "indirectos",
 
 # Borrar Data -------------------------------------------------------------
 
-rm(alimentacion_perc, anatomia_patologica_perc, aseo_perc, cmenor_perc, equipos_medicos_perc, esterilizacion, esterilizacion_perc, farmacia_perc, imagenologia_perc, laboratorio_perc, lavanderia, procedimientos_perc, rehabilitacion_perc, t1, t2, t3, transporte_perc, UMT_perc, unid_reportar, psicosocial_perc, farmacia1, farmacia2, UMT1, UMT2, graba, cola_ruta_registro_a, cola_ruta_registro_b, resto_ruta_registro_a, resto_ruta_registro_b)
+rm(alimentacion_perc, anatomia_patologica_perc, aseo_perc, cmenor_perc, equipos_medicos_perc, esterilizacion, esterilizacion_perc, farmacia_perc, imagenologia_perc, laboratorio_perc, lavanderia, procedimientos_perc, rehabilitacion_perc, t1, t2, t3, transporte_perc, UMT_perc, unid_reportar, psicosocial_perc, farmacia1, farmacia2, UMT1, UMT2, graba, cola_ruta_registro_a, cola_ruta_registro_b, resto_ruta_registro_a, resto_ruta_registro_b, ODOURG1, URG)

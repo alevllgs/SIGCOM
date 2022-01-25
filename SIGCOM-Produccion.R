@@ -104,9 +104,10 @@ Produccion_SIGCOM <- rbind(A07_PERC, A09I_PERC) %>%
 # Captura producción de Urgencia ------------------------------------------
 A08_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Urgencia/A08 BBDD_01.xlsx")
 A08_PERC$Fecha=as.character(A08_PERC$Fecha)
-A08_PERC <- A08_PERC %>% filter(Fecha == Fecha_filtro & `Tipo de Atención`=="ATENCIÓN MÉDICA NIÑO Y ADULTO") %>% 
+A08_PERC <- A08_PERC %>% 
+  filter(Fecha == Fecha_filtro & (`Tipo de Atención`=="ATENCIÓN MÉDICA NIÑO Y ADULTO" | `Tipo de Atención`=="ATENCIÓN POR ODONTÓLOGO")) %>% 
   group_by(Fecha) %>% 
-  summarise("Centro de Producción" = "216__10501 - EMERGENCIAS PEDIÁTRICAS", "Unidades de Producción" = "1__Atención","Valor" = sum(Total))
+  summarise("Centro de Producción" = ifelse(`Tipo de Atención`=="ATENCIÓN MÉDICA NIÑO Y ADULTO","216__10501 - EMERGENCIAS PEDIÁTRICAS", "357__15603 - EMERGENCIAS ODONTOLOGICAS" ), "Unidades de Producción" = "1__Atención","Valor" = Total)
   
 # Captura de producción del CENSO -----------------------------------------
 
@@ -534,7 +535,7 @@ openxlsx::write.xlsx(Produccion_SIGCOM,Graba,
                      colNames = TRUE, sheetName = "5", overwrite = TRUE)
 
 rm(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, B_qx, P,At_remota, 
-   archivoBS, Fecha_filtro, remota, Sheet_remota, Egreso, Censo, Graba, rango_censo, Sheet_remota)
+   archivoBS, Fecha_filtro, remota, Sheet_remota, Egreso, Censo, Graba, rango_censo, Sheet_remota, Sheet_censo)
 
 #Ojo debo crear el CC de Procedimientos de Oftalmologia.
 # Debo eliminar la produccion de los CC de procedimientos de Uro y Gine
