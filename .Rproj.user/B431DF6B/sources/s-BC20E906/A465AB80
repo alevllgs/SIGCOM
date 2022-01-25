@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM-SIGFE Prueba.R",
     "project_path": "SIGCOM-SIGFE Prueba.R",
     "type": "r_source",
-    "hash": "4038964377",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1643112384891.0,
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "1308,0",
-        "scrollLine": "1299"
+        "cursorPosition": "11,14",
+        "scrollLine": "0"
     },
     "folds": "",
     "lastKnownWriteTime": 1643118697,
