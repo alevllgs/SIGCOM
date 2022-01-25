@@ -829,13 +829,12 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                       CC=="EQUIPAMIENTO HOSPITAL"~"670-ADMINISTRACIÓN",
                       CC=="BODEGAS ABASTECIMIENTO"~"670-ADMINISTRACIÓN",
                       CC=="CIRUGIA GENERAL"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      
                       CC=="C.COSTO GLOBAL"~"670-ADMINISTRACIÓN",
+                      CC=="GESTION DE USUARIOS"~"670-ADMINISTRACIÓN",
                       CC=="GASTOS HOSPITAL"~"670-ADMINISTRACIÓN",
+                      CC=="CAE ADMINISTRACION"~"Cae Prorratear",
                       CC=="CAE ESPECIALIDADES 2"~"Cae Prorratear",
                       CC=="PABELLONES"~"Pabellón Prorratear",
-                      
-                      
                       TRUE ~ "Asignar CC"
          )) %>% 
   select(item_pres, CC,ItemxCC, Total) %>% 
@@ -1304,6 +1303,24 @@ GG1 <- GG1 %>% mutate(`Centro de Costo` = case_when(`Centro de Costo` ==	"478-QU
           TRUE ~ `Centro de Costo`))
 
 
+
+# Separa Odonto de la urgencia --------------------------------------------
+
+ODOURG <- GG1 %>% filter(`Centro de Costo`== "216-EMERGENCIAS PEDIÁTRICAS" & Cuenta=="15-MATERIAL DE ODONTOLOGÍA")
+ODOURG[1,1] <- "Odonto"
+
+ODOURG1 <- GG1 %>% filter(`Centro de Costo`== "216-EMERGENCIAS PEDIÁTRICAS") %>% 
+  mutate(`Centro de Costo`="Odonto", Devengado = round(Devengado*0.1)) %>% 
+  filter(Cuenta!="15-MATERIAL DE ODONTOLOGÍA")
+
+URG <- GG1 %>% filter(`Centro de Costo`== "216-EMERGENCIAS PEDIÁTRICAS") %>% 
+  mutate(Devengado = round(Devengado*0.9)) %>% 
+  filter(Cuenta!="15-MATERIAL DE ODONTOLOGÍA")
+
+GG1 <- GG1 %>% filter(`Centro de Costo`!= "216-EMERGENCIAS PEDIÁTRICAS")
+GG1 <- rbind(ODOURG, ODOURG1, URG, GG1)
+
+
 sum(SIGFE$Devengado)
   
 SIGFE %>%  filter(Tipo != "Insumos") %>%
@@ -1311,12 +1328,8 @@ SIGFE %>%  filter(Tipo != "Insumos") %>%
 
 sum(GG1$Devengado)
 
-diferencia <- sum(SIGFE$Devengado)-sum(GG1$Devengado)-sum(Compras_Servicios$Devengado)
-diferencia
 
 medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(devengo_medicamentos = sum(Devengado))
-
-
 
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
 
@@ -1325,7 +1338,11 @@ rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`,a, a
    cuentas_qx, cuentas_total, Farmacia, ggenerales, graba, i, insumos, M2_Pab_EqMed,
    mes_archivo, Metros_pabellon, proporcion_exacta, q, qx, resto, RRHH_sigfe, ruta_base,
    CAE_prorratear, cant_RRHH, CCC, CxCC, CxCC_H, df, EqMed, EqMedCorrec,
-   EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2, cuentas_no_critico)
+   EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2, cuentas_no_critico,
+   ODOURG, ODOURG1, URG, Sheet_censo)
+
+diferencia <- sum(SIGFE$Devengado)-sum(GG1$Devengado)-sum(Compras_Servicios$Devengado)
+diferencia
 
 sum(Compras_Servicios$Devengado)
 ifelse(medicamentos$devengo_medicamentos<=0, toupper("No existe devengo de Medicamentos"),tolower("Medicamentos correctos"))
