@@ -4,8 +4,8 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "11 Noviembre"
-mes_ruta_registros <- "2021-11"
+mes_archivo <- "12 Diciembre"
+mes_ruta_registros <- "2021-12"
 
 #Nocambian
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
@@ -27,20 +27,17 @@ cmenor_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_regist
 
 farmacia_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/95_Farmacia.xlsx"))
 
-aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx"), 
-                               sheet = "M2") %>% 
-                          mutate(`PERC ASOCIADO`=CC, Cantidad = M2) %>% filter(`PERC ASOCIADO`!="648-ASEO") %>% 
-                          select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="648_1-ASEO | Metro cuadrado")
 
-aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx"), 
+
+aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx"), 
                                sheet = "M2") %>% 
                           mutate(`PERC ASOCIADO`=CC, Cantidad = M2) %>% 
                           filter(`PERC ASOCIADO`!="648-ASEO") %>% 
                           select(`PERC ASOCIADO`, Cantidad) %>% 
                           mutate(Item ="648_1-ASEO | Metro cuadrado")
 
-anatomia_patologica_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/96_Anatomia_Patologica.xlsx"), 
-                                              sheet = "Noviembre 2021", range = "C4:D80") %>% 
+anatomia_patologica_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/96_Anatomia_Patologica.xlsx"),
+                                       range = "C4:D80") %>% 
                                          mutate(Cantidad = `544_1-ANATOMÍA PATOLÓGICA | Estudio`) %>% 
                                          filter(`PERC ASOCIADO`!="544-ANATOMÍA PATOLÓGICA" & Cantidad>0) %>% 
                                          select(`PERC ASOCIADO`, Cantidad) %>% mutate(Item ="544_1-ANATOMÍA PATOLÓGICA | Estudio")

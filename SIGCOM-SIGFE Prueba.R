@@ -14,7 +14,7 @@ resto <- "BBDD Produccion/PERC/PERC 2021/"
 
 
 SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xls"), skip = 6)
-M2 <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx")
+M2 <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx")
 ConsumoxCC <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/02 Consumo x CC del mes.xlsx")
 Cant_RRHH <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/04 SIRH R.xlsx")
 Farmacia <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx")
@@ -1083,12 +1083,10 @@ cuentas_total <- c("52-ARRENDAMIENTOS",
                    "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
                    "147-OTROS MANTENIMIENTOS",
                    "151-PASAJES, FLETES Y BODEGAJE",
-                   
                    "3-COMBUSTIBLES Y LUBRICANTES", 
                    "8-EQUIPOS MENORES", 
                    "9-GASES MEDICINALES",
                    "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
-                   "15-MATERIAL DE ODONTOLOGÍA",
                    "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
                    "18-MATERIAL MEDICO QUIRURGICO",
                    "21-MATERIALES DE CURACIÓN",
@@ -1115,6 +1113,8 @@ cuentas_cae <- c("61-COMPRA DE CONSULTAS MÉDICAS",
              "62-COMPRA DE CONSULTAS NO MÉDICAS")
 
 cuentas_no_critico <- c("60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS")
+
+cuentas_odonto <- c("15-MATERIAL DE ODONTOLOGÍA")
 
 cuenta_insumos <- c("3-COMBUSTIBLES Y LUBRICANTES", 
                     "8-EQUIPOS MENORES", 
@@ -1171,7 +1171,8 @@ for (i in cuentas) {
     proporcion_exacta <- ifelse(i %in% cuentas_cae, "prorrateo_cae",
                                 ifelse(i %in% cuentas_clinico, "prorrateo_clinico",
                                        ifelse(i %in% cuentas_qx, "prorrateo_qx", 
-                                              ifelse(i %in% cuentas_no_critico, "prorrateo_no_critico", "todos"))))
+                                              ifelse(i %in% cuentas_no_critico, "prorrateo_no_critico", 
+                                                     ifelse(i %in% cuentas_odonto, "prorrateo_odonto", "todos")))))
     
     if (proporcion_exacta == "prorrateo_cae"){M2_exacto <- M2 %>% filter(Area == "Consultas")} 
     else if (proporcion_exacta == "prorrateo_clinico"){
@@ -1180,6 +1181,8 @@ for (i in cuentas) {
       M2_exacto <- M2 %>% filter(Area == "Quirofanos")}
     else if (proporcion_exacta == "prorrateo_no_critico"){
       M2_exacto <- M2 %>% filter(Area == "Hospitalización")}
+    else if (proporcion_exacta == "prorrateo_odonto"){
+      M2_exacto <- M2 %>% filter(CC == "356-CONSULTA ODONTOLOGÍA" | CC == "216-EMERGENCIAS PEDIÁTRICAS")}
     else{
       M2_exacto <- M2 %>% filter(Area!="No_existe")}
     
@@ -1319,6 +1322,22 @@ URG <- GG1 %>% filter(`Centro de Costo`== "216-EMERGENCIAS PEDIÁTRICAS") %>%
 
 GG1 <- GG1 %>% filter(`Centro de Costo`!= "216-EMERGENCIAS PEDIÁTRICAS")
 GG1 <- rbind(ODOURG, ODOURG1, URG, GG1)
+
+
+ODOURG <- GG1 %>% filter(Cuenta=="15-MATERIAL DE ODONTOLOGÍA") %>% 
+ mutate(`Centro de Costo`= case_when(
+   `Centro de Costo` ==	"464-QUIRÓFANOS CARDIOVASCULAR"	~	"357-EMERGENCIAS ODONTOLOGICAS",
+   `Centro de Costo` ==	"467-QUIRÓFANOS DIGESTIVA"	~	"357-EMERGENCIAS ODONTOLOGICAS",
+   `Centro de Costo` ==	"475-QUIRÓFANOS NEUROCIRUGÍA"	~	"357-EMERGENCIAS ODONTOLOGICAS",
+   `Centro de Costo` ==	"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA"	~	"357-EMERGENCIAS ODONTOLOGICAS",
+   `Centro de Costo` ==	"486-QUIRÓFANOS UROLOGÍA"	~	"357-EMERGENCIAS ODONTOLOGICAS",
+   `Centro de Costo` ==	"493-QUIRÓFANOS CIRUGÍA PLÁSTICA"	~	"357-EMERGENCIAS ODONTOLOGICAS",
+   `Centro de Costo` ==	"495-QUIRÓFANOS CIRUGÍA VASCULAR"	~	"357-EMERGENCIAS ODONTOLOGICAS",
+   `Centro de Costo` ==	"593-SERVICIO FARMACEUTICO"	~	"356-CONSULTA ODONTOLOGÍA",
+   TRUE ~ `Centro de Costo`))
+
+GG1 <- GG1 %>% filter(Cuenta!="15-MATERIAL DE ODONTOLOGÍA")
+GG1 <- rbind(ODOURG, GG1)
 
 
 # Datos finales -----------------------------------------------------------

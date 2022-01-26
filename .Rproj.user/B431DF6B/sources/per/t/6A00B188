@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM Unidades.R",
     "project_path": "SIGCOM Unidades.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "689141165",
     "contents": "",
     "dirty": false,
     "created": 1643118753311.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "279,12",
-        "scrollLine": "257"
+        "cursorPosition": "322,0",
+        "scrollLine": "296"
     },
     "folds": "",
-    "lastKnownWriteTime": 1643120634,
+    "lastKnownWriteTime": 1643207337,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1643120634824,
+    "last_content_update": 1643207337115,
     "read_only": false,
     "read_only_alternatives": []
 }
