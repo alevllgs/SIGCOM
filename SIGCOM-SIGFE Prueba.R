@@ -29,7 +29,6 @@ SIGFE <- SIGFE %>% mutate("Codigo Base" = `1`, "Subtitulo" = substr(`1`, start =
 SIGFE <- SIGFE %>% filter(Subtitulo == "22") %>% 
   select("Codigo Base", Requerimiento, Compromiso, Devengado, Efectivo)
 
-
 insumos <- c("22",
              "2201",
              "2201001",
@@ -445,9 +444,7 @@ CAE_prorratear$prop <- CAE_prorratear$M2/sum(CAE_prorratear$M2)
 
 M2Pab$prop <- M2Pab$M2/sum(M2Pab$M2)
 
-
 # Prorrateo Gastos Generales por M2 ---------------------------------------
-
 
 cuentas <- c("48-SERVICIO DE AGUA",
              "182-SERVICIO DE VIGILANCIA Y SEGURIDAD",
@@ -461,7 +458,6 @@ cuentas <- c("48-SERVICIO DE AGUA",
              "188-SERVICIOS GENERALES",
              "192-SERVICIO DE TELECOMUNICACIONES",
              "128-MANTENIMIENTO DE PRADOS Y JARDINES")
-
 
 GG1 <- data.frame(
   "Centro de Costo" = "eliminar", 
@@ -487,7 +483,6 @@ for (i in cuentas) {
       
                                
     }
-
 
 # Gastos Generales con Asignación Directa ---------------------------------
 
@@ -541,8 +536,6 @@ GG2 <- GG2 %>% summarise("Centro de Costo" = "518-LABORATORIO CLÍNICO",
                          "Cuenta"=b, "Tipo" = 4)
 GG1 <- rbind(GG1,GG2)}
 
-
-
 b <- "181-SERVICIO DE TRANSPORTE" #No lo captura y tampoco sale en la OOTT
 if(b %in% SIGFE$SIGCOM)
 {GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
@@ -556,7 +549,6 @@ GG1 <- rbind(GG1,GG2)}
 # Prorrateos Especificos --------------------------------------------------
 #FARMACIA
 Farm <- read_excel(Farmacia)
-
 
 b <- "30-MEDICAMENTOS"
 if(b %in% SIGFE$SIGCOM)
@@ -621,7 +613,6 @@ GG2 <- GG2 %>% summarise("Centro de Costo" = EqMedPrev$`PERC ASOCIADO`,
 GG1 <- rbind(GG1,GG2)}
 
 # CAPACITACION
-
 cant_RRHH <- read_excel(Cant_RRHH)
 cant_RRHH <- cant_RRHH %>% select(perc, horas_mensuales) %>% 
   group_by (perc) %>% 
@@ -629,7 +620,6 @@ cant_RRHH <- cant_RRHH %>% select(perc, horas_mensuales) %>%
   ungroup()
 
 cant_RRHH$prop <- cant_RRHH$horas_mensuales/sum(cant_RRHH$horas_mensuales)
-
 
 b <- "76-CURSOS DE CAPACITACIÓN"
 if(b %in% SIGFE$SIGCOM){
@@ -651,9 +641,7 @@ GG2 <- GG2 %>% summarise("Centro de Costo" = cant_RRHH$perc,
                          "Cuenta"=b, "Tipo" = 2)
 GG1 <- rbind(GG1,GG2)}
 
-
 # Consumo x CC ------------------------------------------------------------
-
 CxCC <- read_excel(ConsumoxCC, range = "A3:M5000", na = "eliminar")
 CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>% 
   mutate(item_pres=`ITEM PRESUPUESTARIO`, Total=`CANTIDAD DESPACHADA`*PRECIO, CC=`CENTRO DE COSTO`) %>% 
@@ -841,10 +829,6 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
   group_by (item_pres, CC,ItemxCC,) %>% 
   summarise("Total" = sum(Total)) %>%
   ungroup()
-#tengo que agarrar cada item de GG y multriplicarlo por SIGFE
-# despues agarro los de insumos y lo mismo
-
-
 
 # CxCC Historico ----------------------------------------------------------
 CxCC_H <- read_excel(CxCC_H, range = "A3:M90000", na = "eliminar")
@@ -1035,10 +1019,7 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
   summarise("Total" = sum(Total)) %>%
   ungroup()
 
-
-
 # Prorrateos GG x CxCC -------------------------------------------------------
-
 
 cuentas <- c("52-ARRENDAMIENTOS",
              "60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS",
@@ -1136,7 +1117,6 @@ cuenta_insumos <- c("3-COMBUSTIBLES Y LUBRICANTES",
                     "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
                     "46-VÍVERES")
  
-
 for (i in cuentas) {
   
   if(i %in% SIGFE$SIGCOM & i %in% CxCC$ItemxCC){
@@ -1200,7 +1180,6 @@ for (i in cuentas) {
   GG1 <- rbind(GG1,GG2) %>% filter(Cuenta!="eliminar")}
   }
 
-
 # Centros de Costo Globales -----------------------------------------------
 
 Compras_Servicios <- GG1 %>% filter (Cuenta == "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO" |
@@ -1230,9 +1209,7 @@ qx <- c("464-QUIRÓFANOS CARDIOVASCULAR",
         "473-QUIRÓFANOS MENOR AMBULATORIA",
         "471-QUIRÓFANOS MAYOR AMBULATORIA")
 
-
 for (i in qx) {
-  # qx <- "464-QUIRÓFANOS CARDIOVASCULAR"
   q <- sum(ifelse(M2Pab$CC == i, M2Pab$prop, 0))
   GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
     summarise("Centro de Costo" = i,
@@ -1280,8 +1257,6 @@ am <- c("240-PROCEDIMIENTO DE CARDIOLOGÍA",
 
 
 for (i in am) {
-  # qx <- "464-QUIRÓFANOS CARDIOVASCULAR"
-  # am <- "359-TELEMEDICINA"
   a <- sum(ifelse(CAE_prorratear$CC == i, CAE_prorratear$prop, 0))
   GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
     summarise("Centro de Costo" = i,
@@ -1339,7 +1314,6 @@ ODOURG <- GG1 %>% filter(Cuenta=="15-MATERIAL DE ODONTOLOGÍA") %>%
 GG1 <- GG1 %>% filter(Cuenta!="15-MATERIAL DE ODONTOLOGÍA")
 GG1 <- rbind(ODOURG, GG1)
 
-
 # Datos finales -----------------------------------------------------------
 
 sum(SIGFE$Devengado)
@@ -1348,7 +1322,6 @@ SIGFE %>%  filter(Tipo != "Insumos") %>%
   summarise(sum(Devengado))
 
 sum(GG1$Devengado)
-
 
 medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(devengo_medicamentos = sum(Devengado))
 
