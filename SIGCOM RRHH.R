@@ -9,9 +9,9 @@ library(readxl)
 
 dias_mes <- 21
 
-empleados <- read_excel("BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/11 Empleados mes.xlsx")
-pt<- read_excel("BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/12 Programacion Total.xlsx")
-M2_Pab_EqMed <- "BBDD Produccion/PERC/PERC 2021/11 Noviembre/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx"
+empleados <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Insumos de Informacion/11 Empleados mes.xlsx")
+pt<- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Insumos de Informacion/12 Programacion Total.xlsx")
+pab <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Insumos de Informacion/89_Pabellon.xlsx"
 pt <- janitor::clean_names(pt)
 empleados <- janitor::clean_names(empleados)
 
@@ -231,7 +231,7 @@ programacion$horas_mensuales <-((programacion$horas_totales/5)*dias_mes)*program
 programacion <- programacion %>% select(Identificación, Nombre, perc, horas_mensuales)
 
 # Pabellon
-M2Pab <- read_excel(M2_Pab_EqMed,sheet = "Pabellon")
+M2Pab <- read_excel(pab)
 M2Pab <- mutate_all(M2Pab, ~replace(., is.na(.), 0))
 Metros_pabellon <- 11*45
 
@@ -411,16 +411,16 @@ rm(df, GG1, GG2, M2Pab, prop_pab, nombres, e, M2_Pab_EqMed, Metros_pabellon,
    dias_mes, base)
 
 openxlsx::write.xlsx(planilla1,
-                     "BBDD Produccion/PERC/PERC 2021/11 Noviembre/Complemento Subir/01.xlsx", 
+                     "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Complemento Subir/01.xlsx", 
                      colNames = TRUE, sheetName = "P1", overwrite = TRUE)
 
 openxlsx::write.xlsx(programacion,
-                     "BBDD Produccion/PERC/PERC 2021/11 Noviembre/01, 02, 03, 04 , 05, 06 y 07/SIRH R.xlsx", 
+                     "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/01, 02, 03, 04 , 05, 06 y 07/SIRH R.xlsx", 
                      colNames = TRUE, sheetName = "SIRH", overwrite = TRUE)
 
 openxlsx::write.xlsx(no_programados,
-                     "BBDD Produccion/PERC/PERC 2021/11 Noviembre/01, 02, 03, 04 , 05, 06 y 07/No_programados.xlsx", 
+                     "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/01, 02, 03, 04 , 05, 06 y 07/No_programados.xlsx", 
                      colNames = TRUE, sheetName = "NP", overwrite = TRUE)
 
-rm(empleados, planilla1, programacion, pt)
+rm(empleados, planilla1, programacion, pt, pab)
 

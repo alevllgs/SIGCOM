@@ -184,9 +184,9 @@ Censo_Critico <- Censo_hrrio_BBDD %>% filter(Fecha == Fecha_filtro) %>%
     Unidad == "198__05305 - UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" ~  "198__05305 - UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
     TRUE ~ "No")) %>% 
   mutate("Unidades de Producción" = case_when(
-    `Información Estadística` == "Egresos- Alta" ~ "1__Egreso",
-    `Información Estadística` == "Egresos-Fallecidos" ~ "1__Egreso",
-    `Información Estadística` == "Egresos-Traslados" ~ "1__Egreso",
+    `Información Estadística` == "Egresos- Alta" ~ "1__Transferencia",
+    `Información Estadística` == "Egresos-Fallecidos" ~ "1__Transferencia",
+    `Información Estadística` == "Egresos-Traslados" ~ "1__Transferencia",
     `Información Estadística` == "Ocupada" ~ "2__DCO",
     `Información Estadística` == "Egresos- Alta" ~ "3__Egreso",
     `Información Estadística` == "N° camas dotación" ~ "6__N. Camas",

@@ -10,7 +10,7 @@ library(xlsx)
 
 # Cubo 09 -----------------------------------------------------------------
 
-fecha_mes <- "2021-11-01"
+fecha_mes <- "2021-12-01"
 
 fecha_solo_mes <- str_sub(fecha_mes,1,7)
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
@@ -244,14 +244,12 @@ hospitalizacion <- c(
 "495-QUIRÓFANOS CIRUGÍA VASCULAR",
 "797-QUIROFANOS CIRUGIA CARDIACA")
 
+emergencias <- c("216-EMERGENCIAS PEDIÁTRICAS",
+         "357-EMERGENCIAS ODONTOLOGICAS")
 
 
-
-i4 <- Cubo_9 %>% filter(CC=="216-EMERGENCIAS PEDIÁTRICAS" & Item=="Total RRHH") %>% arrange(Fecha) %>% mutate("Gasto RRHH 2021"=total) %>% 
-  select(Fecha,`Gasto RRHH 2021`) 
-
-p4 <- Cubo_9 %>% filter(CC=="216-EMERGENCIAS PEDIÁTRICAS" & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))  
-
+i4 <- Cubo_9 %>% filter(CC %in% emergencias & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
+p4 <- Cubo_9 %>% filter(CC %in% emergencias & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))  
 i4 <- inner_join(i4,p4) %>% 
   mutate("Cod"=4, "Trazadora"="Atenciones de Emergencia", "Mes-Año"=Fecha, "Establecimiento"="HOSPITAL DE NIÑOS ROBERTO DEL RÍO",
                                    "Código DEIS"="109101", "PM GRD 2021"="", "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,"Costo por Actividad 2021"= round(`Gasto RRHH 2021`/`Producción 2021`)) %>% 
@@ -262,7 +260,7 @@ i4 <- inner_join(i4,p4) %>%
 i3 <- Cubo_9 %>% filter(CC %in% ambulatorio & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
 p3 <- Cubo_9 %>% filter(CC %in% ambulatorio & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
 i3 <- inner_join(i3,p3) %>% 
-  mutate("Cod"=3, "Trazadora"="Cirugía Mayor Ambulatoria", "Mes-Año"=Fecha, "Establecimiento"="HOSPITAL DE NIÑOS ROBERTO DEL RÍO",
+  mutate("Cod"=3, "Trazadora"="Consultas de Especialidad", "Mes-Año"=Fecha, "Establecimiento"="HOSPITAL DE NIÑOS ROBERTO DEL RÍO",
          "Código DEIS"="109101", "PM GRD 2021"="", "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,
          "Costo por Actividad 2021"= round(`Gasto RRHH 2021`/`Producción 2021`)) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
@@ -271,7 +269,7 @@ i3 <- inner_join(i3,p3) %>%
 i2 <- Cubo_9 %>% filter(CC %in% cma & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
 p2 <- Cubo_9 %>% filter(CC %in% cma & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
 i2 <- inner_join(i2,p2) %>% 
-  mutate("Cod"=2, "Trazadora"="Consultas de Especialidad", "Mes-Año"=Fecha, "Establecimiento"="HOSPITAL DE NIÑOS ROBERTO DEL RÍO",
+  mutate("Cod"=2, "Trazadora"="Cirugía Mayor Ambulatoria", "Mes-Año"=Fecha, "Establecimiento"="HOSPITAL DE NIÑOS ROBERTO DEL RÍO",
          "Código DEIS"="109101", "PM GRD 2021"="", "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,
          "Costo por Actividad 2021"= round(`Gasto RRHH 2021`/`Producción 2021`)) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
