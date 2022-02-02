@@ -11,6 +11,9 @@ library(xlsx)
 # Cubo 09 -----------------------------------------------------------------
 
 fecha_mes <- "2021-12-01"
+PM_GRD <- c(1,1,1,1,1,1,1,1,1,1,1,1.2219)
+
+
 
 fecha_solo_mes <- str_sub(fecha_mes,1,7)
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
@@ -204,11 +207,6 @@ cma <- c("465-QUIRÓFANO AMBULATORIO DE EMERGENCIA",
 
 
 hospitalizacion <- c(
-"166-UNIDAD DE CUIDADOS INTENSIVOS",
-"169-UNIDAD DE CUIDADOS INTENSIVOS NEONATOS",     
-"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
-"180-UNIDAD DE CUIDADOS INTERMEDIOS ADULTOS",     
-"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
 "65-HOSPITALIZACIÓN PENSIONADOS",
 "66-HOSPITALIZACIÓN MEDICINA INTERNA",            
 "72-HOSPITALIZACIÓN NEUROLOGÍA",
@@ -224,30 +222,39 @@ hospitalizacion <- c(
 "116-HOSPITALIZACIÓN PEDIATRÍA",
 "130-HOSPITALIZACIÓN TRAUMATOLOGÍA PEDIÁTRICA",   
 "136-HOSPITALIZACIÓN NEUROCIRUGÍA PEDIÁTRICA",
-"149-HOSPITALIZACIÓN PSIQUIATRÍA",
-"462-QUIRÓFANOS CABEZA Y CUELLO",
-"464-QUIRÓFANOS CARDIOVASCULAR",                  
-"467-QUIRÓFANOS DIGESTIVA",
-"470-QUIRÓFANOS GINECOLOGÍA",                     
-"475-QUIRÓFANOS NEUROCIRUGÍA",
-"476-QUIRÓFANOS OBSTETRICIA",                     
-"477-QUIRÓFANOS ODONTOLOGICA",
-"478-QUIRÓFANOS OFTALMOLOGÍA",                    
-"480-QUIRÓFANOS OTORRINOLARINGOLOGÍA",
-"483-QUIRÓFANOS PROCTOLOGÍA",                     
-"484-QUIRÓFANOS TORACICA",
-"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",       
-"486-QUIRÓFANOS UROLOGÍA",
-"487-QUIRÓFANOS VASCULAR",                        
-"493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
-"494-QUIRÓFANOS CIRUGÍA TORACICA",                
-"495-QUIRÓFANOS CIRUGÍA VASCULAR",
-"797-QUIROFANOS CIRUGIA CARDIACA")
+"149-HOSPITALIZACIÓN PSIQUIATRÍA")
+
+hospitalizacion_uci <- c("166-UNIDAD DE CUIDADOS INTENSIVOS",
+                         "169-UNIDAD DE CUIDADOS INTENSIVOS NEONATOS",     
+                         "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
+                         "180-UNIDAD DE CUIDADOS INTERMEDIOS ADULTOS",     
+                         "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS")
+
+hospitalizacion_qx <- c(
+  "462-QUIRÓFANOS CABEZA Y CUELLO",
+  "464-QUIRÓFANOS CARDIOVASCULAR",                  
+  "467-QUIRÓFANOS DIGESTIVA",
+  "470-QUIRÓFANOS GINECOLOGÍA",                     
+  "475-QUIRÓFANOS NEUROCIRUGÍA",
+  "476-QUIRÓFANOS OBSTETRICIA",                     
+  "477-QUIRÓFANOS ODONTOLOGICA",
+  "478-QUIRÓFANOS OFTALMOLOGÍA",                    
+  "480-QUIRÓFANOS OTORRINOLARINGOLOGÍA",
+  "483-QUIRÓFANOS PROCTOLOGÍA",                     
+  "484-QUIRÓFANOS TORACICA",
+  "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",       
+  "486-QUIRÓFANOS UROLOGÍA",
+  "487-QUIRÓFANOS VASCULAR",                        
+  "493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
+  "494-QUIRÓFANOS CIRUGÍA TORACICA",                
+  "495-QUIRÓFANOS CIRUGÍA VASCULAR",
+  "797-QUIROFANOS CIRUGIA CARDIACA")
 
 emergencias <- c("216-EMERGENCIAS PEDIÁTRICAS",
          "357-EMERGENCIAS ODONTOLOGICAS")
 
 
+# Urgencia ----------------------------------------------------------------
 i4 <- Cubo_9 %>% filter(CC %in% emergencias & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
 p4 <- Cubo_9 %>% filter(CC %in% emergencias & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))  
 i4 <- inner_join(i4,p4) %>% 
@@ -256,9 +263,12 @@ i4 <- inner_join(i4,p4) %>%
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021` )
   
 
-
+# Ambulatorio -------------------------------------------------------------
 i3 <- Cubo_9 %>% filter(CC %in% ambulatorio & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
 p3 <- Cubo_9 %>% filter(CC %in% ambulatorio & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
+p33 <- Cubo_9 %>% filter(CC %in% ambulatorio & Item=="p3")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
+p3 <- data.frame(Fecha=p3$Fecha, "Producción 2021"= p3$`Producción 2021`+p33$`Producción 2021`)
+colnames(p3)[2] <- "Producción 2021"
 i3 <- inner_join(i3,p3) %>% 
   mutate("Cod"=3, "Trazadora"="Consultas de Especialidad", "Mes-Año"=Fecha, "Establecimiento"="HOSPITAL DE NIÑOS ROBERTO DEL RÍO",
          "Código DEIS"="109101", "PM GRD 2021"="", "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,
@@ -266,6 +276,7 @@ i3 <- inner_join(i3,p3) %>%
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
 
 
+# CMA ---------------------------------------------------------------------
 i2 <- Cubo_9 %>% filter(CC %in% cma & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
 p2 <- Cubo_9 %>% filter(CC %in% cma & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
 i2 <- inner_join(i2,p2) %>% 
@@ -274,17 +285,26 @@ i2 <- inner_join(i2,p2) %>%
          "Costo por Actividad 2021"= round(`Gasto RRHH 2021`/`Producción 2021`)) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
 
-i1 <- Cubo_9 %>% filter(CC %in% hospitalizacion & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
+
+# Hospitalizado -----------------------------------------------------------
+i1 <- Cubo_9 %>% filter((CC %in% hospitalizacion | CC %in% hospitalizacion_qx | CC %in% hospitalizacion_uci) & Item=="Total RRHH")  %>% 
+  group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
 p1 <- Cubo_9 %>% filter(CC %in% hospitalizacion & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
+p11 <-  Cubo_9 %>% filter(CC %in% hospitalizacion_uci & Item=="p3")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
+p1 <- data.frame(Fecha=p1$Fecha, "Producción 2021"= p1$`Producción 2021`+p11$`Producción 2021`)
+colnames(p1)[2] <- "Producción 2021"
 i1 <- inner_join(i1,p1) %>% 
   mutate("Cod"=1, "Trazadora"="Hospitalización", "Mes-Año"=Fecha, "Establecimiento"="HOSPITAL DE NIÑOS ROBERTO DEL RÍO",
-         "Código DEIS"="109101", "PM GRD 2021"="", "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,
-         "Costo por Actividad 2021"= round(`Gasto RRHH 2021`/`Producción 2021`)) %>% 
+         "Código DEIS"="109101", "PM GRD 2021"= PM_GRD, "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,
+         "Costo por Actividad 2021"= round((`Gasto RRHH 2021`/`Producción 2021`)*PM_GRD)) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
 
-informe <- rbind(i1, i2, i3, i4)
+informe <- rbind(i1, i3, i2, i4)
 
 openxlsx::write.xlsx(informe,paste0(ruta_base,"BBDD Produccion/PERC/PERC 2021/informe_mensual.xlsx"), 
                      colNames = TRUE, sheetName = "Informe", overwrite = TRUE)
 
-rm(i1, i2, i3, i4, p1, p2, p3, p4, Cubo_9, informe)
+
+
+
+# rm(i1, i2, i3, i4, p1,p11, p2, p3, p33, p4, Cubo_9, informe)
