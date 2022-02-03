@@ -11,8 +11,7 @@ library(xlsx)
 # Cubo 09 -----------------------------------------------------------------
 
 fecha_mes <- "2021-12-01"
-PM_GRD <- c(1,1,1,1,1,1,1,1,1,1,1,1.2219)
-
+PM_GRD <- c(1.3239,	1.1900,	1.2501,	1.3399,	1.3454,	1.3679,	1.3505,	1.3420,	1.1704,	1.2395,	1.1703,1.2219)
 
 
 fecha_solo_mes <- str_sub(fecha_mes,1,7)
@@ -296,7 +295,7 @@ colnames(p1)[2] <- "Producción 2021"
 i1 <- inner_join(i1,p1) %>% 
   mutate("Cod"=1, "Trazadora"="Hospitalización", "Mes-Año"=Fecha, "Establecimiento"="HOSPITAL DE NIÑOS ROBERTO DEL RÍO",
          "Código DEIS"="109101", "PM GRD 2021"= PM_GRD, "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,
-         "Costo por Actividad 2021"= round((`Gasto RRHH 2021`/`Producción 2021`)*PM_GRD)) %>% 
+         "Costo por Actividad 2021"= round((`Gasto RRHH 2021`/(`Producción 2021`*PM_GRD)))) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
 
 informe <- rbind(i1, i3, i2, i4)

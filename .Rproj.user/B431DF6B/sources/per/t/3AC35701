@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM Cubo 9.R",
     "project_path": "SIGCOM Cubo 9.R",
     "type": "r_source",
-    "hash": "3768609906",
+    "hash": "343188339",
     "contents": "",
     "dirty": false,
     "created": 1643734688049.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "303,0",
-        "scrollLine": "280"
+        "cursorPosition": "15,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1643832387,
+    "lastKnownWriteTime": 1643887580,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1643832387501,
+    "last_content_update": 1643887580944,
     "read_only": false,
     "read_only_alternatives": []
 }
