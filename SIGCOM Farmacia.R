@@ -2,9 +2,9 @@ library(readxl)
 library(tidyverse)
 
 
-mes_archivo <- "12 Diciembre"
+mes_archivo <- "01 Enero"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
-resto <- "BBDD Produccion/PERC/PERC 2021/"
+resto <- "BBDD Produccion/PERC/PERC 2022/"
 
 
 
@@ -13,7 +13,9 @@ f_cron <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/I
 f_hosp <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/08 f_hospitalizados.xlsx")))
 f_rec <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/09 f_receton.xlsx")))
 
-M2_Pab_EqMed <- (paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2_Distribucion de Pabellon_Mantencion.xlsx"))
+M2_Pab_EqMed <- (paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/89_Pabellon.xlsx"))
+M2 <- (paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx"))
+
 
 
 f_rec$folio <- row.names(f_rec)
@@ -154,10 +156,19 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="ODONTOLOGIA(DENTAL)"~"356-CONSULTA ODONTOLOGÍA",
              servicio=="SALUD MENTAL MEDIANA ESTADIA"~"149-HOSPITALIZACIÓN PSIQUIATRÍA",
              servicio=="ORTODONCIA"~"356-CONSULTA ODONTOLOGÍA",
+             
+             servicio=="CONSUMO GENERAL DERMATOLOGIA CAE"~"277-CONSULTA DERMATOLOGÍA",
+             servicio=="GASTO GENERAL SALUD MENTAL CAE"~"280-CONSULTA PSIQUIATRÍA",
+             servicio=="UCI CARDIOVASCULAR"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
+             servicio=="SERV. UCI CARDIOVASCULAR"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
+             servicio=="S.UNIDAD DE CUIDADOS INTENSIVO"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
+             servicio=="S.PEDIATRIA GRAL A"~"116-HOSPITALIZACIÓN PEDIATRÍA",
+             servicio=="S.PEDIATRIA GRAL B"~"116-HOSPITALIZACIÓN PEDIATRÍA",
+             servicio=="UD PEDIATRICA GENERAL D"~"116-HOSPITALIZACIÓN PEDIATRÍA",
+             servicio=="S.PEDIATRIA GRAL C -AISLAMIENT"~"116-HOSPITALIZACIÓN PEDIATRÍA",
+             servicio=="GASTO GENERAL SERVICIO ESTERILIZACION"~"662-CENTRAL DE ESTERILIZACIÓN",
              TRUE ~ "Asignar CC"
 ))
-
-
 
 
 prescripciones <- farmacia %>% select(perc, folio) %>% 
@@ -180,8 +191,8 @@ recetas <- recetas %>% select(perc, folio) %>%
 # prorrateo pabellón ------------------------------------------------------
 
 
-M2 <- read_excel(M2_Pab_EqMed,sheet = "M2")
-M2Pab <- read_excel(M2_Pab_EqMed,sheet = "Pabellon")
+M2 <- read_excel(M2)
+M2Pab <- read_excel(M2_Pab_EqMed) %>% filter(SIGCOM != "Total")
 M2Pab <- mutate_all(M2Pab, ~replace(., is.na(.), 0))
 Metros_pabellon <- 11*45
 
@@ -216,11 +227,11 @@ M2Pab$prop <- M2Pab$M2/sum(M2Pab$M2)
 
 
 GG44 <- data.frame(
-  "Centro de Costo" = "eliminar",
-  "Devengado" = 0,
-  "Cuenta" = "eliminar",
-  "Tipo" = 1)
-colnames(GG1)[1] <- "Centro de Costo"
+  "servicio" = "eliminar",
+  "folio" = 0,
+  "valorizacion" = 0
+  )
+
 farmacia3 <- GG44
 
 
@@ -243,7 +254,7 @@ for (i in qx) {
     summarise(servicio = i,
               folio = folio,
               valorizacion = valorizacion*q)
-  GG44 <- rbind(GG44, GG2) %>% filter(Cuenta!="eliminar")
+  GG44 <- rbind(GG44, GG2) %>% filter(servicio!="eliminar")
 }
 
 
@@ -291,7 +302,7 @@ for (i in am) {
     summarise(servicio = i,
               folio = folio,
               valorizacion = valorizacion*a)
-  farmacia3 <- rbind(farmacia3, GG2) %>% filter(Cuenta!="eliminar")
+  farmacia3 <- rbind(farmacia3, GG2) %>% filter(servicio!="eliminar")
 }
 
 
@@ -300,7 +311,7 @@ farmacia3 <- rbind(farmacia3,GG44)
 
 farmacia <- farmacia %>%  select(perc, folio, valorizacion) %>% filter(perc != "Pabellon prorratear" & perc != "CAE Prorratear")
 
-farmacia3 <- farmacia3 %>%  mutate(perc = servicio) %>%  select(-servicio)
+farmacia3 <- farmacia3 %>%  mutate(perc = servicio) %>%  select(-servicio) #Da error
 farmacia <- rbind(farmacia, farmacia3)
 
 prescripciones <- farmacia %>% select(perc, folio) %>% 
@@ -329,7 +340,9 @@ gasto_farmacia$gasto <- gasto_farmacia$gasto/prop
 
 farmacia_perc <- inner_join(prescripciones, recetas)
 
-rm(df,prop, GG2, GG44, farmacia3, M2, M2_Pab_EqMed, M2Pab, CAE_prorratear, `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, a,  am, Metros_pabellon, q, qx, prescripciones, recetas, farmacia)
+rm(df,prop, GG2, GG44, farmacia3, M2, M2_Pab_EqMed, M2Pab, CAE_prorratear, 
+   `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, a,  
+   am, Metros_pabellon, q, qx, prescripciones, recetas, farmacia)
 
 colnames(farmacia_perc)[1] <- "PERC ASOCIADO"
 colnames(farmacia_perc)[2] <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
@@ -337,3 +350,9 @@ colnames(farmacia_perc)[3] <- "593_1-SERVICIO FARMACEUTICO | Receta"
 
 openxlsx::write.xlsx(farmacia_perc,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/95_Farmacia.xlsx"), overwrite = T)
 openxlsx::write.xlsx(gasto_farmacia,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx"), overwrite = T)
+
+
+
+
+
+
