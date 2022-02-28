@@ -4,15 +4,15 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "12 Diciembre"
-mes_ruta_registros <- "2021-12"
+mes_archivo <- "01 Enero"
+mes_ruta_registros <- "2022-01"
 
 #Nocambian
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2021/"
-resto_ruta_registro_a <- "BBDD Produccion/REM/Serie A/2021/" #solo cambia 1 vez al año
+resto_ruta_registro_a <- "BBDD Produccion/REM/Serie A/2022/" #solo cambia 1 vez al año
 cola_ruta_registro_a <- " REM serie A.xlsx"
-resto_ruta_registro_b <- "BBDD Produccion/REM/Serie BS/2021/" #solo cambia 1 vez al año
+resto_ruta_registro_b <- "BBDD Produccion/REM/Serie BS/2022/" #solo cambia 1 vez al año
 cola_ruta_registro_b <- " REM serie BS.xlsx"
 
 
