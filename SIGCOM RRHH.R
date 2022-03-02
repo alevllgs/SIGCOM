@@ -8,12 +8,15 @@ library(xlsx)
 library(readxl)
 
 dias_mes <- 21
+mes <- "01 Enero"
+anio <- "2022"
+ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 
-empleados <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Insumos de Informacion/11 Empleados mes.xlsx")
-pt<- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Insumos de Informacion/12 Programacion Total.xlsx")
-pab <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Insumos de Informacion/89_Pabellon.xlsx"
-pt <- janitor::clean_names(pt)
-empleados <- janitor::clean_names(empleados)
+
+empleados <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/",mes,"/Insumos de Informacion/11 Empleados mes.xlsx")))
+pt <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/Insumos de info anual/12 Programacion Total.xlsx")))
+
+
 
 #esta secuencia sirve para eliminar errores con los rut -k,  
 #los cuales los deja en minuscula
@@ -231,14 +234,16 @@ programacion$horas_mensuales <-((programacion$horas_totales/5)*dias_mes)*program
 programacion <- programacion %>% select(Identificación, Nombre, perc, horas_mensuales)
 
 # Pabellon
-M2Pab <- read_excel(pab)
+
+M2Pab <- read_excel(paste0(ruta_base,anio,"/",mes,"/Insumos de Informacion/89_Pabellon.xlsx"))
 M2Pab <- mutate_all(M2Pab, ~replace(., is.na(.), 0))
 Metros_pabellon <- 11*45
 
 "473-QUIRÓFANOS MENOR AMBULATORIA" <- sum(M2Pab$`473-QUIRÓFANOS MENOR AMBULATORIA`)
 "471-QUIRÓFANOS MAYOR AMBULATORIA" <- sum(M2Pab$`471-QUIRÓFANOS MAYOR AMBULATORIA`)
 
-M2Pab <- M2Pab %>% select(SIGCOM, `Distribución cirugias Electivas`) %>% 
+M2Pab <- M2Pab %>% filter(SIGCOM != "Total") %>% 
+  select(SIGCOM, `Distribución cirugias Electivas`) %>% 
   group_by(SIGCOM) %>% 
   summarise("Distribución cirugias Electivas" =sum(`Distribución cirugias Electivas`)) %>% 
   ungroup()
@@ -410,17 +415,14 @@ rm(df, GG1, GG2, M2Pab, prop_pab, nombres, e, M2_Pab_EqMed, Metros_pabellon,
    `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, 
    dias_mes, base)
 
-openxlsx::write.xlsx(planilla1,
-                     "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/Complemento Subir/01.xlsx", 
+openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes,"/Complemento Subir/01.xlsx"), 
                      colNames = TRUE, sheetName = "P1", overwrite = TRUE)
 
-openxlsx::write.xlsx(programacion,
-                     "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/01, 02, 03, 04 , 05, 06 y 07/SIRH R.xlsx", 
+openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/01, 02, 03, 04 , 05, 06 y 07/SIRH R.xlsx"),
                      colNames = TRUE, sheetName = "SIRH", overwrite = TRUE)
 
-openxlsx::write.xlsx(no_programados,
-                     "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2021/12 Diciembre/01, 02, 03, 04 , 05, 06 y 07/No_programados.xlsx", 
+openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/01, 02, 03, 04 , 05, 06 y 07/No_programados.xlsx"),
                      colNames = TRUE, sheetName = "NP", overwrite = TRUE)
 
-rm(empleados, planilla1, programacion, pt, pab)
+rm(empleados, planilla1, programacion, pt, pab, ruta_base, anio, mes)
 

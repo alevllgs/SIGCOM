@@ -1,26 +1,26 @@
 {
-    "id": "3AC35701",
-    "path": "~/GitHub/SIGCOM/SIGCOM Cubo 9.R",
-    "project_path": "SIGCOM Cubo 9.R",
+    "id": "8C80DCE5",
+    "path": "~/GitHub/SIGCOM/SIGCOM RRHH.R",
+    "project_path": "SIGCOM RRHH.R",
     "type": "r_source",
-    "hash": "343188339",
+    "hash": "4253886834",
     "contents": "",
     "dirty": false,
-    "created": 1643734688049.0,
+    "created": 1643628370368.0,
     "source_on_save": false,
-    "relative_order": 5,
+    "relative_order": 4,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "15,0",
-        "scrollLine": "0"
+        "cursorPosition": "427,0",
+        "scrollLine": "392"
     },
     "folds": "",
-    "lastKnownWriteTime": 1643887580,
+    "lastKnownWriteTime": 1646232844,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1643887580944,
+    "last_content_update": 1646232844763,
     "read_only": false,
     "read_only_alternatives": []
 }
