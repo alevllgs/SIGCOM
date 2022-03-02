@@ -421,8 +421,8 @@ openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes,"/Complemento Sub
 openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/01, 02, 03, 04 , 05, 06 y 07/SIRH R.xlsx"),
                      colNames = TRUE, sheetName = "SIRH", overwrite = TRUE)
 
-openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/01, 02, 03, 04 , 05, 06 y 07/No_programados.xlsx"),
+openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/901_No_Programados.xlsx"),
                      colNames = TRUE, sheetName = "NP", overwrite = TRUE)
 
-rm(empleados, planilla1, programacion, pt, pab, ruta_base, anio, mes)
+rm(empleados, planilla1, programacion, pt, ruta_base, anio, mes)
 
