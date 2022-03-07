@@ -24,66 +24,66 @@ A07_PERC$Fecha=as.character(A07_PERC$Fecha)
 A07_PERC <- A07_PERC %>% select(Fecha, Especialidad, Total) %>% 
   filter(Fecha == Fecha_filtro) %>%
   mutate("Centro de Producción" = case_when(
-  Especialidad == "PEDIATRÍA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "ENFERMEDAD RESPIRATORIA PEDIÁTRICA (BRONCOPULMONAR INFANTIL)" ~ "282__15111 - CONSULTA NEUMOLOGÍA",
-  Especialidad == "ENFERMEDAD RESPIRATORIA DE ADULTO (BRONCOPULMONAR)" ~ "282__15111 - CONSULTA NEUMOLOGÍA",
-  Especialidad == "CARDIOLOGÍA PEDIÁTRICA" ~ "276__15105 - CONSULTA CARDIOLOGÍA",
-  Especialidad == "CARDIOLOGÍA ADULTO" ~ "276__15105 - CONSULTA CARDIOLOGÍA",
-  Especialidad == "ENDOCRINOLOGÍA PEDIÁTRICA" ~ "281__15110 - CONSULTA ENDOCRINOLOGÍA",
-  Especialidad == "ENDOCRINOLOGÍA ADULTO" ~ "281__15110 - CONSULTA ENDOCRINOLOGÍA",
-  Especialidad == "GASTROENTEROLOGÍA PEDIÁTRICA" ~ "290__15119 - CONSULTA GASTROENTEROLOGÍA",
-  Especialidad == "GASTROENTEROLOGÍA ADULTO" ~ "290__15119 - CONSULTA GASTROENTEROLOGÍA",
-  Especialidad == "GENÉTICA CLÍNICA" ~ "286__15115 - CONSULTA GENÉTICA",
-  Especialidad == "HEMATO-ONCOLOGÍA INFANTIL" ~ "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-  Especialidad == "HEMATOLOGÍA ADULTO" ~ "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-  Especialidad == "ONCOLOGÍA MÉDICA" ~ "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-  Especialidad == "NEFROLOGÍA PEDIÁTRICA" ~ "285__15114 - CONSULTA NEFROLOGÍA",
-  Especialidad == "NEFROLOGÍA ADULTO" ~ "285__15114 - CONSULTA NEFROLOGÍA",
-  Especialidad == "NUTRIÓLOGO PEDIÁTRICO" ~ "230__15008 - CONSULTA NUTRICIÓN",
-  Especialidad == "NUTRIÓLOGO ADULTO" ~ "230__15008 - CONSULTA NUTRICIÓN",
-  Especialidad == "REUMATOLOGÍA PEDIÁTRICA" ~ "275__15104 - CONSULTA REUMATOLOGÍA",
-  Especialidad == "REUMATOLOGÍA ADULTO" ~ "275__15104 - CONSULTA REUMATOLOGÍA",
-  Especialidad == "DERMATOLOGÍA" ~ "277__15106 - CONSULTA DERMATOLOGÍA",
-  Especialidad == "INFECTOLOGÍA PEDIÁTRICA" ~ "284__15113 - CONSULTA INFECTOLOGÍA",
-  Especialidad == "INFECTOLOGÍA ADULTO" ~ "284__15113 - CONSULTA INFECTOLOGÍA",
-  Especialidad == "MEDICINA FÍSICA Y REHABILITACIÓN PEDIÁTRICA (FISIATRÍA PEDIÁTRICA)" ~ "289__15118 - CONSULTA FISIATRÍA",
-  Especialidad == "MEDICINA FÍSICA Y REHABILITACIÓN ADULTO (FISIATRÍA ADULTO)" ~ "289__15118 - CONSULTA FISIATRÍA",
-  Especialidad == "NEUROLOGÍA PEDIÁTRICA" ~ "331__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA",
-  Especialidad == "NEUROLOGÍA ADULTO" ~ "331__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA",
-  Especialidad == "PSIQUIATRÍA PEDIÁTRICA Y DE LA ADOLESCENCIA" ~ "280__15109 - CONSULTA PSIQUIATRÍA",
-  Especialidad == "PSIQUIATRÍA ADULTO" ~ "280__15109 - CONSULTA PSIQUIATRÍA",
-  Especialidad == "CIRUGÍA PEDIÁTRICA" ~ "351__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
-  Especialidad == "CIRUGÍA GENERAL ADULTO" ~ "351__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
-  Especialidad == "CIRUGÍA DIGESTIVA (ALTA)" ~ "351__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
-  Especialidad == "CIRUGÍA DE CABEZA, CUELLO Y MAXILOFACIAL" ~ "351__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
-  Especialidad == "COLOPROCTOLOGÍA (CIRUGIA DIGESTIVA BAJA)" ~ "351__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
-  Especialidad == "CIRUGÍA TÓRAX" ~ "351__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
-  Especialidad == "CIRUGÍA VASCULAR PERIFÉRICA" ~ "351__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
-  Especialidad == "CIRUGÍA PLÁSTICA Y REPARADORA PEDIÁTRICA" ~ "316__15208 - CONSULTA CIRUGÍA PLÁSTICA",
-  Especialidad == "CIRUGÍA PLÁSTICA Y REPARADORA ADULTO" ~ "316__15208 - CONSULTA CIRUGÍA PLÁSTICA",
-  Especialidad == "NEUROCIRUGÍA" ~ "292__15121 - CONSULTA NEUROCIRUGÍA",
-  Especialidad == "ANESTESIOLOGÍA" ~ "296__15125 - CONSULTA ANESTESIOLOGIA",
-  Especialidad == "UROLOGÍA PEDIÁTRICA" ~ "311__15203 - CONSULTA UROLOGÍA",
-  Especialidad == "UROLOGÍA ADULTO" ~ "311__15203 - CONSULTA UROLOGÍA",
-  Especialidad == "OFTALMOLOGÍA" ~ "317__15209 - CONSULTA OFTALMOLOGÍA",
-  Especialidad == "OTORRINOLARINGOLOGÍA" ~ "319__15211 - CONSULTA OTORRINOLARINGOLOGÍA",
-  Especialidad == "TRAUMATOLOGÍA Y ORTOPEDIA PEDIÁTRICA" ~ "342__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
-  Especialidad == "TRAUMATOLOGÍA Y ORTOPEDIA ADULTO" ~ "342__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
-  Especialidad == "MEDICINA INTERNA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "NEONATOLOGÍA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "INMUNOLOGÍA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "GERIATRÍA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "CIRUGÍA CARDIOVASCULAR" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "OBSTETRICIA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "GINECOLOGÍA PEDIÁTRICA Y DE LA ADOLESCENCIA" ~ "353__15502 - CONSULTA GINECOLOGICA",
-  Especialidad == "GINECOLOGÍA ADULTO" ~ "353__15502 - CONSULTA GINECOLOGICA",
-  Especialidad == "MEDICINA FAMILIAR DEL NIÑO" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "MEDICINA FAMILIAR" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "MEDICINA FAMILIAR ADULTO" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "DIABETOLOGÍA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "MEDICINA NUCLEAR (EXCLUYE INFORMES)" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "IMAGENOLOGÍA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-  Especialidad == "RADIOTERAPIA ONCOLÓGICA" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "PEDIATRÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "ENFERMEDAD RESPIRATORIA PEDIÁTRICA (BRONCOPULMONAR INFANTIL)" ~ "15111__15111 - CONSULTA NEUMOLOGÍA",
+  Especialidad == "ENFERMEDAD RESPIRATORIA DE ADULTO (BRONCOPULMONAR)" ~ "15111__15111 - CONSULTA NEUMOLOGÍA",
+  Especialidad == "CARDIOLOGÍA PEDIÁTRICA" ~ "15105__15105 - CONSULTA CARDIOLOGÍA",
+  Especialidad == "CARDIOLOGÍA ADULTO" ~ "15105__15105 - CONSULTA CARDIOLOGÍA",
+  Especialidad == "ENDOCRINOLOGÍA PEDIÁTRICA" ~ "15110__15110 - CONSULTA ENDOCRINOLOGÍA",
+  Especialidad == "ENDOCRINOLOGÍA ADULTO" ~ "15110__15110 - CONSULTA ENDOCRINOLOGÍA",
+  Especialidad == "GASTROENTEROLOGÍA PEDIÁTRICA" ~ "15119__15119 - CONSULTA GASTROENTEROLOGÍA",
+  Especialidad == "GASTROENTEROLOGÍA ADULTO" ~ "15119__15119 - CONSULTA GASTROENTEROLOGÍA",
+  Especialidad == "GENÉTICA CLÍNICA" ~ "15115__15115 - CONSULTA GENÉTICA",
+  Especialidad == "HEMATO-ONCOLOGÍA INFANTIL" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+  Especialidad == "HEMATOLOGÍA ADULTO" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+  Especialidad == "ONCOLOGÍA MÉDICA" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+  Especialidad == "NEFROLOGÍA PEDIÁTRICA" ~ "15114__15114 - CONSULTA NEFROLOGÍA",
+  Especialidad == "NEFROLOGÍA ADULTO" ~ "15114__15114 - CONSULTA NEFROLOGÍA",
+  Especialidad == "NUTRIÓLOGO PEDIÁTRICO" ~ "15008__15008 - CONSULTA NUTRICIÓN",
+  Especialidad == "NUTRIÓLOGO ADULTO" ~ "15008__15008 - CONSULTA NUTRICIÓN",
+  Especialidad == "REUMATOLOGÍA PEDIÁTRICA" ~ "15104__15104 - CONSULTA REUMATOLOGÍA",
+  Especialidad == "REUMATOLOGÍA ADULTO" ~ "15104__15104 - CONSULTA REUMATOLOGÍA",
+  Especialidad == "DERMATOLOGÍA" ~ "15106__15106 - CONSULTA DERMATOLOGÍA",
+  Especialidad == "INFECTOLOGÍA PEDIÁTRICA" ~ "15113__15113 - CONSULTA INFECTOLOGÍA",
+  Especialidad == "INFECTOLOGÍA ADULTO" ~ "15113__15113 - CONSULTA INFECTOLOGÍA",
+  Especialidad == "MEDICINA FÍSICA Y REHABILITACIÓN PEDIÁTRICA (FISIATRÍA PEDIÁTRICA)" ~ "15118__15118 - CONSULTA FISIATRÍA",
+  Especialidad == "MEDICINA FÍSICA Y REHABILITACIÓN ADULTO (FISIATRÍA ADULTO)" ~ "15118__15118 - CONSULTA FISIATRÍA",
+  Especialidad == "NEUROLOGÍA PEDIÁTRICA" ~ "15305__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA",
+  Especialidad == "NEUROLOGÍA ADULTO" ~ "15305__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA",
+  Especialidad == "PSIQUIATRÍA PEDIÁTRICA Y DE LA ADOLESCENCIA" ~ "15109__15109 - CONSULTA PSIQUIATRÍA",
+  Especialidad == "PSIQUIATRÍA ADULTO" ~ "15109__15109 - CONSULTA PSIQUIATRÍA",
+  Especialidad == "CIRUGÍA PEDIÁTRICA" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+  Especialidad == "CIRUGÍA GENERAL ADULTO" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+  Especialidad == "CIRUGÍA DIGESTIVA (ALTA)" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+  Especialidad == "CIRUGÍA DE CABEZA, CUELLO Y MAXILOFACIAL" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+  Especialidad == "COLOPROCTOLOGÍA (CIRUGIA DIGESTIVA BAJA)" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+  Especialidad == "CIRUGÍA TÓRAX" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+  Especialidad == "CIRUGÍA VASCULAR PERIFÉRICA" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+  Especialidad == "CIRUGÍA PLÁSTICA Y REPARADORA PEDIÁTRICA" ~ "15208__15208 - CONSULTA CIRUGÍA PLÁSTICA",
+  Especialidad == "CIRUGÍA PLÁSTICA Y REPARADORA ADULTO" ~ "15208__15208 - CONSULTA CIRUGÍA PLÁSTICA",
+  Especialidad == "NEUROCIRUGÍA" ~ "15121__15121 - CONSULTA NEUROCIRUGÍA",
+  Especialidad == "ANESTESIOLOGÍA" ~ "15125__15125 - CONSULTA ANESTESIOLOGIA",
+  Especialidad == "UROLOGÍA PEDIÁTRICA" ~ "15203__15203 - CONSULTA UROLOGÍA",
+  Especialidad == "UROLOGÍA ADULTO" ~ "15203__15203 - CONSULTA UROLOGÍA",
+  Especialidad == "OFTALMOLOGÍA" ~ "15209__15209 - CONSULTA OFTALMOLOGÍA",
+  Especialidad == "OTORRINOLARINGOLOGÍA" ~ "15211__15211 - CONSULTA OTORRINOLARINGOLOGÍA",
+  Especialidad == "TRAUMATOLOGÍA Y ORTOPEDIA PEDIÁTRICA" ~ "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+  Especialidad == "TRAUMATOLOGÍA Y ORTOPEDIA ADULTO" ~ "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+  Especialidad == "MEDICINA INTERNA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "NEONATOLOGÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "INMUNOLOGÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "GERIATRÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "CIRUGÍA CARDIOVASCULAR" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "OBSTETRICIA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "GINECOLOGÍA PEDIÁTRICA Y DE LA ADOLESCENCIA" ~ "15502__15502 - CONSULTA GINECOLOGICA",
+  Especialidad == "GINECOLOGÍA ADULTO" ~ "15502__15502 - CONSULTA GINECOLOGICA",
+  Especialidad == "MEDICINA FAMILIAR DEL NIÑO" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "MEDICINA FAMILIAR" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "MEDICINA FAMILIAR ADULTO" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "DIABETOLOGÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "MEDICINA NUCLEAR (EXCLUYE INFORMES)" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "IMAGENOLOGÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+  Especialidad == "RADIOTERAPIA ONCOLÓGICA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
   TRUE ~ "Asignar Centro de Costo")) %>% 
   group_by(Fecha, `Centro de Producción`) %>% 
   summarise("Valor" = sum(Total))
@@ -94,7 +94,7 @@ A09I_PERC$Fecha=as.character(A09I_PERC$Fecha)
 A09I_PERC <- A09I_PERC %>% filter(Fecha == Fecha_filtro) %>% 
   filter(`TIPO DE INGRESO O EGRESO`=="CONSULTA NUEVA" | `TIPO DE INGRESO O EGRESO`=="CONTROL") %>% 
   summarise(Valor=sum(Total)) %>% 
-  mutate(Fecha=Fecha_filtro, "Centro de Producción" = "356__15602 - CONSULTA ODONTOLOGÍA") %>% 
+  mutate(Fecha=Fecha_filtro, "Centro de Producción" = "15602__15602 - CONSULTA ODONTOLOGÍA") %>% 
   select(Fecha, `Centro de Producción`, Valor)
 
 Produccion_SIGCOM <- rbind(A07_PERC, A09I_PERC) %>% 
@@ -370,112 +370,112 @@ B_qx <- B_qx %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producci�
 P1 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                      range = "B!C1145:C1145")
 P1 <- P1 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "331__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15305__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P1$...1,  .after = 4)
 
 P2 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C1271:C1271")
 P2 <- P2 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "317__15209 - CONSULTA OFTALMOLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15209__15209 - CONSULTA OFTALMOLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P2$...1,  .after = 4)
 
 P3 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C1424:C1424")
 P3 <- P3 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "319__15211 - CONSULTA OTORRINOLARINGOLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15211__15211 - CONSULTA OTORRINOLARINGOLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P3$...1,  .after = 4)
 
 P4 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C1653:C1653")
 P4 <- P4 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "277__15106 - CONSULTA DERMATOLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15106__15106 - CONSULTA DERMATOLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P4$...1,  .after = 4)
 
 P5 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C2246:C2246")
 P5 <- P5 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "311__15203 - CONSULTA UROLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15203__15203 - CONSULTA UROLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P5$...1,  .after = 4)
 
 P6 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C1812:C1812")
 P6 <- P6 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "276__15105 - CONSULTA CARDIOLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15105__15105 - CONSULTA CARDIOLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P6$...1,  .after = 4)
 
 P7 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C1682:C1701")
 P7 <- P7 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "276__15105 - CONSULTA CARDIOLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15105__15105 - CONSULTA CARDIOLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P7$...1,  .after = 4)
 
 P8 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C1712:C1785")
 P8 <- P8 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "282__15111 - CONSULTA NEUMOLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15111__15111 - CONSULTA NEUMOLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P8$...1,  .after = 4)
 
 P9 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C2056:C2056")
 P9 <- P9 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "290__15119 - CONSULTA GASTROENTEROLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15119__15119 - CONSULTA GASTROENTEROLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P9$...1,  .after = 4)
 
 P10 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                 range = "B!C2062:C2062")
 P10 <- P10 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "290__15119 - CONSULTA GASTROENTEROLOGÍA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15119__15119 - CONSULTA GASTROENTEROLOGÍA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P10$...1,  .after = 4)
 
 P11 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                  range = "B!C2453:C2453")
 P11 <- P11 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "342__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P11$...1,  .after = 4)
 
 P12 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                  range = "B!C2684:C2684")
 P12 <- P12 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "342__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P12$...1,  .after = 4)
 
 P13 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                  range = "B!C2363:C2363")
 P13 <- P13 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "353__15502 - CONSULTA GINECOLOGICA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15502__15502 - CONSULTA GINECOLOGICA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P13$...1,  .after = 4)
 
 P14 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                  range = "B!C2416:C2416")
 P14 <- P14 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "353__15502 - CONSULTA GINECOLOGICA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15502__15502 - CONSULTA GINECOLOGICA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P14$...1,  .after = 4)
 
 P15 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                  range = "B17!C102:C102")
 P15 <- P15 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA", .after = 2) %>% 
+  add_column("Centro de Producción" = "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P15$...1,  .after = 4)
 
 P16 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                  range = "B!C1011:C1011")
 P16 <- P16 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "328__15302 - CONSULTA PEDIATRÍA GENERAL", .after = 2) %>% 
+  add_column("Centro de Producción" = "15302__15302 - CONSULTA PEDIATRÍA GENERAL", .after = 2) %>% 
   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
   add_column("Valor" = P16$...1,  .after = 4)
 
@@ -492,35 +492,35 @@ At_remota <- read_excel(remota, sheet = Sheet_remota)
 At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control Abreviado") %>% 
   group_by(UNIDAD_ATENCION_DESC) %>% 
   count(UNIDAD_ATENCION_DESC) %>%  mutate(Fecha=Fecha_filtro,"Centro de Producción" = case_when(
-    UNIDAD_ATENCION_DESC == "Pediatria" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-    UNIDAD_ATENCION_DESC == "Broncopulmonar Infantil" ~ "282__15111 - CONSULTA NEUMOLOGÍA",
-    UNIDAD_ATENCION_DESC == "Anestesiologia Infantil" ~ "296__15125 - CONSULTA ANESTESIOLOGIA",
-    UNIDAD_ATENCION_DESC == "Cardiologia Infantil" ~ "276__15105 - CONSULTA CARDIOLOGÍA",
-    UNIDAD_ATENCION_DESC == "Cirugia Plastica" ~ "316__15208 - CONSULTA CIRUGÍA PLÁSTICA",
-    UNIDAD_ATENCION_DESC == "Endocrinologia Infantil" ~ "281__15110 - CONSULTA ENDOCRINOLOGÍA",
-    UNIDAD_ATENCION_DESC == "Dermatologia Infantil" ~ "277__15106 - CONSULTA DERMATOLOGÍA",
-    UNIDAD_ATENCION_DESC == "Gastroenterologia Infantil" ~ "290__15119 - CONSULTA GASTROENTEROLOGÍA",
-    UNIDAD_ATENCION_DESC == "Ginecologia Infantil" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-    UNIDAD_ATENCION_DESC == "Genetica Infantil" ~ "286__15115 - CONSULTA GENÉTICA",
-    UNIDAD_ATENCION_DESC == "Hemato-Oncologia" ~ "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-    UNIDAD_ATENCION_DESC == "Hemofilia Adulto" ~ "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-    UNIDAD_ATENCION_DESC == "Infectologia Infantil" ~ "284__15113 - CONSULTA INFECTOLOGÍA",
-    UNIDAD_ATENCION_DESC == "Nefrologia Infantil" ~ "285__15114 - CONSULTA NEFROLOGÍA",
-    UNIDAD_ATENCION_DESC == "Neurologia Infantil" ~ "331__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA",
-    UNIDAD_ATENCION_DESC == "Nutriologia Infantil" ~ "230__15008 - CONSULTA NUTRICIÓN",
-    UNIDAD_ATENCION_DESC == "Otorrinolaringologia" ~ "319__15211 - CONSULTA OTORRINOLARINGOLOGÍA",
-    UNIDAD_ATENCION_DESC == "Quemados *" ~ "316__15208 - CONSULTA CIRUGÍA PLÁSTICA",
-    UNIDAD_ATENCION_DESC == "Salud Mental" ~ "280__15109 - CONSULTA PSIQUIATRÍA",
-    UNIDAD_ATENCION_DESC == "Traumatologia Infantil" ~ "342__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
-    UNIDAD_ATENCION_DESC == "Urologia Infantil" ~ "311__15203 - CONSULTA UROLOGÍA",
-    UNIDAD_ATENCION_DESC == "Reumatologia" ~ "275__15104 - CONSULTA REUMATOLOGÍA",
-    UNIDAD_ATENCION_DESC == "Diabetes" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-    UNIDAD_ATENCION_DESC == "Hematologia Infantil" ~ "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-    UNIDAD_ATENCION_DESC == "Oncologia Infantil" ~ "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-    UNIDAD_ATENCION_DESC == "Maxilofacial" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-    UNIDAD_ATENCION_DESC == "Neurocirugia Infantil" ~ "292__15121 - CONSULTA NEUROCIRUGÍA",
-    UNIDAD_ATENCION_DESC == "Prematuros *" ~ "328__15302 - CONSULTA PEDIATRÍA GENERAL",
-    UNIDAD_ATENCION_DESC == "Medicina fisica y rehabilitacion Infantil" ~ "289__15118 - CONSULTA FISIATRÍA",
+    UNIDAD_ATENCION_DESC == "Pediatria" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    UNIDAD_ATENCION_DESC == "Broncopulmonar Infantil" ~ "15111__15111 - CONSULTA NEUMOLOGÍA",
+    UNIDAD_ATENCION_DESC == "Anestesiologia Infantil" ~ "15125__15125 - CONSULTA ANESTESIOLOGIA",
+    UNIDAD_ATENCION_DESC == "Cardiologia Infantil" ~ "15105__15105 - CONSULTA CARDIOLOGÍA",
+    UNIDAD_ATENCION_DESC == "Cirugia Plastica" ~ "15208__15208 - CONSULTA CIRUGÍA PLÁSTICA",
+    UNIDAD_ATENCION_DESC == "Endocrinologia Infantil" ~ "15110__15110 - CONSULTA ENDOCRINOLOGÍA",
+    UNIDAD_ATENCION_DESC == "Dermatologia Infantil" ~ "15106__15106 - CONSULTA DERMATOLOGÍA",
+    UNIDAD_ATENCION_DESC == "Gastroenterologia Infantil" ~ "15119__15119 - CONSULTA GASTROENTEROLOGÍA",
+    UNIDAD_ATENCION_DESC == "Ginecologia Infantil" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    UNIDAD_ATENCION_DESC == "Genetica Infantil" ~ "15115__15115 - CONSULTA GENÉTICA",
+    UNIDAD_ATENCION_DESC == "Hemato-Oncologia" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+    UNIDAD_ATENCION_DESC == "Hemofilia Adulto" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+    UNIDAD_ATENCION_DESC == "Infectologia Infantil" ~ "15113__15113 - CONSULTA INFECTOLOGÍA",
+    UNIDAD_ATENCION_DESC == "Nefrologia Infantil" ~ "15114__15114 - CONSULTA NEFROLOGÍA",
+    UNIDAD_ATENCION_DESC == "Neurologia Infantil" ~ "15305__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA",
+    UNIDAD_ATENCION_DESC == "Nutriologia Infantil" ~ "15008__15008 - CONSULTA NUTRICIÓN",
+    UNIDAD_ATENCION_DESC == "Otorrinolaringologia" ~ "15211__15211 - CONSULTA OTORRINOLARINGOLOGÍA",
+    UNIDAD_ATENCION_DESC == "Quemados *" ~ "15208__15208 - CONSULTA CIRUGÍA PLÁSTICA",
+    UNIDAD_ATENCION_DESC == "Salud Mental" ~ "15109__15109 - CONSULTA PSIQUIATRÍA",
+    UNIDAD_ATENCION_DESC == "Traumatologia Infantil" ~ "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+    UNIDAD_ATENCION_DESC == "Urologia Infantil" ~ "15203__15203 - CONSULTA UROLOGÍA",
+    UNIDAD_ATENCION_DESC == "Reumatologia" ~ "15104__15104 - CONSULTA REUMATOLOGÍA",
+    UNIDAD_ATENCION_DESC == "Diabetes" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    UNIDAD_ATENCION_DESC == "Hematologia Infantil" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+    UNIDAD_ATENCION_DESC == "Oncologia Infantil" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+    UNIDAD_ATENCION_DESC == "Maxilofacial" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    UNIDAD_ATENCION_DESC == "Neurocirugia Infantil" ~ "15121__15121 - CONSULTA NEUROCIRUGÍA",
+    UNIDAD_ATENCION_DESC == "Prematuros *" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    UNIDAD_ATENCION_DESC == "Medicina fisica y rehabilitacion Infantil" ~ "15118__15118 - CONSULTA FISIATRÍA",
     TRUE ~ "Asignar Centro de Costo"),"Unidades de Producción" = "3__Atención", Valor=n)
 
 
