@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM-Produccion_2022.R",
     "project_path": "SIGCOM-Produccion_2022.R",
     "type": "r_source",
-    "hash": "4274831316",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1643025592577.0,
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "96,90",
-        "scrollLine": "81"
+        "cursorPosition": "200,105",
+        "scrollLine": "171"
     },
     "folds": "103|33|110|2|\n212|15|232|0|\n",
     "lastKnownWriteTime": 1646675904,
