@@ -418,7 +418,7 @@ rm(df, GG1, GG2, M2Pab, prop_pab, nombres, e, M2_Pab_EqMed, Metros_pabellon,
 openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes,"/Complemento Subir/01.xlsx"), 
                      colNames = TRUE, sheetName = "P1", overwrite = TRUE)
 
-openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/01, 02, 03, 04 , 05, 06 y 07/SIRH R.xlsx"),
+openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/04 SIRH R.xlsx"),
                      colNames = TRUE, sheetName = "SIRH", overwrite = TRUE)
 
 openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/901_No_Programados.xlsx"),
