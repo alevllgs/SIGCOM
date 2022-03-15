@@ -868,6 +868,7 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                       CC=="EQUIPAMIENTO HOSPITAL"~"670-ADMINISTRACIÓN",
                       CC=="BODEGAS ABASTECIMIENTO"~"670-ADMINISTRACIÓN",
                       CC=="CIRUGIA GENERAL"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+                      CC=="UNIDAD MEDICINA INTEGRATIVA"~"670-ADMINISTRACIÓN"
                       CC=="C.COSTO GLOBAL"~"670-ADMINISTRACIÓN",
                       CC=="GASTOS HOSPITAL"~"670-ADMINISTRACIÓN",
                       CC=="CAE ESPECIALIDADES 2"~"Cae Prorratear",
@@ -1342,6 +1343,22 @@ GG1 <- GG1 %>% mutate(`Centro de Costo` = case_when(`Centro de Costo` ==	"478-QU
           TRUE ~ `Centro de Costo`))
 
 
+
+
+# Asigna proporcion uti/uci cardio ----------------------------------------
+
+ucicv <- GG1 %>% filter(`Centro de Costo`=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>% 
+  mutate(`Centro de Costo`= "177-UNIDAD DE CUIDADOS CORONARIOS", Devengado=Devengado*0.44, Cuenta=Cuenta, Tipo=Tipo)
+
+uticv <- GG1 %>% filter(`Centro de Costo`=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>% 
+  mutate(`Centro de Costo`=  `Centro de Costo`, Devengado=Devengado*0.56, Cuenta=Cuenta, Tipo=Tipo)
+
+ucicv <- rbind(ucicv,uticv)
+
+GG1 <- GG1 %>% filter(`Centro de Costo` != "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" )
+
+GG1 <- rbind(GG1, ucicv)
+
 sum(SIGFE$Devengado)
   
 SIGFE %>%  filter(Tipo != "Insumos") %>%
@@ -1354,6 +1371,8 @@ diferencia
 
 medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(devengo_medicamentos = sum(Devengado))
 
+
+# agregar_CC <- CxCC %>% filter(`CENTRO DE COSTO` %in%  )
 
 
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)

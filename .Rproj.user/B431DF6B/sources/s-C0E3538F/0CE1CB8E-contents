@@ -868,6 +868,7 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                       CC=="EQUIPAMIENTO HOSPITAL"~"670-ADMINISTRACIÓN",
                       CC=="BODEGAS ABASTECIMIENTO"~"670-ADMINISTRACIÓN",
                       CC=="CIRUGIA GENERAL"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+                      CC=="UNIDAD MEDICINA INTEGRATIVA"~"670-ADMINISTRACIÓN"
                       CC=="C.COSTO GLOBAL"~"670-ADMINISTRACIÓN",
                       CC=="GASTOS HOSPITAL"~"670-ADMINISTRACIÓN",
                       CC=="CAE ESPECIALIDADES 2"~"Cae Prorratear",
@@ -1370,6 +1371,8 @@ diferencia
 
 medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(devengo_medicamentos = sum(Devengado))
 
+
+# agregar_CC <- CxCC %>% filter(`CENTRO DE COSTO` %in%  )
 
 
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
