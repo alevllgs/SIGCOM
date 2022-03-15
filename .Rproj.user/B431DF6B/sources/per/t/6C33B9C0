@@ -1,26 +1,26 @@
 {
-    "id": "E318019E",
-    "path": "~/GitHub/SIGCOM/SIGCOM RRHH 2022.R",
-    "project_path": "SIGCOM RRHH 2022.R",
+    "id": "6C33B9C0",
+    "path": "~/GitHub/SIGCOM/SIGCOM-SIGFE 2022.R",
+    "project_path": "SIGCOM-SIGFE 2022.R",
     "type": "r_source",
-    "hash": "2643738580",
+    "hash": "2869157702",
     "contents": "",
     "dirty": false,
-    "created": 1647343456467.0,
+    "created": 1647369414100.0,
     "source_on_save": false,
     "relative_order": 3,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "412,0",
-        "scrollLine": "393"
+        "cursorPosition": "1424,0",
+        "scrollLine": "1393"
     },
     "folds": "",
-    "lastKnownWriteTime": 1647367490,
+    "lastKnownWriteTime": 1647372494,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1647367490115,
+    "last_content_update": 1647372494661,
     "read_only": false,
     "read_only_alternatives": []
 }

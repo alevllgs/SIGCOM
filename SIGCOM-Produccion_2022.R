@@ -8,7 +8,7 @@ library(xlsx)
 
 Fecha_filtro <- "2022-01-01"
 archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-01 REM serie BS.xlsx"
-remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022 /REMOTA DICIEMBRE.xlsx"
+remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/REMOTA ENERO.xlsx"
 Sheet_remota <- "PM REMOTA"
 Censo <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/2022/Censo-hrrio 2022.xlsx"
 Sheet_censo <- "DIC"
@@ -381,124 +381,124 @@ B_qx <- B_qx %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producci�
 
 # Procedimientos -----------------------------------------------------------
 
-P1 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                     range = "B!C1145:C1145")
-P1 <- P1 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15305__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P1$...1,  .after = 4)
-
-P2 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C1271:C1271")
-P2 <- P2 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15209__15209 - CONSULTA OFTALMOLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P2$...1,  .after = 4)
-
-P3 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C1424:C1424")
-P3 <- P3 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15211__15211 - CONSULTA OTORRINOLARINGOLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P3$...1,  .after = 4)
-
-P4 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C1653:C1653")
-P4 <- P4 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15106__15106 - CONSULTA DERMATOLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P4$...1,  .after = 4)
-
-P5 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C2246:C2246")
-P5 <- P5 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15203__15203 - CONSULTA UROLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P5$...1,  .after = 4)
-
-P6 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C1812:C1812")
-P6 <- P6 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15105__15105 - CONSULTA CARDIOLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P6$...1,  .after = 4)
-
-P7 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C1682:C1701")
-P7 <- P7 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15105__15105 - CONSULTA CARDIOLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P7$...1,  .after = 4)
-
-P8 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C1712:C1785")
-P8 <- P8 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15111__15111 - CONSULTA NEUMOLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P8$...1,  .after = 4)
-
-P9 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C2056:C2056")
-P9 <- P9 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15119__15119 - CONSULTA GASTROENTEROLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P9$...1,  .after = 4)
-
-P10 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                range = "B!C2062:C2062")
-P10 <- P10 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15119__15119 - CONSULTA GASTROENTEROLOGÍA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P10$...1,  .after = 4)
-
-P11 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                 range = "B!C2453:C2453")
-P11 <- P11 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P11$...1,  .after = 4)
-
-P12 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                 range = "B!C2684:C2684")
-P12 <- P12 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P12$...1,  .after = 4)
-
-P13 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                 range = "B!C2363:C2363")
-P13 <- P13 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15502__15502 - CONSULTA GINECOLOGICA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P13$...1,  .after = 4)
-
-P14 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                 range = "B!C2416:C2416")
-P14 <- P14 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15502__15502 - CONSULTA GINECOLOGICA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P14$...1,  .after = 4)
-
-P15 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                 range = "B17!C102:C102")
-P15 <- P15 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P15$...1,  .after = 4)
-
-P16 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
-                 range = "B!C1011:C1011")
-P16 <- P16 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
-  add_column("Centro de Producción" = "15302__15302 - CONSULTA PEDIATRÍA GENERAL", .after = 2) %>% 
-  add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
-  add_column("Valor" = P16$...1,  .after = 4)
-
-P <- rbind(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16)
-
-P <- P %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producción`) %>% 
-  summarise("Valor" = sum(Valor))
-
-Produccion_SIGCOM <- rbind( Produccion_SIGCOM, P, B_qx)
+# P1 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                      range = "B!C1145:C1145")
+# P1 <- P1 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15305__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P1$...1,  .after = 4)
+# 
+# P2 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C1271:C1271")
+# P2 <- P2 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15209__15209 - CONSULTA OFTALMOLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P2$...1,  .after = 4)
+# 
+# P3 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C1424:C1424")
+# P3 <- P3 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15211__15211 - CONSULTA OTORRINOLARINGOLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P3$...1,  .after = 4)
+# 
+# P4 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C1653:C1653")
+# P4 <- P4 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15106__15106 - CONSULTA DERMATOLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P4$...1,  .after = 4)
+# 
+# P5 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C2246:C2246")
+# P5 <- P5 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15203__15203 - CONSULTA UROLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P5$...1,  .after = 4)
+# 
+# P6 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C1812:C1812")
+# P6 <- P6 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15105__15105 - CONSULTA CARDIOLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P6$...1,  .after = 4)
+# 
+# P7 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C1682:C1701")
+# P7 <- P7 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15105__15105 - CONSULTA CARDIOLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P7$...1,  .after = 4)
+# 
+# P8 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C1712:C1785")
+# P8 <- P8 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15111__15111 - CONSULTA NEUMOLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P8$...1,  .after = 4)
+# 
+# P9 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C2056:C2056")
+# P9 <- P9 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15119__15119 - CONSULTA GASTROENTEROLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P9$...1,  .after = 4)
+# 
+# P10 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                 range = "B!C2062:C2062")
+# P10 <- P10 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15119__15119 - CONSULTA GASTROENTEROLOGÍA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P10$...1,  .after = 4)
+# 
+# P11 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                  range = "B!C2453:C2453")
+# P11 <- P11 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P11$...1,  .after = 4)
+# 
+# P12 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                  range = "B!C2684:C2684")
+# P12 <- P12 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P12$...1,  .after = 4)
+# 
+# P13 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                  range = "B!C2363:C2363")
+# P13 <- P13 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15502__15502 - CONSULTA GINECOLOGICA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P13$...1,  .after = 4)
+# 
+# P14 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                  range = "B!C2416:C2416")
+# P14 <- P14 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15502__15502 - CONSULTA GINECOLOGICA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P14$...1,  .after = 4)
+# 
+# P15 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                  range = "B17!C102:C102")
+# P15 <- P15 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P15$...1,  .after = 4)
+# 
+# P16 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
+#                  range = "B!C1011:C1011")
+# P16 <- P16 %>%  add_column("Fecha" = Fecha_filtro, .after = 1) %>% 
+#   add_column("Centro de Producción" = "15302__15302 - CONSULTA PEDIATRÍA GENERAL", .after = 2) %>% 
+#   add_column("Unidades de Producción" = "2__Procedimiento", .after = 3) %>% 
+#   add_column("Valor" = P16$...1,  .after = 4)
+# 
+# P <- rbind(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16)
+# 
+# P <- P %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producción`) %>% 
+#   summarise("Valor" = sum(Valor))
+# 
+# Produccion_SIGCOM <- rbind( Produccion_SIGCOM, P, B_qx)
 
 # Remotas -----------------------------------------------------------------
 
@@ -535,7 +535,7 @@ At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control A
     UNIDAD_ATENCION_DESC == "Neurocirugia Infantil" ~ "15121__15121 - CONSULTA NEUROCIRUGÍA",
     UNIDAD_ATENCION_DESC == "Prematuros *" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
     UNIDAD_ATENCION_DESC == "Medicina fisica y rehabilitacion Infantil" ~ "15118__15118 - CONSULTA FISIATRÍA",
-    TRUE ~ "Asignar Centro de Costo"),"Unidades de Producción" = "3__Atención", Valor=n)
+    TRUE ~ "Asignar Centro de Costo"),"Unidades de Producción" = "2__Atención", Valor=n)
 
 
 At_remota$n <- NULL

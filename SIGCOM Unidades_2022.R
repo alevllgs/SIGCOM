@@ -23,7 +23,7 @@ rehabilitacion_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_rut
                                   sheet = "A28", range = "A168:B191", col_names = FALSE)
 
 cmenor_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
-                          sheet = "B17", range = "B344:K363", col_names = FALSE, na = "0")
+                          sheet = "B17", range = "B175:K193", col_names = FALSE, na = "0")
 
 farmacia_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/95_Farmacia.xlsx"))
 
@@ -259,6 +259,31 @@ unidades <- unidades %>% mutate(`PERC ASOCIADO` = case_when(
   `PERC ASOCIADO`=="480-QUIRÓFANOS OTORRINOLARINGOLOGÍA" ~ "471-QUIRÓFANOS MAYOR AMBULATORIA",
   TRUE ~ `PERC ASOCIADO`), Cantidad = round(Cantidad))
 
+# crea un prorrateo de UCI y UTI ------------------------------------------
+
+
+uti <- unidades %>% filter(`PERC ASOCIADO`=="170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA") %>% 
+  mutate(`PERC ASOCIADO`="196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA", Cantidad=Cantidad*0.57,Item=Item)
+
+uci <- unidades %>% filter(`PERC ASOCIADO`=="170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA") %>% 
+  mutate(`PERC ASOCIADO`=`PERC ASOCIADO`, Cantidad=Cantidad*0.43,Item=Item)
+
+
+ucicv <- unidades %>% filter(`PERC ASOCIADO`=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>% 
+  mutate(`PERC ASOCIADO`="177-UNIDAD DE CUIDADOS CORONARIOS", Cantidad=Cantidad*0.44,Item=Item)
+
+uticv <- unidades %>% filter(`PERC ASOCIADO`=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>% 
+  mutate(`PERC ASOCIADO`=`PERC ASOCIADO`, Cantidad=Cantidad*0.56,Item=Item)
+
+uti <- rbind(uti, uci, ucicv, uticv)
+
+unidades <- unidades %>% filter(`PERC ASOCIADO` != "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA" |
+                                  `PERC ASOCIADO` != "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" )
+
+unidades <- rbind(unidades, uti)
+
+
+
 
 
 # Separar Odonto Urgencia -------------------------------------------------
@@ -320,4 +345,4 @@ openxlsx::write.xlsx(unidades, graba, colNames = TRUE, sheetName = "indirectos",
 
 # Borrar Data -------------------------------------------------------------
 
-rm(alimentacion_perc, anatomia_patologica_perc, aseo_perc, cmenor_perc, equipos_medicos_perc, esterilizacion, esterilizacion_perc, farmacia_perc, imagenologia_perc, laboratorio_perc, lavanderia, procedimientos_perc, rehabilitacion_perc, t1, t2, t3, transporte_perc, UMT_perc, unid_reportar, psicosocial_perc, farmacia1, farmacia2, UMT1, UMT2, graba, cola_ruta_registro_a, cola_ruta_registro_b, resto_ruta_registro_a, resto_ruta_registro_b, ODOURG1, URG)
+rm(alimentacion_perc, anatomia_patologica_perc, aseo_perc, cmenor_perc, equipos_medicos_perc, esterilizacion, esterilizacion_perc, farmacia_perc, imagenologia_perc, laboratorio_perc, lavanderia, procedimientos_perc, rehabilitacion_perc, t1, t2, t3, transporte_perc, UMT_perc, unid_reportar, psicosocial_perc, farmacia1, farmacia2, UMT1, UMT2, graba, cola_ruta_registro_a, cola_ruta_registro_b, resto_ruta_registro_a, resto_ruta_registro_b, ODOURG1, URG, uti, uci, uticv, ucicv)
