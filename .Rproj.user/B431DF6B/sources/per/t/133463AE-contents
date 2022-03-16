@@ -85,38 +85,58 @@ equipos_medicos_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos 
   filter(Cantidad>0 & `PERC ASOCIADO`!="665-MANTENIMIENTO") %>% 
   select(`PERC ASOCIADO`, Cantidad, Item)
 
+# Procedimientos ----------------------------------------------------------
 
-procedimientos_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Complemento Subir/05.xlsx")) %>% 
-  filter(`Unidades de Producción` == "2__Procedimiento") %>% 
-  mutate(Cantidad = Valor, 
-         "Variable" = `Centro de Producción`,
-         Item = case_when(
-           Variable == "276__15105 - CONSULTA CARDIOLOGÍA" ~"240_1-PROCEDIMIENTO DE CARDIOLOGÍA | Procedimiento", 
-           Variable == "282__15111 - CONSULTA NEUMOLOGÍA" ~"244_1-PROCEDIMIENTO DE NEUMOLOGÍA | Procedimiento",
-           Variable == "277__15106 - CONSULTA DERMATOLOGÍA" ~"249_1-PROCEDIMIENTOS DE DERMATOLOGÍA | Procedimiento",
-           Variable == "290__15119 - CONSULTA GASTROENTEROLOGÍA" ~"250_1-PROCEDIMIENTOS DE GASTROENTEROLOGÍA | Procedimiento",
-           Variable == "306__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA"  ~"260_1-PROCEDIMIENTO ONCOLOGÍA | Procedimiento",
-           Variable == "319__15211 - CONSULTA OTORRINOLARINGOLOGÍA"  ~"261_1-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA | Procedimiento",
-           Variable == "342__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA"  ~"262_1-PROCEDIMIENTOS DE TRAUMATOLOGÍA | Procedimiento",
-           Variable == "331__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA"  ~"269_1-PROCEDIMIENTOS DE NEUROLOGÍA | Procedimiento",
-           Variable == "317__15209 - CONSULTA OFTALMOLOGÍA"  ~"258_1-PROCEDIMIENTOS DE OFTALMOLOGÍA | Procedimiento",
-           Variable == "353__15502 - CONSULTA GINECOLOGICA"  ~"251_1-PROCEDIMIENTOS DE GINECOLOGÍA | Procedimiento",
-           Variable == "311__15203 - CONSULTA UROLOGÍA"  ~"263_1-PROCEDIMIENTOS DE UROLOGÍA | Procedimiento",
-           TRUE ~ "Identificar donde tributa"
-         ), "PERC ASOCIADO" = case_when(
-           Item == "240_1-PROCEDIMIENTO DE CARDIOLOGÍA | Procedimiento" ~ "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS", 
-           Item == "244_1-PROCEDIMIENTO DE NEUMOLOGÍA | Procedimiento" ~ "282-CONSULTA NEUMOLOGÍA",
-           Item == "249_1-PROCEDIMIENTOS DE DERMATOLOGÍA | Procedimiento" ~ "277-CONSULTA DERMATOLOGÍA",
-           Item == "250_1-PROCEDIMIENTOS DE GASTROENTEROLOGÍA | Procedimiento" ~ "290-CONSULTA GASTROENTEROLOGÍA",
-           Item == "260_1-PROCEDIMIENTO ONCOLOGÍA | Procedimiento" ~ "87-HOSPITALIZACIÓN ONCOLOGÍA",
-           Item == "261_1-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA | Procedimiento" ~ "319-CONSULTA OTORRINOLARINGOLOGÍA",
-           Item == "262_1-PROCEDIMIENTOS DE TRAUMATOLOGÍA | Procedimiento" ~ "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
-           Item == "269_1-PROCEDIMIENTOS DE NEUROLOGÍA | Procedimiento" ~ "331-CONSULTA NEUROLOGÍA PEDIÁTRICA",
-           Item == "258_1-PROCEDIMIENTOS DE OFTALMOLOGÍA | Procedimiento" ~ "317-CONSULTA OFTALMOLOGÍA",
-           Item == "251_1-PROCEDIMIENTOS DE GINECOLOGÍA | Procedimiento" ~ "353-CONSULTA GINECOLOGICA",
-           Item == "263_1-PROCEDIMIENTOS DE UROLOGÍA | Procedimiento" ~ "311-CONSULTA UROLOGÍA",
-           TRUE ~ "Identificar donde tributa")) %>% 
-  select(`PERC ASOCIADO`, Cantidad, Item) %>% filter(`PERC ASOCIADO` != "Identificar donde tributa")
+p_neurologia <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
+                          sheet = "B", range = "C1298:C1298", col_names = FALSE, na = "0") %>% 
+ mutate(`PERC ASOCIADO`="15305-CONSULTA NEUROLOGÍA PEDIÁTRICA",
+         Cantidad = `...1`,
+        Item = "15047_1-PROCEDIMIENTOS DE NEUROLOGÍA | Procedimiento") %>% select(-`...1`)
+
+
+p_oto <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
+                           sheet = "B", range = "C1586:C1586", col_names = FALSE, na = "0") %>% 
+  mutate(`PERC ASOCIADO`="15211-CONSULTA OTORRINOLARINGOLOGÍA",
+         Cantidad = `...1`,
+         Item = "15039_1-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA | Procedimiento") %>% select(-`...1`)
+
+
+p_dermato <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
+                    sheet = "B", range = "C1851:C1851", col_names = FALSE, na = "0") %>% 
+  mutate(`PERC ASOCIADO`="15106-CONSULTA DERMATOLOGÍA",
+         Cantidad = `...1`,
+         Item = "15027_1-PROCEDIMIENTOS DE DERMATOLOGÍA | Procedimiento") %>% select(-`...1`)
+
+p_neumo <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
+                        sheet = "B", range = "C1973:C1973", col_names = FALSE, na = "0") %>% 
+  mutate(`PERC ASOCIADO`="15111-CONSULTA NEUMOLOGÍA",
+         Cantidad = `...1`,
+         Item = "15022_1-PROCEDIMIENTO DE NEUMOLOGÍA | Procedimiento") %>% select(-`...1`)
+
+p_cardio <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
+                      sheet = "B", range = "C1999:C1999", col_names = FALSE, na = "0") %>% 
+  mutate(`PERC ASOCIADO`="15105-CONSULTA CARDIOLOGÍA",
+         Cantidad = `...1`,
+         Item = "240_1-PROCEDIMIENTO DE CARDIOLOGÍA | Procedimiento") %>% select(-`...1`)
+
+p_gastro <- 
+  read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
+             sheet = "B", range = "C2258:C2258", col_names = FALSE, na = "0") %>% 
+  mutate(`PERC ASOCIADO`="15119-CONSULTA GASTROENTEROLOGÍA",
+         Cantidad = `...1`,
+         Item = "15028_1-PROCEDIMIENTOS DE GASTROENTEROLOGÍA | Procedimiento") %>% select(-`...1`)
+
+p_tmt <- 
+  read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
+             sheet = "B", range = "C2650:C2650", col_names = FALSE, na = "0") +
+  read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
+             sheet = "B", range = "C2870:C2870", col_names = FALSE, na = "0") +
+  read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
+             sheet = "B", range = "C2882:C2882", col_names = FALSE, na = "0")
+p_tmt <- p_tmt %>%   mutate(`PERC ASOCIADO`="15316-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+         Cantidad = `...1`,
+         Item = "262_1-PROCEDIMIENTOS DE TRAUMATOLOGÍA | Procedimiento") %>% select(-`...1`)
+
 
 # UMT ---------------------------------------------------------------------
 
@@ -251,7 +271,7 @@ transporte_perc <- rbind(t1, t2, t3) %>% filter(Cantidad>0 & `PERC ASOCIADO`!="6
 
 # Juntar ------------------------------------------------------------------
 
-unidades <- rbind(cmenor_perc, farmacia_perc, rehabilitacion_perc, aseo_perc, anatomia_patologica_perc, imagenologia_perc, laboratorio_perc, UMT_perc, esterilizacion_perc, psicosocial_perc, procedimientos_perc, transporte_perc, alimentacion_perc, equipos_medicos_perc)
+unidades <- rbind(cmenor_perc, farmacia_perc, rehabilitacion_perc, aseo_perc, anatomia_patologica_perc, imagenologia_perc, laboratorio_perc, UMT_perc, esterilizacion_perc, psicosocial_perc, transporte_perc, alimentacion_perc, equipos_medicos_perc, p_cardio, p_dermato, p_gastro, p_neumo, p_neurologia, p_oto, p_tmt)
 
 unidades <- unidades %>% mutate(`PERC ASOCIADO` = case_when(
   `PERC ASOCIADO`=="713-TRABAJO SOCIAL" ~ "99544-TRABAJO SOCIAL",
@@ -278,7 +298,7 @@ uticv <- unidades %>% filter(`PERC ASOCIADO`=="198-UNIDAD DE TRATAMIENTO INTENSI
 uti <- rbind(uti, uci, ucicv, uticv)
 
 unidades <- unidades %>% filter(`PERC ASOCIADO` != "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA" |
-                                  `PERC ASOCIADO` != "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" )
+                                  `PERC ASOCIADO` != "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS")
 
 unidades <- rbind(unidades, uti)
 
@@ -299,12 +319,95 @@ unidades <- unidades %>% filter(`PERC ASOCIADO`!= "216-EMERGENCIAS PEDIÁTRICAS"
 unidades <- rbind(ODOURG1, URG, unidades)
 
 
+# Elimino parametros que no se ocuparan en 2022 ---------------------------
+
+unidades <- unidades %>% filter(
+  Item != "593_1-SERVICIO FARMACEUTICO | Receta" &
+    Item != "575_1-BANCO DE SANGRE | Unidad"   &
+    Item != "664_1-TRANSPORTE GENERAL | Traslado" &
+    Item != "664_3-TRANSPORTE GENERAL | Viajes") %>% 
+  mutate(Item = 
+           case_when(Item == "665_1-MANTENIMIENTO | Órden"~"95501_1-MANTENIMIENTO | Órden",
+                     Item == "662_2-CENTRAL DE ESTERILIZACIÓN | Metro cúbico"~"95301_1-CENTRAL DE ESTERILIZACIÓN | Metro cúbico",
+                     Item == "593_2-SERVICIO FARMACEUTICO | Prescripción"~"55101_1-SERVICIO FARMACEUTICO | Prescripción",
+                     Item == "542_1-IMAGENOLOGÍA | Estudio"~"41108_1-IMAGENOLOGÍA | Exámen",
+                     Item == "657_1-LAVANDERIA Y ROPERIA | Kilo"~"95201_1-LAVANDERIA Y ROPERIA | Kilo",
+                     Item == "664_2-TRANSPORTE GENERAL | Kilómetro"~"95401_1-TRANSPORTE GENERAL | Kilómetro",
+                     Item == "575_2-BANCO DE SANGRE | Exámen"~"51001_1-BANCO DE SANGRE | Exámen",
+                     TRUE ~ Item))
+                     
+# Asigna CC actualizados al 2022 ------------------------------------------
+unidades <- unidades %>% mutate(`PERC ASOCIADO` = 
+                        case_when(
+                          `PERC ASOCIADO` ==	"478-QUIRÓFANOS OFTALMOLOGÍA"	~	"471-QUIRÓFANOS MAYOR AMBULATORIA",
+                          `PERC ASOCIADO` ==	"480-QUIRÓFANOS OTORRINOLARINGOLOGÍA"	~	"471-QUIRÓFANOS MAYOR AMBULATORIA",
+                          `PERC ASOCIADO` == "273-CONSULTA MEDICINA INTERNA"~"15102-CONSULTA MEDICINA INTERNA",
+                          `PERC ASOCIADO` == "274-CONSULTA NEUROLOGÍA"~"15103-CONSULTA NEUROLOGÍA",
+                          `PERC ASOCIADO` == "275-CONSULTA REUMATOLOGÍA"~"15104-CONSULTA REUMATOLOGÍA",
+                          `PERC ASOCIADO` == "276-CONSULTA CARDIOLOGÍA"~"15105-CONSULTA CARDIOLOGÍA",
+                          `PERC ASOCIADO` == "277-CONSULTA DERMATOLOGÍA"~"15106-CONSULTA DERMATOLOGÍA",
+                          `PERC ASOCIADO` == "278-CONSULTA ONCOLOGÍA"~"15107-CONSULTA ONCOLOGÍA",
+                          `PERC ASOCIADO` == "279-PROGRAMA VIH"~"15108-PROGRAMA VIH",
+                          `PERC ASOCIADO` == "280-CONSULTA PSIQUIATRÍA"~"15109-CONSULTA PSIQUIATRÍA",
+                          `PERC ASOCIADO` == "281-CONSULTA ENDOCRINOLOGÍA"~"15110-CONSULTA ENDOCRINOLOGÍA",
+                          `PERC ASOCIADO` == "282-CONSULTA NEUMOLOGÍA"~"15111-CONSULTA NEUMOLOGÍA",
+                          `PERC ASOCIADO` == "284-CONSULTA INFECTOLOGÍA"~"15113-CONSULTA INFECTOLOGÍA",
+                          `PERC ASOCIADO` == "285-CONSULTA NEFROLOGÍA"~"15114-CONSULTA NEFROLOGÍA",
+                          `PERC ASOCIADO` == "286-CONSULTA GENÉTICA"~"15115-CONSULTA GENÉTICA",
+                          `PERC ASOCIADO` == "287-CONSULTA HEMATOLOGÍA"~"15116-CONSULTA HEMATOLOGÍA",
+                          `PERC ASOCIADO` == "288-CONSULTA GERIATRÍA"~"15117-CONSULTA GERIATRÍA",
+                          `PERC ASOCIADO` == "289-CONSULTA FISIATRÍA"~"15118-CONSULTA FISIATRÍA",
+                          `PERC ASOCIADO` == "290-CONSULTA GASTROENTEROLOGÍA"~"15119-CONSULTA GASTROENTEROLOGÍA",
+                          `PERC ASOCIADO` == "292-CONSULTA NEUROCIRUGÍA"~"15121-CONSULTA NEUROCIRUGÍA",
+                          `PERC ASOCIADO` == "294-PROGRAMA MANEJO DEL DOLOR"~"15123-PROGRAMA MANEJO DEL DOLOR",
+                          `PERC ASOCIADO` == "295-CONSULTA SALUD OCUPACIONAL"~"15124-CONSULTA SALUD OCUPACIONAL",
+                          `PERC ASOCIADO` == "296-CONSULTA ANESTESIOLOGIA"~"15125-CONSULTA ANESTESIOLOGIA",
+                          `PERC ASOCIADO` == "302-PROGRAMA ENFERMEDADES DE TRANSMISIÓN SEXUAL"~"15131-PROGRAMA ENFERMEDADES DE TRANSMISIÓN SEXUAL",
+                          `PERC ASOCIADO` == "306-CONSULTA HEMATOLOGÍA ONCOLÓGICA"~"15135-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+                          `PERC ASOCIADO` == "307-CONSULTA DE INMUNOLOGÍA"~"15136-CONSULTA DE INMUNOLOGÍA",
+                          `PERC ASOCIADO` == "309-CONSULTA CIRUGÍA GENERAL"~"15201-CONSULTA CIRUGÍA GENERAL",
+                          `PERC ASOCIADO` == "311-CONSULTA UROLOGÍA"~"15203-CONSULTA UROLOGÍA",
+                          `PERC ASOCIADO` == "316-CONSULTA CIRUGÍA PLÁSTICA"~"15208-CONSULTA CIRUGÍA PLÁSTICA",
+                          `PERC ASOCIADO` == "317-CONSULTA OFTALMOLOGÍA"~"15209-CONSULTA OFTALMOLOGÍA",
+                          `PERC ASOCIADO` == "318-CONSULTA CIRUGÍA VASCULAR PERIFÉRICA"~"15210-CONSULTA CIRUGÍA VASCULAR PERIFÉRICA",
+                          `PERC ASOCIADO` == "319-CONSULTA OTORRINOLARINGOLOGÍA"~"15211-CONSULTA OTORRINOLARINGOLOGÍA",
+                          `PERC ASOCIADO` == "323-CONSULTA CIRUGÍA MAXILOFACIAL"~"15215-CONSULTA CIRUGÍA MAXILOFACIAL",
+                          `PERC ASOCIADO` == "326-CONSULTA DE TRAUMATOLOGÍA"~"15218-CONSULTA DE TRAUMATOLOGÍA",
+                          `PERC ASOCIADO` == "328-CONSULTA PEDIATRÍA GENERAL"~"15302-CONSULTA PEDIATRÍA GENERAL",
+                          `PERC ASOCIADO` == "329-CONSULTA NEONATOLOGÍA"~"15303-CONSULTA NEONATOLOGÍA",
+                          `PERC ASOCIADO` == "331-CONSULTA NEUROLOGÍA PEDIÁTRICA"~"15305-CONSULTA NEUROLOGÍA PEDIÁTRICA",
+                          `PERC ASOCIADO` == "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA"~"15316-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+                          `PERC ASOCIADO` == "351-CONSULTA CIRUGÍA PEDIÁTRICA"~"15409-CONSULTA CIRUGÍA PEDIÁTRICA",
+                          `PERC ASOCIADO` == "353-CONSULTA GINECOLOGICA"~"15502-CONSULTA GINECOLOGICA",
+                          `PERC ASOCIADO` == "354-CONSULTA OBSTETRICIA"~"15503-CONSULTA OBSTETRICIA",
+                          `PERC ASOCIADO` == "230-CONSULTA NUTRICIÓN"~"15008-CONSULTA NUTRICIÓN",
+                          `PERC ASOCIADO` == "232-CONSULTA OTROS PROFESIONALES"~"15010-CONSULTA OTROS PROFESIONALES",
+                          `PERC ASOCIADO` == "356-CONSULTA ODONTOLOGÍA"~"15602-CONSULTA ODONTOLOGÍA",
+                          `PERC ASOCIADO` == "152-HOSPITALIZACIÓN EN CASA"~"2002-HOSPITALIZACIÓN EN CASA",
+                          `PERC ASOCIADO` == "159-HOSPITALIZACIÓN DE DIA"~"2009-HOSPITALIZACIÓN DE DIA",
+                          `PERC ASOCIADO` == "244-PROCEDIMIENTO DE NEUMOLOGÍA"~"15022-PROCEDIMIENTO DE NEUMOLOGÍA",
+                          `PERC ASOCIADO` == "249-PROCEDIMIENTOS DE DERMATOLOGÍA"~"15027-PROCEDIMIENTOS DE DERMATOLOGÍA",
+                          `PERC ASOCIADO` == "250-PROCEDIMIENTOS DE GASTROENTEROLOGÍA"~"15028-PROCEDIMIENTOS DE GASTROENTEROLOGÍA",
+                          `PERC ASOCIADO` == "251-PROCEDIMIENTOS DE GINECOLOGÍA"~"15029-PROCEDIMIENTOS DE GINECOLOGÍA",
+                          `PERC ASOCIADO` == "258-PROCEDIMIENTOS DE OFTALMOLOGÍA"~"15036-PROCEDIMIENTOS DE OFTALMOLOGÍA",
+                          `PERC ASOCIADO` == "261-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA"~"15039-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA",
+                          `PERC ASOCIADO` == "263-PROCEDIMIENTOS DE UROLOGÍA"~"15041-PROCEDIMIENTOS DE UROLOGÍA",
+                          `PERC ASOCIADO` == "269-PROCEDIMIENTOS DE NEUROLOGÍA"~"15047-PROCEDIMIENTOS DE NEUROLOGÍA",
+                          `PERC ASOCIADO` == "542-IMAGENOLOGÍA"~"41108-IMAGENOLOGÍA",
+                          `PERC ASOCIADO` == "575-BANCO DE SANGRE"~"51001-BANCO DE SANGRE",
+                          `PERC ASOCIADO` == "593-SERVICIO FARMACEUTICO"~"55101-SERVICIO FARMACEUTICO",
+                          `PERC ASOCIADO` == "662-CENTRAL DE ESTERILIZACIÓN"~"95301-CENTRAL DE ESTERILIZACIÓN",
+                          `PERC ASOCIADO` == "657-LAVANDERIA Y ROPERIA"~"95201-LAVANDERIA Y ROPERIA",
+                          `PERC ASOCIADO` == "664-TRANSPORTE GENERAL"~"95401-TRANSPORTE GENERAL",
+                          `PERC ASOCIADO` == "665-MANTENIMIENTO"~"95501-MANTENIMIENTO",
+                          `PERC ASOCIADO` == "713-TRABAJO SOCIAL"~"99544-TRABAJO SOCIAL",
+                          TRUE ~ `PERC ASOCIADO`))
+
 #CONTRALORIA
 
 
 unid_reportar <- c(     
 "473_1-QUIRÓFANOS MENOR AMBULATORIA | Intervencion quirurgica",        
-"593_1-SERVICIO FARMACEUTICO | Receta",         
 "593_2-SERVICIO FARMACEUTICO | Prescripción",
 "648_1-ASEO | Metro cuadrado",                                                  
 "542_1-IMAGENOLOGÍA | Estudio",                                                    
@@ -322,15 +425,11 @@ unid_reportar <- c(
 "99544_1-TRABAJO SOCIAL | Atención",
 "249_1-PROCEDIMIENTOS DE DERMATOLOGÍA | Procedimiento",
 "250_1-PROCEDIMIENTOS DE GASTROENTEROLOGÍA | Procedimiento",
-"263_1-PROCEDIMIENTOS DE UROLOGÍA | Procedimiento",
 "261_1-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA | Procedimiento",
 "262_1-PROCEDIMIENTOS DE TRAUMATOLOGÍA | Procedimiento",
 "240_1-PROCEDIMIENTO DE CARDIOLOGÍA | Procedimiento",               
 "244_1-PROCEDIMIENTO DE NEUMOLOGÍA | Procedimiento",             
-"260_1-PROCEDIMIENTO ONCOLOGÍA | Procedimiento",                       
-"258_1-PROCEDIMIENTOS DE OFTALMOLOGÍA | Procedimiento",    
-"269_1-PROCEDIMIENTOS DE NEUROLOGÍA | Procedimiento",                  
-"251_1-PROCEDIMIENTOS DE GINECOLOGÍA | Procedimiento")
+"269_1-PROCEDIMIENTOS DE NEUROLOGÍA | Procedimiento")
 
 
 contraloria <- data.frame(
@@ -345,4 +444,4 @@ openxlsx::write.xlsx(unidades, graba, colNames = TRUE, sheetName = "indirectos",
 
 # Borrar Data -------------------------------------------------------------
 
-rm(alimentacion_perc, anatomia_patologica_perc, aseo_perc, cmenor_perc, equipos_medicos_perc, esterilizacion, esterilizacion_perc, farmacia_perc, imagenologia_perc, laboratorio_perc, lavanderia, procedimientos_perc, rehabilitacion_perc, t1, t2, t3, transporte_perc, UMT_perc, unid_reportar, psicosocial_perc, farmacia1, farmacia2, UMT1, UMT2, graba, cola_ruta_registro_a, cola_ruta_registro_b, resto_ruta_registro_a, resto_ruta_registro_b, ODOURG1, URG, uti, uci, uticv, ucicv)
+rm(alimentacion_perc, anatomia_patologica_perc, aseo_perc, cmenor_perc, equipos_medicos_perc, esterilizacion, esterilizacion_perc, farmacia_perc, imagenologia_perc, laboratorio_perc, lavanderia, rehabilitacion_perc, t1, t2, t3, transporte_perc, UMT_perc, unid_reportar, psicosocial_perc, farmacia1, farmacia2, UMT1, UMT2, graba, cola_ruta_registro_a, cola_ruta_registro_b, resto_ruta_registro_a, resto_ruta_registro_b, ODOURG1, URG, uti, uci, uticv, ucicv, p_cardio, p_dermato, p_gastro, p_neumo, p_neurologia, p_oto, P_tmt)
