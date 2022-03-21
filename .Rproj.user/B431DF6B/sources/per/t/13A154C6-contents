@@ -149,9 +149,6 @@ Censo_hrrio_BBDD$"177__05012 - UNIDAD DE CUIDADOS CORONARIOS" <-
 
 
 
-
-
-
 Censo_hrrio_BBDD <- Censo_hrrio_BBDD %>% 
   select(`Información Estadística`,`116__01401 - HOSPITALIZACIÓN PEDIATRÍA`,
          `90__01201 - HOSPITALIZACIÓN QUIRÚRGICA`,
@@ -377,6 +374,8 @@ rm(B_qx1,B_qx2,B_qx3,B_qx4,B_qx5,B_qx6,B_qx7,B_qx8,B_qx9, B_qx10,
 
 B_qx <- B_qx %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producción`) %>% 
   summarise("Valor" = sum(Valor))
+
+Produccion_SIGCOM <- rbind( Produccion_SIGCOM, B_qx)
 
 
 # Procedimientos -----------------------------------------------------------

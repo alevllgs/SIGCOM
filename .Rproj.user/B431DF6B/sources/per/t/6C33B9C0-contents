@@ -8,11 +8,13 @@ library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
 
+
+
 mes_archivo <- "01 Enero"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 
-
+options(scipen=999)
 SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xlsx"), skip = 6)
 M2 <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx")
 ConsumoxCC <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/02 Consumo x CC del mes.xlsx")
@@ -456,6 +458,9 @@ M2Pab <- M2Pab %>% select(SIGCOM, `Distribución cirugias Electivas`) %>%
   group_by(SIGCOM) %>% 
   summarise("Distribución cirugias Electivas" =sum(`Distribución cirugias Electivas`)) %>% 
   ungroup()
+
+M2Pab$`Distribución cirugias Electivas` <- ifelse(M2Pab$`Distribución cirugias Electivas`==0, M2Pab$`Distribución cirugias Electivas`+0.5, M2Pab$`Distribución cirugias Electivas`) 
+
 
 df <- tibble(SIGCOM= as.character(c("473-QUIRÓFANOS MENOR AMBULATORIA", "471-QUIRÓFANOS MAYOR AMBULATORIA")), 
 "Distribución cirugias Electivas"= c(`473-QUIRÓFANOS MENOR AMBULATORIA`, `471-QUIRÓFANOS MAYOR AMBULATORIA`))
@@ -1276,7 +1281,7 @@ GG1 <- GG1 %>% filter(`Centro de Costo`!="Pabellón Prorratear" &
 #PABELLON
 
 qx <- c("464-QUIRÓFANOS CARDIOVASCULAR",
-        "467-QUIRÓFANOS DIGESTIVA",
+        "467-QUIRÓFANOS DIGESTIVA", 
         "475-QUIRÓFANOS NEUROCIRUGÍA",
         "478-QUIRÓFANOS OFTALMOLOGÍA",
         "480-QUIRÓFANOS OTORRINOLARINGOLOGÍA",
@@ -1423,7 +1428,7 @@ GG1 <- GG1 %>% mutate(`Centro de Costo` =
 
 
 # Asigna proporcion uti/uci cardio ----------------------------------------
-# 
+
 ucicv <- GG1 %>% filter(`Centro de Costo`=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>%
   mutate(`Centro de Costo`= "177-UNIDAD DE CUIDADOS CORONARIOS", Devengado=Devengado*0.44, Cuenta=Cuenta, Tipo=Tipo)
 
@@ -1435,6 +1440,23 @@ ucicv <- rbind(ucicv,uticv)
 GG1 <- GG1 %>% filter(`Centro de Costo` != "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" )
 
 GG1 <- rbind(GG1, ucicv)
+
+
+
+# #Asigna costos a Urgencia Odontologica ----------------------------------
+
+
+urg_odo <- GG1 %>% filter(`Centro de Costo`=="216-EMERGENCIAS PEDIÁTRICAS") %>%
+  mutate(`Centro de Costo`= "357-EMERGENCIAS ODONTOLOGICAS", Devengado=Devengado*0.1, Cuenta=Cuenta, Tipo=Tipo)
+
+urg  <- GG1 %>% filter(`Centro de Costo`=="216-EMERGENCIAS PEDIÁTRICAS") %>%
+  mutate(`Centro de Costo`=  `Centro de Costo`, Devengado=Devengado*0.9, Cuenta=Cuenta, Tipo=Tipo)
+
+urg_odo <- rbind(urg_odo,urg)
+
+GG1 <- GG1 %>% filter(`Centro de Costo` != "216-EMERGENCIAS PEDIÁTRICAS" )
+
+GG1 <- rbind(GG1, urg_odo)
 
 
 # Valores -----------------------------------------------------------------
