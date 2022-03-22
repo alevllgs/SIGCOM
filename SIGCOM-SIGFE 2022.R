@@ -7,9 +7,6 @@ library(openxlsx)
 library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
-
-
-
 mes_archivo <- "01 Enero"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
@@ -313,7 +310,6 @@ SIGFE <- SIGFE %>% select(cod_sigfe, Devengado) %>%
     cod_sigfe == "2206002005"~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
     cod_sigfe == "2206002006"~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
     
-    
     cod_sigfe == "2206003"~ "132-MANTENIMIENTO MUEBLES Y ENSERES",
     cod_sigfe == "2206004"~ "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
     
@@ -321,7 +317,6 @@ SIGFE <- SIGFE %>% select(cod_sigfe, Devengado) %>%
     cod_sigfe == "2206005001"~ "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
     cod_sigfe == "2206005002"~ "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
 
-    
     cod_sigfe == "2206006"~ "Familia",
     cod_sigfe == "2206006001"~ "138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
     cod_sigfe == "2206006002"~ "137-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO CORRECTIVO",
@@ -389,7 +384,6 @@ SIGFE <- SIGFE %>% select(cod_sigfe, Devengado) %>%
     cod_sigfe == "221100200602"~ "76-CURSOS DE CAPACITACIÓN",
     cod_sigfe == "2211003"~ "66-COMPRA DE OTROS SERVICIOS",
     cod_sigfe == "2211999"~ "66-COMPRA DE OTROS SERVICIOS",
-    
     
     cod_sigfe == "2212"~ "Familia",
     cod_sigfe == "2212002"~ "145-OTROS GASTOS GENERALES",
@@ -483,9 +477,7 @@ CAE_prorratear$prop <- CAE_prorratear$M2/sum(CAE_prorratear$M2)
 
 M2Pab$prop <- M2Pab$M2/sum(M2Pab$M2)
 
-
 # Prorrateo Gastos Generales por M2 ---------------------------------------
-
 
 cuentas <- c("48-SERVICIO DE AGUA",
              "182-SERVICIO DE VIGILANCIA Y SEGURIDAD",
@@ -499,7 +491,6 @@ cuentas <- c("48-SERVICIO DE AGUA",
              "188-SERVICIOS GENERALES",
              "192-SERVICIO DE TELECOMUNICACIONES",
              "128-MANTENIMIENTO DE PRADOS Y JARDINES")
-
 
 GG1 <- data.frame(
   "Centro de Costo" = "eliminar", 
@@ -525,7 +516,6 @@ for (i in cuentas) {
       
                                
     }
-
 
 # Gastos Generales con Asignación Directa ---------------------------------
 
@@ -579,8 +569,6 @@ GG2 <- GG2 %>% summarise("Centro de Costo" = "518-LABORATORIO CLÍNICO",
                          "Cuenta"=b, "Tipo" = 4)
 GG1 <- rbind(GG1,GG2)}
 
-
-
 b <- "181-SERVICIO DE TRANSPORTE" #No lo captura y tampoco sale en la OOTT
 if(b %in% SIGFE$SIGCOM)
 {GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
@@ -594,7 +582,6 @@ GG1 <- rbind(GG1,GG2)}
 # Prorrateos Especificos --------------------------------------------------
 #FARMACIA
 Farm <- read_excel(Farmacia)
-
 
 b <- "30-MEDICAMENTOS"
 if(b %in% SIGFE$SIGCOM)
@@ -668,7 +655,6 @@ cant_RRHH <- cant_RRHH %>% select(perc, horas_mensuales) %>%
 
 cant_RRHH$prop <- cant_RRHH$horas_mensuales/sum(cant_RRHH$horas_mensuales)
 
-
 b <- "76-CURSOS DE CAPACITACIÓN"
 if(b %in% SIGFE$SIGCOM){
   GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
@@ -688,7 +674,6 @@ GG2 <- GG2 %>% summarise("Centro de Costo" = cant_RRHH$perc,
                          "Devengado" = Devengado*cant_RRHH$prop, 
                          "Cuenta"=b, "Tipo" = 2)
 GG1 <- rbind(GG1,GG2)}
-
 
 # Consumo x CC ------------------------------------------------------------
 
@@ -778,17 +763,11 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                       CC=="UNIDAD PEDIATRIA GRAL C (AISLA"~"116-HOSPITALIZACIÓN PEDIATRÍA",
                       CC=="UNIDAD PEDIATRIA GRAL B"~"116-HOSPITALIZACIÓN PEDIATRÍA",
                       CC=="UNIDAD PEDIATRIA GRAL A"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      
-
-                      
                       CC=="UNIDAD DE CUIDADOS INTENSIVOS"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
                       CC=="UNIDAD TRATAMIENTO INTERMEDIO"~"196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA",
                       CC=="SALA CUIDADO PROLONGADO"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
-                      
                       CC=="U.C.I. CARDIOVASCULAR"~"177-UNIDAD DE CUIDADOS CORONARIOS",
                       CC=="UTI CARDIOVASCULAR"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
-                      
-                      
                       CC=="UNIDAD ONCOLOGIA"~"87-HOSPITALIZACIÓN ONCOLOGÍA",
                       CC=="PABELLON CARDIOLOGIA"~"464-QUIRÓFANOS CARDIOVASCULAR",
                       CC=="CIRUGIA PLASTICA Y QUEMADOS"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
@@ -866,7 +845,7 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                       CC=="UNIDAD ASISTENCIAL DOCENTE"~"670-ADMINISTRACIÓN",
                       CC=="LAB.BIOLOGIA MOLECULAR"~"518-LABORATORIO CLÍNICO",
                       CC=="CAE PREMATUROS"~"328-CONSULTA PEDIATRÍA GENERAL",
-                      CC=="VACUNATORIO"~"670-ADMINISTRACIÓN",
+                      CC=="VACUNATORIO"~"328-CONSULTA PEDIATRÍA GENERAL",
                       CC=="OFICINA DE SUELDOS"~"670-ADMINISTRACIÓN",
                       CC=="SUBDIRECCION ADMINISTRATIVA"~"670-ADMINISTRACIÓN",
                       CC=="SUBDIRECCION MEDICA"~"670-ADMINISTRACIÓN",
@@ -876,17 +855,14 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                       CC=="UNIDAD MEDICINA INTEGRATIVA"~"670-ADMINISTRACIÓN",
                       CC=="C.COSTO GLOBAL"~"670-ADMINISTRACIÓN",
                       CC=="GASTOS HOSPITAL"~"670-ADMINISTRACIÓN",
-                      
                       CC=="CAE QUEMADOS"~"316-CONSULTA CIRUGÍA PLÁSTICA",
                       CC=="CAE PROCED. NEFROLOGIA"~"285-CONSULTA NEFROLOGÍA",
                       CC=="GESTION DE USUARIOS"~"670-ADMINISTRACIÓN",
                       CC=="ADM CARDIOLOGIA"~"276-CONSULTA CARDIOLOGÍA",
                       CC=="UNIDAD PRE QUIRURGICA"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
-                      
                       CC=="CAE ESPECIALIDADES 2"~"Cae Prorratear",
                       CC=="CAE ADMINISTRACION"~"Cae Prorratear",
                       CC=="PABELLONES"~"Pabellón Prorratear",
-      
                       TRUE ~ "Asignar CC"
          )) %>% 
   select(item_pres, CC,ItemxCC, Total) %>% 
@@ -895,8 +871,6 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
   ungroup()
 #tengo que agarrar cada item de GG y multriplicarlo por SIGFE
 # despues agarro los de insumos y lo mismo
-
-
 
 # CxCC Historico ----------------------------------------------------------
 CxCC_H <- read_excel(CxCC_H, range = "A3:M90000", na = "eliminar")
@@ -1073,7 +1047,7 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
                       CC=="UNIDAD ASISTENCIAL DOCENTE"~"670-ADMINISTRACIÓN",
                       CC=="LAB.BIOLOGIA MOLECULAR"~"518-LABORATORIO CLÍNICO",
                       CC=="CAE PREMATUROS"~"328-CONSULTA PEDIATRÍA GENERAL",
-                      CC=="VACUNATORIO"~"670-ADMINISTRACIÓN",
+                      CC=="VACUNATORIO"~"328-CONSULTA PEDIATRÍA GENERAL",
                       CC=="OFICINA DE SUELDOS"~"670-ADMINISTRACIÓN",
                       CC=="SUBDIRECCION ADMINISTRATIVA"~"670-ADMINISTRACIÓN",
                       CC=="SUBDIRECCION MEDICA"~"670-ADMINISTRACIÓN",
@@ -1100,10 +1074,7 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
   summarise("Total" = sum(Total)) %>%
   ungroup()
 
-
-
 # Prorrateos GG x CxCC -------------------------------------------------------
-
 
 cuentas <- c("52-ARRENDAMIENTOS",
              "60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS",
@@ -1170,7 +1141,12 @@ cuentas_total <- c("52-ARRENDAMIENTOS",
                    "46-VÍVERES")
 
 cuentas_clinico <- c("149-PASAJES Y TRASLADOS DE PACIENTES",
-                     "178-SERVICIO DE LAVANDERÍA")
+                     "178-SERVICIO DE LAVANDERÍA",
+                     "15-MATERIAL DE ODONTOLOGÍA",
+                     "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
+                     "18-MATERIAL MEDICO QUIRURGICO",
+                     "21-MATERIALES DE CURACIÓN",
+                     "9-GASES MEDICINALES")
 
 cuentas_qx <- c("63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS",
              "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO",
@@ -1183,12 +1159,7 @@ cuentas_no_critico <- c("60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS"
 
 cuenta_insumos <- c("3-COMBUSTIBLES Y LUBRICANTES", 
                     "8-EQUIPOS MENORES", 
-                    "9-GASES MEDICINALES",
                     "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
-                    "15-MATERIAL DE ODONTOLOGÍA",
-                    "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
-                    "18-MATERIAL MEDICO QUIRURGICO",
-                    "21-MATERIALES DE CURACIÓN",
                     "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
                     "25-MATERIALES DE USO O CONSUMO",
                     "27-MATERIALES INFORMATICOS",
@@ -1459,8 +1430,15 @@ GG1 <- GG1 %>% filter(`Centro de Costo` != "216-EMERGENCIAS PEDIÁTRICAS" )
 GG1 <- rbind(GG1, urg_odo)
 
 
-# Valores -----------------------------------------------------------------
+# Elimina cuentas que no deben ir en Administración -----------------------
 
+GG1$`Centro de Costo` <- ifelse(GG1$`Centro de Costo`=="670-ADMINISTRACIÓN" & 
+                                  (GG1$Cuenta == "21-MATERIALES DE CURACIÓN" |
+                                     GG1$Cuenta == "18-MATERIAL MEDICO QUIRURGICO" |
+                                     GG1$Cuenta == "30-MEDICAMENTOS" ), "116-HOSPITALIZACIÓN PEDIATRÍA", GG1$`Centro de Costo`)
+
+
+# Valores -----------------------------------------------------------------
 
 sum(SIGFE$Devengado)
   
@@ -1473,9 +1451,6 @@ diferencia <- sum(SIGFE$Devengado)-sum(GG1$Devengado)-sum(Compras_Servicios$Deve
 diferencia
 
 medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(devengo_medicamentos = sum(Devengado))
-
-
-# agregar_CC <- CxCC %>% filter(`CENTRO DE COSTO` %in%  )
 
 
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
