@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM Unidades_2022.R",
     "project_path": "SIGCOM Unidades_2022.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "1673079993",
     "contents": "",
     "dirty": false,
     "created": 1647343446589.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "440,0",
-        "scrollLine": "0"
+        "cursorPosition": "447,0",
+        "scrollLine": "442"
     },
     "folds": "",
-    "lastKnownWriteTime": 1647458899,
+    "lastKnownWriteTime": 1648496675,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1647458899193,
+    "last_content_update": 1648496675898,
     "read_only": false,
     "read_only_alternatives": []
 }

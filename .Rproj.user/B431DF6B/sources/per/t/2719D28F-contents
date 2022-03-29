@@ -7,8 +7,8 @@ library(openxlsx)
 library(xlsx)
 library(readxl)
 
-dias_mes <- 21
-mes <- "01 Enero"
+dias_mes <- 20
+mes <- "02 Febrero"
 anio <- "2022"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 
@@ -434,9 +434,6 @@ programacion <- programacion %>% filter(perc != "170-UNIDAD DE CUIDADOS INTENSIV
 
 programacion <- rbind(programacion, uti)
 
-rm(df, GG1, GG2, M2Pab, prop_pab, nombres, e, M2_Pab_EqMed, Metros_pabellon, 
-   `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, 
-   dias_mes, base, uci, uti, ucicv, uticv)
 
 openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes,"/Complemento Subir/01.xlsx"), 
                      colNames = TRUE, sheetName = "P1", overwrite = TRUE)
@@ -446,6 +443,10 @@ openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/Insumos de I
 
 openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/901_No_Programados.xlsx"),
                      colNames = TRUE, sheetName = "NP", overwrite = TRUE)
+
+rm(df, GG1, GG2, M2Pab, prop_pab, nombres, e, M2_Pab_EqMed, Metros_pabellon, 
+   `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, 
+   dias_mes, base, uci, uti, ucicv, uticv)
 
 rm(empleados, planilla1, programacion, pt, ruta_base, anio, mes)
 

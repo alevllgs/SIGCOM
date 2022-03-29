@@ -6,14 +6,14 @@ library(dplyr)
 library(openxlsx)
 library(xlsx)
 
-Fecha_filtro <- "2022-01-01"
-archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-01 REM serie BS.xlsx"
-remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/REMOTA ENERO.xlsx"
-Sheet_remota <- "PM REMOTA"
+Fecha_filtro <- "2022-02-01"
+archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-02 REM serie BS.xlsx"
+remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/02 REMOTA.xlsx"
+Sheet_remota <- "CONSULTAS REM A32"
 Censo <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/2022/Censo-hrrio 2022.xlsx"
-Sheet_censo <- "DIC"
-rango_censo <- "B6:P21"
-Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/01 Enero/Complemento Subir/05.xlsx"
+Sheet_censo <- "FEB"
+rango_censo <- "B5:P20"
+Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/02 Febrero/Complemento Subir/05.xlsx"
 
 
 # Captura de producción ambulatoria ---------------------------------------
@@ -117,18 +117,20 @@ Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA` <-
 
 
 Censo_hrrio_BBDD$"116__01401 - HOSPITALIZACIÓN PEDIATRÍA" <- 
-  Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPGA Y UPGB`+  
-  Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPGC` +
-  as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPGD`)
+  Censo_hrrio_BBDD$`UNIDAD PEDIATRICA  UPGA Y UPGB`+  
+  Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG C` +
+  as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG D`)
+
+
+
 
 Censo_hrrio_BBDD$"87__01122 - HOSPITALIZACIÓN ONCOLOGÍA" <- 
   Censo_hrrio_BBDD$`UNIDAD DE ONCOLOGÍA`
 
 Censo_hrrio_BBDD$"90__01201 - HOSPITALIZACIÓN QUIRÚRGICA" <- 
-  Censo_hrrio_BBDD$`UNIDAD DE TRAUMATOLOGIA CUIDADOS BASICOS`+
+  Censo_hrrio_BBDD$`UNIDAD DE TRAUMATOLOGIA`+
   Censo_hrrio_BBDD$`UNIDAD DE CIRUGIA GENERAL`+
-  Censo_hrrio_BBDD$`UNIDAD DE PLASTICA Y QUEMADO`+
-  Censo_hrrio_BBDD$`UNIDAD DE TRAUMATOLOGIA CUIDADOS MEDIOS`
+  Censo_hrrio_BBDD$`UNIDAD DE PLASTICA Y QUEMADO`
 
 Censo_hrrio_BBDD$"149__01610 - HOSPITALIZACIÓN PSIQUIATRÍA" <- 
   Censo_hrrio_BBDD$`SALUD MENTAL CORTA ESTADÍA`+
@@ -233,14 +235,8 @@ telemedicina <- telemedicina %>%
   add_column("Centro de Producción" = "359__15701 - TELEMEDICINA", .after = 1) %>% 
   add_column("Unidades de Producción" = "1__Atención", .after = 2)
 
-
-
-
 Produccion_SIGCOM <- rbind(Produccion_SIGCOM,telemedicina, A08_PERC, Censo_Critico, Censo_No_Critico) 
 rm(A07_PERC, A09I_PERC, A08_PERC, Censo_Critico, Censo_No_Critico, Censo_hrrio_BBDD, telemedicina)
-
-
-
 
 # REM B -------------------------------------------------------------------
 
@@ -502,7 +498,8 @@ Produccion_SIGCOM <- rbind( Produccion_SIGCOM, B_qx)
 # Remotas -----------------------------------------------------------------
 
 At_remota <- read_excel(remota, sheet = Sheet_remota)
-At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control Abreviado") %>% 
+  At_remota <- At_remota %>% filter(ESTADO=="Asistente") %>%
+    At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control Abreviado") %>%
   group_by(UNIDAD_ATENCION_DESC) %>% 
   count(UNIDAD_ATENCION_DESC) %>%  mutate(Fecha=Fecha_filtro,"Centro de Producción" = case_when(
     UNIDAD_ATENCION_DESC == "Pediatria" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
@@ -514,6 +511,7 @@ At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control A
     UNIDAD_ATENCION_DESC == "Dermatologia Infantil" ~ "15106__15106 - CONSULTA DERMATOLOGÍA",
     UNIDAD_ATENCION_DESC == "Gastroenterologia Infantil" ~ "15119__15119 - CONSULTA GASTROENTEROLOGÍA",
     UNIDAD_ATENCION_DESC == "Ginecologia Infantil" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    UNIDAD_ATENCION_DESC == "Ginecologia pediatrica y de la adolescencia" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
     UNIDAD_ATENCION_DESC == "Genetica Infantil" ~ "15115__15115 - CONSULTA GENÉTICA",
     UNIDAD_ATENCION_DESC == "Hemato-Oncologia" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
     UNIDAD_ATENCION_DESC == "Hemofilia Adulto" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
@@ -533,6 +531,7 @@ At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control A
     UNIDAD_ATENCION_DESC == "Maxilofacial" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
     UNIDAD_ATENCION_DESC == "Neurocirugia Infantil" ~ "15121__15121 - CONSULTA NEUROCIRUGÍA",
     UNIDAD_ATENCION_DESC == "Prematuros *" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    UNIDAD_ATENCION_DESC == "Cirugia Infantil" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
     UNIDAD_ATENCION_DESC == "Medicina fisica y rehabilitacion Infantil" ~ "15118__15118 - CONSULTA FISIATRÍA",
     TRUE ~ "Asignar Centro de Costo"),"Unidades de Producción" = "2__Atención", Valor=n)
 
