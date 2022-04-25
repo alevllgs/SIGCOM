@@ -6,14 +6,14 @@ library(dplyr)
 library(openxlsx)
 library(xlsx)
 
-Fecha_filtro <- "2022-02-01"
-archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-02 REM serie BS.xlsx"
+Fecha_filtro <- "2022-01-01"
+archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-01 REM serie BS.xlsx"
 remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/02 REMOTA.xlsx"
 Sheet_remota <- "CONSULTAS REM A32"
 Censo <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/2022/Censo-hrrio 2022.xlsx"
-Sheet_censo <- "FEB"
-rango_censo <- "B5:P20"
-Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/02 Febrero/Complemento Subir/05.xlsx"
+Sheet_censo <- "ENE"
+rango_censo <- "B5:O20"
+Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/01 Enero/Complemento Subir/05.xlsx"
 
 
 # Captura de producción ambulatoria ---------------------------------------
@@ -120,8 +120,6 @@ Censo_hrrio_BBDD$"116__01401 - HOSPITALIZACIÓN PEDIATRÍA" <-
   Censo_hrrio_BBDD$`UNIDAD PEDIATRICA  UPGA Y UPGB`+  
   Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG C` +
   as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG D`)
-
-
 
 
 Censo_hrrio_BBDD$"87__01122 - HOSPITALIZACIÓN ONCOLOGÍA" <- 
@@ -499,7 +497,7 @@ Produccion_SIGCOM <- rbind( Produccion_SIGCOM, B_qx)
 
 At_remota <- read_excel(remota, sheet = Sheet_remota)
   At_remota <- At_remota %>% filter(ESTADO=="Asistente") %>%
-    At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control Abreviado") %>%
+    # At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control Abreviado") %>%
   group_by(UNIDAD_ATENCION_DESC) %>% 
   count(UNIDAD_ATENCION_DESC) %>%  mutate(Fecha=Fecha_filtro,"Centro de Producción" = case_when(
     UNIDAD_ATENCION_DESC == "Pediatria" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",

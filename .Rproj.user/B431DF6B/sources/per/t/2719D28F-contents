@@ -7,8 +7,8 @@ library(openxlsx)
 library(xlsx)
 library(readxl)
 
-dias_mes <- 20
-mes <- "02 Febrero"
+dias_mes <- 23
+mes <- "03 Marzo"
 anio <- "2022"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 
@@ -169,6 +169,7 @@ empleados <- empleados %>% mutate("Categoría de Empleado" = case_when(
   categoria_de_empleado=="PROFESIONALES UNIVERSITARIOS"~"00702",
   categoria_de_empleado=="ADMINISTRADOR (A) PUBLICO"~"00702",
   categoria_de_empleado=="CONTADOR (A) PUBLICO (A) AUDITOR"~"00702",
+  categoria_de_empleado=="INGENIERO (A) CIVIL"~"00702",
   
   #00705 Personal Directivo
   categoria_de_empleado=="DIRECTOR DE HOSPITAL"~"00705",
@@ -434,15 +435,16 @@ programacion <- programacion %>% filter(perc != "170-UNIDAD DE CUIDADOS INTENSIV
 
 programacion <- rbind(programacion, uti)
 
-
 openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes,"/Complemento Subir/01.xlsx"), 
                      colNames = TRUE, sheetName = "P1", overwrite = TRUE)
 
-openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/04 SIRH R.xlsx"),
+openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/902_SIRH_R.xlsx"),
                      colNames = TRUE, sheetName = "SIRH", overwrite = TRUE)
 
-openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/901_No_Programados.xlsx"),
+openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/903_No_Programados.xlsx"),
                      colNames = TRUE, sheetName = "NP", overwrite = TRUE)
+
+no_asignada_profesion <- empleados %>% filter(`Categoría de Empleado` == "Asignar Clasificacion")
 
 rm(df, GG1, GG2, M2Pab, prop_pab, nombres, e, M2_Pab_EqMed, Metros_pabellon, 
    `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, 

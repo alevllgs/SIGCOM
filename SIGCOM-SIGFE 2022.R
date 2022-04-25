@@ -7,7 +7,7 @@ library(openxlsx)
 library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
-mes_archivo <- "02 Febrero"
+mes_archivo <- "03 Marzo"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 
@@ -15,9 +15,9 @@ options(scipen=999)
 SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xlsx"), skip = 6)
 M2 <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx")
 ConsumoxCC <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/02 Consumo x CC del mes.xlsx")
-Cant_RRHH <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/04 SIRH R.xlsx")
+Cant_RRHH <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/902_SIRH_R.xlsx")
 Farmacia <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx")
-graba <- paste0(ruta_base,resto,mes_archivo,"/01, 02, 03, 04 , 05, 06 y 07/SIGFE R.xlsx")
+graba <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/909_SIGFE_R.xlsx")
 CxCC_H <- paste0(ruta_base,resto,"/Insumos de info anual/CxCC_historico.xlsx")
 M2Pab <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/89_Pabellon.xlsx")
 EqMed <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/99_Equipos_Medicos.xlsx")

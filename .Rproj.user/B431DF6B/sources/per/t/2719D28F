@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM RRHH 2022.R",
     "project_path": "SIGCOM RRHH 2022.R",
     "type": "r_source",
-    "hash": "3188491139",
+    "hash": "3144837852",
     "contents": "",
     "dirty": false,
     "created": 1647884859132.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "0,0",
+        "cursorPosition": "9,0",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1648492280,
+    "lastKnownWriteTime": 1650903940,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1648492280779,
+    "last_content_update": 1650903940577,
     "read_only": false,
     "read_only_alternatives": []
 }
