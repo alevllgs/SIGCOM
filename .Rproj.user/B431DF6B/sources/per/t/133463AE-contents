@@ -4,8 +4,8 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "01 Enero"
-mes_ruta_registros <- "2022-01"
+mes_archivo <- "03 Marzo"
+mes_ruta_registros <- "2022-03"
 
 #Nocambian
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
@@ -17,7 +17,7 @@ cola_ruta_registro_b <- " REM serie BS.xlsx"
 
 
 
-graba <- paste0(ruta_base,resto,mes_archivo,"/01, 02, 03, 04 , 05, 06 y 07/06_COSTOS_INDIRECTOS.xlsx")
+graba <- paste0(ruta_base,resto,mes_archivo,"//Insumos de Informacion/960_Indirectos.xlsx")
 
 rehabilitacion_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_ruta_registros,cola_ruta_registro_a), 
                                   sheet = "A28", range = "A168:B191", col_names = FALSE)

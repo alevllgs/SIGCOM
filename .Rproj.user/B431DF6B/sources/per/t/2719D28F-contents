@@ -435,13 +435,13 @@ programacion <- programacion %>% filter(perc != "170-UNIDAD DE CUIDADOS INTENSIV
 
 programacion <- rbind(programacion, uti)
 
-openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes,"/Complemento Subir/01.xlsx"), 
+openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/911_Planilla_1_RRHH.xlsx"), 
                      colNames = TRUE, sheetName = "P1", overwrite = TRUE)
 
-openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/902_SIRH_R.xlsx"),
+openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/912_SIRH_R.xlsx"),
                      colNames = TRUE, sheetName = "SIRH", overwrite = TRUE)
 
-openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/903_No_Programados.xlsx"),
+openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/913_No_Programados.xlsx"),
                      colNames = TRUE, sheetName = "NP", overwrite = TRUE)
 
 no_asignada_profesion <- empleados %>% filter(`Categoría de Empleado` == "Asignar Clasificacion")

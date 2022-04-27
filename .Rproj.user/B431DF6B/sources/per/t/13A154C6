@@ -3,7 +3,7 @@
     "path": "~/GitHub/SIGCOM/SIGCOM-Produccion_2022.R",
     "project_path": "SIGCOM-Produccion_2022.R",
     "type": "r_source",
-    "hash": "3079911781",
+    "hash": "2234940269",
     "contents": "",
     "dirty": false,
     "created": 1647351159409.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "553,0",
+        "cursorPosition": "115,60",
         "scrollLine": "0"
     },
-    "folds": "18|36|102|2|\n103|33|110|2|\n223|15|237|0|\n238|8|373|0|\n374|17|494|0|\n495|10|553|0|\n",
-    "lastKnownWriteTime": 1648661916,
+    "folds": "18|36|102|2|\n103|33|110|2|\n223|15|237|0|\n238|8|373|0|\n374|17|494|0|\n",
+    "lastKnownWriteTime": 1651091854,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1648661916573,
+    "last_content_update": 1651091854693,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -6,14 +6,14 @@ library(dplyr)
 library(openxlsx)
 library(xlsx)
 
-Fecha_filtro <- "2022-01-01"
-archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-01 REM serie BS.xlsx"
-remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/02 REMOTA.xlsx"
+Fecha_filtro <- "2022-03-01"
+archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-03 REM serie BS.xlsx"
+remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/03 REMOTA.xlsx"
 Sheet_remota <- "CONSULTAS REM A32"
 Censo <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/2022/Censo-hrrio 2022.xlsx"
-Sheet_censo <- "ENE"
-rango_censo <- "B5:O20"
-Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/01 Enero/Complemento Subir/05.xlsx"
+Sheet_censo <- "MAR"
+rango_censo <- "B5:O20" #lo tomo de donde comienzan los encabezados de la tabla
+Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/03 Marzo/Insumos de Informacion/950_Produccion.xlsx"
 
 
 # Captura de producción ambulatoria ---------------------------------------
@@ -117,7 +117,7 @@ Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA` <-
 
 
 Censo_hrrio_BBDD$"116__01401 - HOSPITALIZACIÓN PEDIATRÍA" <- 
-  Censo_hrrio_BBDD$`UNIDAD PEDIATRICA  UPGA Y UPGB`+  
+  Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPGA Y UPGB`+
   Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG C` +
   as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG D`)
 
@@ -531,8 +531,10 @@ At_remota <- read_excel(remota, sheet = Sheet_remota)
     UNIDAD_ATENCION_DESC == "Prematuros *" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
     UNIDAD_ATENCION_DESC == "Cirugia Infantil" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
     UNIDAD_ATENCION_DESC == "Medicina fisica y rehabilitacion Infantil" ~ "15118__15118 - CONSULTA FISIATRÍA",
+    UNIDAD_ATENCION_DESC == "Hemofilia" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
     TRUE ~ "Asignar Centro de Costo"),"Unidades de Producción" = "2__Atención", Valor=n)
-
+  
+No_asignadas_remotas <- At_remota %>% filter(`Centro de Producción`=="Asignar Centro de Costo")
 
 At_remota$n <- NULL
 At_remota$UNIDAD_ATENCION_DESC <- NULL
