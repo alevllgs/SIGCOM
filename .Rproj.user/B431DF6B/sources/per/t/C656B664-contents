@@ -2,7 +2,7 @@ library(readxl)
 library(tidyverse)
 
 
-mes_archivo <- "03 Marzo"
+mes_archivo <- "05 Mayo"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 

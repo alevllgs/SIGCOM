@@ -7,8 +7,8 @@ library(openxlsx)
 library(xlsx)
 library(readxl)
 
-dias_mes <- 23
-mes <- "03 Marzo"
+dias_mes <- 22
+mes <- "05 MAyo"
 anio <- "2022"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 

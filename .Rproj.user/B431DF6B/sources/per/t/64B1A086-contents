@@ -10,13 +10,12 @@ library(xlsx)
 
 # Cubo 09 -----------------------------------------------------------------
 
-fecha_mes <- "2022-01-01"
-PM_GRD <- c(1.3239,	1.1900,	1.2501,	1.3399,	1.3454,	1.3679,	1.3505,	1.3420,	1.1704,	1.2395,	1.1703,1.2219, )
-
+fecha_mes <- "2022-05-01"
+PM_GRD <- c(1.3239,	1.1900,	1.2501,	1.3399,	1.3454,	1.3679,	1.3505,	1.3420,	1.1704,	1.2395,	1.1703,1.2219,
+            1.2734,1.3280, 1.1678, 1.2583, 1.1628)
 
 fecha_solo_mes <- str_sub(fecha_mes,1,7)
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
-
 
 Arch_cubo9 <- paste0(ruta_base,"BBDD Produccion/PERC/Cubos 9/Cubo_9 ",fecha_solo_mes,".xlsx")
 C9_BBDD <- paste0(ruta_base,"BBDD Produccion/PERC/Cubos 9/Cubo_9 BBDD.xlsx")
@@ -261,7 +260,6 @@ i4 <- inner_join(i4,p4) %>%
                                    "Código DEIS"="109101", "PM GRD 2021"="", "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,"Costo por Actividad 2021"= round(`Gasto RRHH 2021`/`Producción 2021`)) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021` )
   
-
 # Ambulatorio -------------------------------------------------------------
 i3 <- Cubo_9 %>% filter(CC %in% ambulatorio & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
 p3 <- Cubo_9 %>% filter(CC %in% ambulatorio & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
@@ -274,7 +272,6 @@ i3 <- inner_join(i3,p3) %>%
          "Costo por Actividad 2021"= round(`Gasto RRHH 2021`/`Producción 2021`)) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
 
-
 # CMA ---------------------------------------------------------------------
 i2 <- Cubo_9 %>% filter(CC %in% cma & Item=="Total RRHH")  %>% group_by(Fecha) %>% summarise("Gasto RRHH 2021" = sum(total))
 p2 <- Cubo_9 %>% filter(CC %in% cma & Item=="p1")  %>% group_by(Fecha) %>% summarise("Producción 2021" = sum(total))
@@ -283,7 +280,6 @@ i2 <- inner_join(i2,p2) %>%
          "Código DEIS"="109101", "PM GRD 2021"="", "Gasto RRHH 2021"=`Gasto RRHH 2021`,"Producción 2021"=`Producción 2021`,
          "Costo por Actividad 2021"= round(`Gasto RRHH 2021`/`Producción 2021`)) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
-
 
 # Hospitalizado -----------------------------------------------------------
 i1 <- Cubo_9 %>% filter((CC %in% hospitalizacion | CC %in% hospitalizacion_qx | CC %in% hospitalizacion_uci) & Item=="Total RRHH")  %>% 
@@ -302,8 +298,6 @@ informe <- rbind(i1, i3, i2, i4)
 
 openxlsx::write.xlsx(informe,paste0(ruta_base,"BBDD Produccion/PERC/PERC 2021/informe_mensual.xlsx"), 
                      colNames = TRUE, sheetName = "Informe", overwrite = TRUE)
-
-
 
 
 # rm(i1, i2, i3, i4, p1,p11, p2, p3, p33, p4, Cubo_9, informe)

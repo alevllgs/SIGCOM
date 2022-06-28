@@ -7,7 +7,7 @@ library(openxlsx)
 library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
-mes_archivo <- "03 Marzo"
+mes_archivo <- "05 Mayo"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 
@@ -15,7 +15,7 @@ options(scipen=999)
 SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xlsx"), skip = 6)
 M2 <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx")
 ConsumoxCC <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/02 Consumo x CC del mes.xlsx")
-Cant_RRHH <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/902_SIRH_R.xlsx")
+Cant_RRHH <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/912_SIRH_R.xlsx")
 Farmacia <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx")
 graba <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/920_SIGFE_R.xlsx")
 CxCC_H <- paste0(ruta_base,resto,"/Insumos de info anual/CxCC_historico.xlsx")
@@ -1451,7 +1451,6 @@ diferencia <- sum(SIGFE$Devengado)-sum(GG1$Devengado)-sum(Compras_Servicios$Deve
 diferencia
 
 medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(devengo_medicamentos = sum(Devengado))
-
 
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
 

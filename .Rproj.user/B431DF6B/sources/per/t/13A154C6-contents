@@ -6,14 +6,16 @@ library(dplyr)
 library(openxlsx)
 library(xlsx)
 
-Fecha_filtro <- "2022-03-01"
-archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-03 REM serie BS.xlsx"
-remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/03 REMOTA.xlsx"
+anio <- "2022"
+mes <- "5"
+Fecha_filtro <- "2022-05-01"
+archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-05 REM serie BS.xlsx"
+remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/05 REMOTA.xlsx"
 Sheet_remota <- "CONSULTAS REM A32"
 Censo <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/2022/Censo-hrrio 2022.xlsx"
-Sheet_censo <- "MAR"
-rango_censo <- "B5:O20" #lo tomo de donde comienzan los encabezados de la tabla
-Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/03 Marzo/Insumos de Informacion/950_Produccion.xlsx"
+Sheet_censo <- "MAY"
+rango_censo <- "B5:O20" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
+Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/05 Mayo/Insumos de Informacion/950_Produccion.xlsx"
 
 
 # Captura de producción ambulatoria ---------------------------------------
@@ -495,8 +497,8 @@ Produccion_SIGCOM <- rbind( Produccion_SIGCOM, B_qx)
 
 # Remotas -----------------------------------------------------------------
 
-At_remota <- read_excel(remota, sheet = Sheet_remota)
-  At_remota <- At_remota %>% filter(ESTADO=="Asistente") %>%
+At_remota <- read_excel(remota, sheet = "Teleconsulta")
+  At_remota <- At_remota %>% filter(ESTADO=="Asistente" & MES_ATENCION==mes) %>%
     # At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control Abreviado") %>%
   group_by(UNIDAD_ATENCION_DESC) %>% 
   count(UNIDAD_ATENCION_DESC) %>%  mutate(Fecha=Fecha_filtro,"Centro de Producción" = case_when(
@@ -505,7 +507,9 @@ At_remota <- read_excel(remota, sheet = Sheet_remota)
     UNIDAD_ATENCION_DESC == "Anestesiologia Infantil" ~ "15125__15125 - CONSULTA ANESTESIOLOGIA",
     UNIDAD_ATENCION_DESC == "Cardiologia Infantil" ~ "15105__15105 - CONSULTA CARDIOLOGÍA",
     UNIDAD_ATENCION_DESC == "Cirugia Plastica" ~ "15208__15208 - CONSULTA CIRUGÍA PLÁSTICA",
+    UNIDAD_ATENCION_DESC == "Cirugia Infantil" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
     UNIDAD_ATENCION_DESC == "Endocrinologia Infantil" ~ "15110__15110 - CONSULTA ENDOCRINOLOGÍA",
+    UNIDAD_ATENCION_DESC == "Endocrinologia Infantil " ~ "15110__15110 - CONSULTA ENDOCRINOLOGÍA",
     UNIDAD_ATENCION_DESC == "Dermatologia Infantil" ~ "15106__15106 - CONSULTA DERMATOLOGÍA",
     UNIDAD_ATENCION_DESC == "Gastroenterologia Infantil" ~ "15119__15119 - CONSULTA GASTROENTEROLOGÍA",
     UNIDAD_ATENCION_DESC == "Ginecologia Infantil" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
