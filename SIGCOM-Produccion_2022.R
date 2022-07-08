@@ -7,16 +7,19 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2022"
-mes <- "5"
-Fecha_filtro <- "2022-05-01"
-archivoBS <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/2022/2022-05 REM serie BS.xlsx"
-remota <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Atenciones Remotas/2022/05 REMOTA.xlsx"
+mes <- "05"
 Sheet_remota <- "CONSULTAS REM A32"
-Censo <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/2022/Censo-hrrio 2022.xlsx"
 Sheet_censo <- "MAY"
 rango_censo <- "B5:O20" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
-Graba <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/05 Mayo/Insumos de Informacion/950_Produccion.xlsx"
 
+
+
+mes_completo <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
+mes_completo <- mes_completo[as.numeric(mes)]
+Fecha_filtro <- paste0(anio,"-",mes,"-01")
+archivoBS <-paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/",anio,"/",anio,"-",mes," REM serie BS.xlsx")
+remota <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/Atenciones Remotas/",anio,"/",mes," REMOTA.xlsx")
+Censo <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/",anio,"/Censo-hrrio ",anio,".xlsx")
 
 # Captura de producción ambulatoria ---------------------------------------
 
