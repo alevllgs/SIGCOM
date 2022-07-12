@@ -20,6 +20,7 @@ Fecha_filtro <- paste0(anio,"-",mes,"-01")
 archivoBS <-paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/",anio,"/",anio,"-",mes," REM serie BS.xlsx")
 remota <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/Atenciones Remotas/",anio,"/",mes," REMOTA.xlsx")
 Censo <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/",anio,"/Censo-hrrio ",anio,".xlsx")
+Graba <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC ",anio ,"/",mes," ",mes_completo,"/Insumos de Informacion/950_Produccion.xlsx")
 
 # Captura de producción ambulatoria ---------------------------------------
 
@@ -202,7 +203,6 @@ Censo_Critico <- Censo_hrrio_BBDD %>% filter(Fecha == Fecha_filtro) %>%
     `Información Estadística` == "Egresos-Fallecidos" ~ "1__Transferencia",
     `Información Estadística` == "Egresos-Traslados" ~ "1__Transferencia",
     `Información Estadística` == "Ocupada" ~ "2__DCO",
-    `Información Estadística` == "Egresos- Alta" ~ "3__Egreso",
     `Información Estadística` == "N° camas dotación" ~ "6__N. Camas",
     TRUE ~ "No")) %>% 
   filter(`Unidades de Producción` != "No" & `Centro de Producción` != "No") %>% 
@@ -218,6 +218,7 @@ Egreso <- Censo_hrrio_BBDD %>% filter(Fecha == Fecha_filtro) %>%
     TRUE ~ "No")) %>% 
   mutate("Unidades de Producción" = case_when(
     `Información Estadística` == "Egresos- Alta" ~ "3__Egreso",
+    `Información Estadística` == "Egresos-Fallecidos" ~ "3__Egreso",
     TRUE ~ "No")) %>% 
   filter(`Unidades de Producción` != "No" & `Centro de Producción` != "No") %>% 
   group_by(Fecha, `Centro de Producción`, `Unidades de Producción`) %>% 
