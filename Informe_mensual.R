@@ -187,8 +187,9 @@ i1 <- inner_join(i1,p1) %>%
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
 
 informe <- rbind(i1, i3, i2, i4)
+informe$`Mes-Año` <- as.Date(informe$`Mes-Año`)
 
-openxlsx::write.xlsx(informe,paste0(ruta_base,"BBDD Produccion/PERC/PERC 2021/informe_mensual.xlsx"), 
+openxlsx::write.xlsx(informe,"C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/Cubos 9/informe_mensual.xlsx", 
                      colNames = TRUE, sheetName = "Informe", overwrite = TRUE)
 
 
