@@ -7,9 +7,9 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2022"
-mes <- "05"
-Sheet_remota <- "CONSULTAS REM A32"
-Sheet_censo <- "MAY"
+mes <- "06"
+Sheet_remota <- "Teleconsultas"
+Sheet_censo <- "JUN"
 rango_censo <- "B5:O20" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
 
 
@@ -501,8 +501,8 @@ Produccion_SIGCOM <- rbind( Produccion_SIGCOM, B_qx)
 
 # Remotas -----------------------------------------------------------------
 
-At_remota <- read_excel(remota, sheet = "Teleconsulta")
-  At_remota <- At_remota %>% filter(ESTADO=="Asistente" & MES_ATENCION==mes) %>%
+At_remota <- read_excel(remota, sheet = Sheet_remota)
+  At_remota <- At_remota %>% filter(ESTADO=="Asistente" & MES_ATENCION==as.numeric(mes)) %>%
     # At_remota <- At_remota %>% filter(ESTADO=="Asistente" & TIPO_INGRESO!="Control Abreviado") %>%
   group_by(UNIDAD_ATENCION_DESC) %>% 
   count(UNIDAD_ATENCION_DESC) %>%  mutate(Fecha=Fecha_filtro,"Centro de Producción" = case_when(
