@@ -194,7 +194,7 @@ informe <- rbind(i1, i3, i2, i4)
 informe$`Mes-Año` <- as.Date(informe$`Mes-Año`)
 
 informe <- informe %>% 
-  mutate(`PM GRD`=`PM GRD 2021`, `Gasto RRHH`=`Gasto RRHH 2021`, `Producción`=`Producción 2021`,
+  mutate(`PM GRD`=as.numeric(`PM GRD 2021`), `Gasto RRHH`=`Gasto RRHH 2021`, `Producción`=`Producción 2021`,
                               `Costo por Actividad`=`Costo por Actividad 2021`) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD`, `Gasto RRHH`, `Producción`,`Costo por Actividad`)
 
