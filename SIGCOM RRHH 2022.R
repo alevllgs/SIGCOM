@@ -8,7 +8,7 @@ library(xlsx)
 library(readxl)
 
 dias_mes <- 22
-mes <- "05 MAyo"
+mes <- "06 Junio"
 anio <- "2022"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 
@@ -129,6 +129,7 @@ empleados <- empleados %>% mutate("Categoría de Empleado" = case_when(
   categoria_de_empleado=="OTROS TECNICOS"~"00403",
   #00501 Auxiliares en Salud
   categoria_de_empleado=="AUXILIAR PARAMEDICO"~"00501",
+  categoria_de_empleado=="AUXILIAR DE ENFERMERIA"~"00501",
   #00701 Personal Administrativo
   categoria_de_empleado=="ADMINISTRATIVOS"~"00701",
   categoria_de_empleado=="ADMINISTRATIVO"~"00701",

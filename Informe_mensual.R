@@ -9,7 +9,9 @@ Cubo_9 <- readxl::read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion
 
 
 PM_GRD <- c(1.3239,	1.1900,	1.2501,	1.3399,	1.3454,	1.3679,	1.3505,	1.3420,	1.1704,	1.2395,	1.1703,1.2219,
-            1.2734,1.3280, 1.1678, 1.2583, 1.1628)
+            1.2734,1.3280, 1.1678, 1.2583, 1.1628, 1.3745)
+
+
 
 ambulatorio <- c(
   "274-CONSULTA NEUROLOGÍA",
@@ -186,11 +188,18 @@ i1 <- inner_join(i1,p1) %>%
          "Costo por Actividad 2021"= round((`Gasto RRHH 2021`/(`Producción 2021`*PM_GRD)))) %>% 
   select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD 2021`, `Gasto RRHH 2021`, `Producción 2021`,`Costo por Actividad 2021`)
 
+### El costo por actividad en hospitalización viene multiplicado por el PMGRD
+
 informe <- rbind(i1, i3, i2, i4)
 informe$`Mes-Año` <- as.Date(informe$`Mes-Año`)
+
+informe <- informe %>% 
+  mutate(`PM GRD`=`PM GRD 2021`, `Gasto RRHH`=`Gasto RRHH 2021`, `Producción`=`Producción 2021`,
+                              `Costo por Actividad`=`Costo por Actividad 2021`) %>% 
+  select(Cod, Trazadora, `Mes-Año`, Establecimiento, `Código DEIS`, `PM GRD`, `Gasto RRHH`, `Producción`,`Costo por Actividad`)
 
 openxlsx::write.xlsx(informe,"C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/Cubos 9/informe_mensual.xlsx", 
                      colNames = TRUE, sheetName = "Informe", overwrite = TRUE)
 
 
-# rm(i1, i2, i3, i4, p1,p11, p2, p3, p33, p4, Cubo_9, informe)
+rm(i1, i2, i3, i4, p1,p11, p2, p3, p33, p4, Cubo_9, informe, ambulatorio, cma, emergencias, hospitalizacion, hospitalizacion_qx, hospitalizacion_uci, PM_GRD)
