@@ -33,19 +33,16 @@ Categoriza el RRHH de acuerdo a las reglas del SIGCOM, reporta las personas que 
 ![image](https://user-images.githubusercontent.com/62567977/184367794-5cba4b27-3815-46a8-8d3a-f14f5116694e.png)
 
 
-
-
 Genera
 
 ![image](https://user-images.githubusercontent.com/62567977/184369440-c8e8f141-a578-4c49-afbd-c416a8d0f460.png)
 
 
-
-
-
 ### SIGCOM-Produccion: 
 Busca la produccion mensual en distintos reportes como el REM serie A, REM Serie B, Censo Hospitalario y la asigna a los centros de costo
+
 ![image](https://user-images.githubusercontent.com/62567977/184367491-cb278e79-cd38-42e0-b0ef-8a3ec497321a.png)
+
 
 Genera
 
