@@ -7,10 +7,10 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2022"
-mes <- "06"
+mes <- "07"
 Sheet_remota <- "Teleconsultas"
-Sheet_censo <- "JUN"
-rango_censo <- "B5:O20" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
+Sheet_censo <- "JUL"
+rango_censo <- "B5:R20" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
 
 
 
@@ -125,7 +125,8 @@ Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA` <-
 Censo_hrrio_BBDD$"116__01401 - HOSPITALIZACIÓN PEDIATRÍA" <- 
   Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPGA Y UPGB`+
   Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG C` +
-  as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG D`)
+  as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG D`) +
+  Censo_hrrio_BBDD$`UNIDAD DE EMERGENCIA`
 
 
 Censo_hrrio_BBDD$"87__01122 - HOSPITALIZACIÓN ONCOLOGÍA" <- 

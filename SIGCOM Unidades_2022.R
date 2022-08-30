@@ -4,8 +4,8 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "06 Junio"
-mes_ruta_registros <- "2022-06"
+mes_archivo <- "07 Julio"
+mes_ruta_registros <- "2022-07"
 
 #Nocambian
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
@@ -249,6 +249,7 @@ cmenor_perc <- cmenor_perc %>%
                                      `PERC ASOCIADO` == "TRAUMATOLOGIA"~"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
                                      `PERC ASOCIADO` == "ODONTOLOGIA (COD 27-03) Aranc.Fonasa"~"356-CONSULTA ODONTOLOGÍA",
                                      `PERC ASOCIADO` == "RETIRO ELEMENTOS OSTEOSINTESIS"~"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
+                                     `PERC ASOCIADO` == "ODONTOLOGIA"~"356-CONSULTA ODONTOLOGÍA",
                                      TRUE ~ "Asignar Centro de Costo"
   ))
 

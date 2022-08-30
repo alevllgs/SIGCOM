@@ -2,7 +2,7 @@ library(readxl)
 library(tidyverse)
 
 
-mes_archivo <- "06 Junio"
+mes_archivo <- "07 Julio"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 
@@ -156,6 +156,10 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="ODONTOLOGIA(DENTAL)"~"15602-CONSULTA ODONTOLOGÍA",
              servicio=="SALUD MENTAL MEDIANA ESTADIA"~"149-HOSPITALIZACIÓN PSIQUIATRÍA",
              servicio=="ORTODONCIA"~"15602-CONSULTA ODONTOLOGÍA",
+             servicio=="U.PEDIATRIA GRAL D"~"116-HOSPITALIZACIÓN PEDIATRÍA",
+             servicio=="S.PEDIATRIA GRAL D"~"116-HOSPITALIZACIÓN PEDIATRÍA",
+             servicio=="UTI CARDIOVASCULAR"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
+             servicio=="URGENCIA (ATEN.CERRADA)"~"216-EMERGENCIAS PEDIÁTRICAS",
              
              servicio=="CONSUMO GENERAL DERMATOLOGIA CAE"~"15106-CONSULTA DERMATOLOGÍA",
              servicio=="CONSUMO GRAL. ORTOP. Y TRAUMA"~"15316-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
