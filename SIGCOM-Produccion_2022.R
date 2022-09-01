@@ -7,9 +7,9 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2022"
-mes <- "07"
+mes <- "06"
 Sheet_remota <- "Teleconsultas"
-Sheet_censo <- "JUL"
+Sheet_censo <- "JUN"
 rango_censo <- "B5:R20" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
 
 
@@ -118,16 +118,23 @@ A08_PERC <- A08_PERC %>%
 # Captura de producción del CENSO -----------------------------------------
 
 Censo_hrrio_BBDD <- read_excel(Censo,sheet = Sheet_censo, range = rango_censo)
+
 Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA` <- 
   as.double(Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA`)
 
 
-Censo_hrrio_BBDD$"116__01401 - HOSPITALIZACIÓN PEDIATRÍA" <- 
-  Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPGA Y UPGB`+
-  Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG C` +
-  as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG D`) +
-  Censo_hrrio_BBDD$`UNIDAD DE EMERGENCIA`
 
+ifelse(is.null(Censo_hrrio_BBDD$`UNIDAD DE EMERGENCIA`)==TRUE,
+       Censo_hrrio_BBDD$"116__01401 - HOSPITALIZACIÓN PEDIATRÍA" <- 
+         as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPGA Y UPGB`) +
+         as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG C`) +
+         as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG D`) ,
+       
+       Censo_hrrio_BBDD$"116__01401 - HOSPITALIZACIÓN PEDIATRÍA" <-
+         as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPGA Y UPGB`) +
+         as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG C`) +
+         as.double(Censo_hrrio_BBDD$`UNIDAD PEDIATRICA UPG D`) +
+         as.double(Censo_hrrio_BBDD$`UNIDAD DE EMERGENCIA`))
 
 Censo_hrrio_BBDD$"87__01122 - HOSPITALIZACIÓN ONCOLOGÍA" <- 
   Censo_hrrio_BBDD$`UNIDAD DE ONCOLOGÍA`
