@@ -4,8 +4,8 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "07 Julio"
-mes_ruta_registros <- "2022-07"
+mes_archivo <- "08 Agosto"
+mes_ruta_registros <- "2022-08"
 
 #Nocambian
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
@@ -173,17 +173,11 @@ esterilizacion_perc <- esterilizacion %>%
 
 # Farmacia ----------------------------------------------------------------
 
-farmacia1 <- farmacia_perc  %>% 
+farmacia_perc <- farmacia_perc  %>% 
   mutate(Cantidad =`593_2-SERVICIO FARMACEUTICO | Prescripción`) %>% select(`PERC ASOCIADO`, Cantidad)
-farmacia1$Item <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
+farmacia_perc$Item <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
 
 
-farmacia2 <- farmacia_perc  %>% 
-  mutate(Cantidad =`593_1-SERVICIO FARMACEUTICO | Receta`) %>% 
-  select(`PERC ASOCIADO`, Cantidad)
-farmacia2$Item <- "593_1-SERVICIO FARMACEUTICO | Receta"
-
-farmacia_perc <- rbind(farmacia1, farmacia2)
 
 
 # Rehabilitacion ----------------------------------------------------------

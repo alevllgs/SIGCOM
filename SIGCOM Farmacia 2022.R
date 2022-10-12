@@ -2,7 +2,7 @@ library(readxl)
 library(tidyverse)
 
 
-mes_archivo <- "07 Julio"
+mes_archivo <- "08 Agosto"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 
@@ -179,6 +179,8 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="ODONTOPEDIATRIA"~"15602-CONSULTA ODONTOLOGÍA",
              servicio=="NUTRICIONISTA"~"15008-CONSULTA NUTRICIÓN",
              servicio=="CONS. ENFERMEDADES INFECCIOSAS"~"15113-CONSULTA INFECTOLOGÍA",
+             
+             servicio=="ATENCION MEDICA-PEDIATRICA DEL PERSONAL"~"15302-CONSULTA PEDIATRÍA GENERAL",
 
              TRUE ~ "Asignar CC"
 ))
@@ -325,13 +327,6 @@ prescripciones <- farmacia %>% select(perc, folio) %>%
   ungroup() 
 
 
-recetas <- distinct(farmacia)
-recetas <- recetas %>% select(perc, folio) %>% 
-  group_by(perc) %>% 
-  mutate(recetas = 1) %>%  select(perc,recetas) %>% 
-  summarise(recetas=sum(recetas)) %>% 
-  ungroup() 
-
 
 gasto_farmacia <- farmacia %>% select(perc, valorizacion) %>% 
   group_by(perc) %>% 
@@ -342,7 +337,15 @@ gasto_farmacia <- farmacia %>% select(perc, valorizacion) %>%
 prop <- sum(gasto_farmacia$gasto)
 gasto_farmacia$gasto <- gasto_farmacia$gasto/prop
 
-farmacia_perc <- inner_join(prescripciones, recetas)
+
+farmacia_perc <- inner_join(prescripciones, gasto_farmacia)
+
+farmacia_perc$filtro <- ifelse(farmacia_perc$gasto == 0, "borrar", "queda")
+
+farmacia_perc <- farmacia_perc %>% filter(filtro == "queda")
+farmacia_perc$filtro <- NULL
+
+gasto_farmacia <- farmacia_perc %>% select(perc, gasto)
 
 rm(df,prop, GG2, GG44, farmacia3, M2, M2_Pab_EqMed, M2Pab, CAE_prorratear, 
    `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, a,  
@@ -350,7 +353,7 @@ rm(df,prop, GG2, GG44, farmacia3, M2, M2_Pab_EqMed, M2Pab, CAE_prorratear,
 
 colnames(farmacia_perc)[1] <- "PERC ASOCIADO"
 colnames(farmacia_perc)[2] <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
-colnames(farmacia_perc)[3] <- "593_1-SERVICIO FARMACEUTICO | Receta"
+
 
 openxlsx::write.xlsx(farmacia_perc,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/901_Farmacia.xlsx"), overwrite = T)
 openxlsx::write.xlsx(gasto_farmacia,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx"), overwrite = T)
