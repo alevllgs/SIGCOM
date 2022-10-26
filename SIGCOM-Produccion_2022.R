@@ -7,10 +7,10 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2022"
-mes <- "08"
+mes <- "09"
 Sheet_remota <- "Teleconsultas"
-Sheet_censo <- "AGO"
-rango_censo <- "B5:R20" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
+Sheet_censo <- "SEP"
+rango_censo <- "B9:P24" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
 
 
 
@@ -21,6 +21,10 @@ archivoBS <-paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie
 remota <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/Atenciones Remotas/",anio,"/",mes," REMOTA.xlsx")
 Censo <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/CENSO/",anio,"/Censo-hrrio ",anio,".xlsx")
 Graba <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC ",anio ,"/",mes," ",mes_completo,"/Insumos de Informacion/950_Produccion.xlsx")
+directorio <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/",mes," ",mes_completo,"/Complemento Subir")
+
+dir.create(directorio)
+
 
 # Captura de producción ambulatoria ---------------------------------------
 
@@ -560,6 +564,9 @@ Produccion_SIGCOM<- rbind(Produccion_SIGCOM, At_remota)
 Produccion_SIGCOM$Fecha <- NULL
 
 openxlsx::write.xlsx(Produccion_SIGCOM,Graba, 
+                     colNames = TRUE, sheetName = "5", overwrite = TRUE)
+
+openxlsx::write.xlsx(Produccion_SIGCOM,paste0(directorio,"/05.xlsx"), 
                      colNames = TRUE, sheetName = "5", overwrite = TRUE)
 
 rm(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, B_qx, P,At_remota, 

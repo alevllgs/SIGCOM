@@ -2,10 +2,9 @@ library(readxl)
 library(tidyverse)
 
 
-mes_archivo <- "08 Agosto"
+mes_archivo <- "09 Septiembre"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
-
 
 
 f_amb <- janitor::clean_names(read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/06 f_ambulatoria.xlsx")))
