@@ -8,7 +8,7 @@ library(xlsx)
 library(readxl)
 
 dias_mes <- 21
-mes <- "08 Agosto"
+mes <- "09 Septiembre"
 anio <- "2022"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 
@@ -16,6 +16,9 @@ ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 empleados <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/",mes,"/Insumos de Informacion/11 Empleados mes.xlsx")))
 pt <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/Insumos de info anual/12 Programacion Total.xlsx")))
 
+directorio <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/",mes,"/Complemento Subir")
+
+dir.create(directorio)
 
 
 #esta secuencia sirve para eliminar errores con los rut -k,  
@@ -108,6 +111,7 @@ empleados <- empleados %>% mutate("Categoría de Empleado" = case_when(
   categoria_de_empleado=="TECNICO PARAMEDICO"~"00401",
   categoria_de_empleado=="TEC. NIV. SUPERIOR ENFERMERIA"~"00401",
   categoria_de_empleado=="TECNICO EN ALIMENTACION"~"00401",
+  categoria_de_empleado=="TECNICO EN ALIMENTOS"~"00401",
   #00403 Otros tecnicos
   categoria_de_empleado=="TECNICO"~"00403",
   categoria_de_empleado=="TECNICO EN COMPUTACION E INFORMATICA"~"00403",
@@ -446,6 +450,10 @@ openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/Insumos de I
 
 openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/913_No_Programados.xlsx"),
                      colNames = TRUE, sheetName = "NP", overwrite = TRUE)
+
+openxlsx::write.xlsx(planilla1,paste0(directorio,"/01.xlsx"), 
+                     colNames = TRUE, sheetName = "1", overwrite = TRUE)
+
 
 no_asignada_profesion <- empleados %>% filter(`Categoría de Empleado` == "Asignar Clasificacion")
 

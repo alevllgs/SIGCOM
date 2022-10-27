@@ -7,7 +7,7 @@ library(openxlsx)
 library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
-mes_archivo <- "08 Agosto"
+mes_archivo <- "09 Septiembre"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 

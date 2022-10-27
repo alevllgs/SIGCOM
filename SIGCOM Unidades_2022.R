@@ -4,8 +4,8 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "08 Agosto"
-mes_ruta_registros <- "2022-08"
+mes_archivo <- "09 Septiembre"
+mes_ruta_registros <- "2022-09"
 
 #Nocambian
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
