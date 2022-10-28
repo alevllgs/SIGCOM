@@ -188,6 +188,7 @@ colnames(rehabilitacion_perc)[2] <- "Cantidad"
 rehabilitacion_perc$Item <- "567_1-REHABILITACIÓN | Sesión"
 
 
+
 rehabilitacion_perc <- rehabilitacion_perc %>% 
   mutate("PERC ASOCIADO" = case_when(`PERC ASOCIADO` == "NEUROLÓGICOS TRAUMATISMO ENCÉFALO CRANEANO (TEC)"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
                                      `PERC ASOCIADO` == "NEUROLÓGICOS LESIÓN MEDULAR"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
@@ -214,7 +215,31 @@ rehabilitacion_perc <- rehabilitacion_perc %>%
                                      `PERC ASOCIADO` == "CUIDADOS PALIATIVOS"~"87-HOSPITALIZACIÓN ONCOLOGÍA",
                                      `PERC ASOCIADO` == "CIRUGÍA MAYOR ABDOMINAL"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
                                      TRUE ~ "Asignar Centro de Costo"
-  )) %>% filter(Cantidad>0)
+  ))
+
+
+
+ if(sum(rehabilitacion_perc$Cantidad)==0)
+ {
+   a <- c(0.04,0.28,0.04,0.14,0.14,0.19,0.04,0.14)
+   b <- c("87-HOSPITALIZACIÓN ONCOLOGÍA",
+          "90-HOSPITALIZACIÓN QUIRÚRGICA",
+          "177-UNIDAD DE CUIDADOS CORONARIOS",
+          "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
+          "15111-CONSULTA NEUMOLOGÍA",
+          "15305-CONSULTA NEUROLOGÍA PEDIÁTRICA",
+          "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
+          "196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA")
+   
+   c <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_ruta_registros,cola_ruta_registro_a), 
+                 sheet = "A28", range = "B209:B209", col_names = FALSE)
+   d <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_ruta_registros,cola_ruta_registro_a), 
+                 sheet = "A28", range = "B224:B224", col_names = FALSE)
+   rehabilitacion_perc <- data.frame("PERC ASOCIADO"=b, "Cantidad"=round(a*c$...1), "Item"="567_1-REHABILITACIÓN | Sesión")
+   }
+
+
+
 
 
 # Cirugias Menores --------------------------------------------------------
