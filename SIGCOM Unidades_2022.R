@@ -4,8 +4,8 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "09 Septiembre"
-mes_ruta_registros <- "2022-09"
+mes_archivo <- "10 Octubre"
+mes_ruta_registros <- "2022-10"
 
 #Nocambian
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
@@ -235,9 +235,10 @@ rehabilitacion_perc <- rehabilitacion_perc %>%
                  sheet = "A28", range = "B209:B209", col_names = FALSE)
    d <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_ruta_registros,cola_ruta_registro_a), 
                  sheet = "A28", range = "B224:B224", col_names = FALSE)
-   rehabilitacion_perc <- data.frame("PERC ASOCIADO"=b, "Cantidad"=round(a*c$...1), "Item"="567_1-REHABILITACIÓN | Sesión")
+   rehabilitacion_perc <- data.frame(`PERC ASOCIADO`=b, "Cantidad"=round(a*c$...1), "Item"="567_1-REHABILITACIÓN | Sesión")
    }
 
+colnames(rehabilitacion_perc)[1] <- "PERC ASOCIADO"
 
 
 
