@@ -4,8 +4,8 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "10 Octubre"
-mes_ruta_registros <- "2022-10"
+mes_archivo <- "11 Noviembre"
+mes_ruta_registros <- "2022-11"
 
 #Nocambian
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
@@ -422,6 +422,9 @@ unidades <- unidades %>% mutate(`PERC ASOCIADO` =
                           `PERC ASOCIADO` == "664-TRANSPORTE GENERAL"~"95401-TRANSPORTE GENERAL",
                           `PERC ASOCIADO` == "665-MANTENIMIENTO"~"95501-MANTENIMIENTO",
                           `PERC ASOCIADO` == "713-TRABAJO SOCIAL"~"99544-TRABAJO SOCIAL",
+                          
+                          `PERC ASOCIADO` == "586-DIALISIS PERITONEAL"~"116-HOSPITALIZACIÓN PEDIATRÍA",
+                          `PERC ASOCIADO` == "260-PROCEDIMIENTO ONCOLOGÍA"~"87-HOSPITALIZACIÓN ONCOLOGÍA",
                           TRUE ~ `PERC ASOCIADO`))
 
 #CONTRALORIA
@@ -457,8 +460,6 @@ contraloria <- data.frame(
   "reportar" = as.character(c(unid_reportar)), 
   "capturado" = as.character(c(unid_reportar %in% unidades$Item))
 )
-
-
 
 
 errores_en_reportes <- data.frame("PERC ASOCIADO"= "Gato", "Cantidad"=0, "Item"="Gato", "reporte"= "Gato")
@@ -518,9 +519,8 @@ while(i < 13) {
   errores_en_reportes <- errores_en_reportes %>% filter(reporte == FALSE)}
 }
 
-
-
-
+errores_en_reportes <- errores_en_reportes %>% filter(`PERC ASOCIADO` != "586-DIALISIS PERITONEAL" &
+                                                        `PERC ASOCIADO` != "260-PROCEDIMIENTO ONCOLOGÍA")
 
 openxlsx::write.xlsx(unidades, graba, colNames = TRUE, sheetName = "indirectos", overwrite = TRUE)
 
