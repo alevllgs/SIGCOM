@@ -2,7 +2,7 @@ library(readxl)
 library(tidyverse)
 
 
-mes_archivo <- "09 Septiembre"
+mes_archivo <- "11 Noviembre"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 
@@ -128,7 +128,10 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="CONSUMO GENERAL POLI DE PROCEMIENTOS"~"473-QUIRÓFANOS MENOR AMBULATORIA",
              servicio=="CONSUMO GENERAL POLI DERMATOLOGIA"~"15106-CONSULTA DERMATOLOGÍA",
              servicio=="CONSUMO GENERAL S. DE ONCOLOGIA"~"15135-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+             
              servicio=="CONSUMO GENERAL S.CIRUGIA SAN JOSE"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
+             servicio=="CONSUMO PABELLON CDT"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
+             
              servicio=="CONSUMO GENERAL SERVICIO URGENCIA"~"216-EMERGENCIAS PEDIÁTRICAS",
              servicio=="CONSUMO GENERAL U.C.E."~"662-CENTRAL DE ESTERILIZACIÓN",
              servicio=="SERVICIO DE ESTERILIZACION"~"662-CENTRAL DE ESTERILIZACIÓN",
@@ -346,9 +349,7 @@ farmacia_perc$filtro <- NULL
 
 gasto_farmacia <- farmacia_perc %>% select(perc, gasto)
 
-rm(df,prop, GG2, GG44, farmacia3, M2, M2_Pab_EqMed, M2Pab, CAE_prorratear, 
-   `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, a,  
-   am, Metros_pabellon, q, qx, prescripciones, recetas, farmacia)
+
 
 colnames(farmacia_perc)[1] <- "PERC ASOCIADO"
 colnames(farmacia_perc)[2] <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
@@ -358,7 +359,9 @@ openxlsx::write.xlsx(farmacia_perc,paste0(ruta_base,resto,mes_archivo,"/Insumos 
 openxlsx::write.xlsx(gasto_farmacia,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx"), overwrite = T)
 
 
-
+rm(df,prop, GG2, GG44, farmacia3, M2, M2_Pab_EqMed, M2Pab, CAE_prorratear, 
+   `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, a,  
+   am, Metros_pabellon, q, qx, prescripciones, recetas, farmacia, c, d, p_tmt)
 
 
 

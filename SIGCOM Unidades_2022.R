@@ -14,7 +14,7 @@ resto_ruta_registro_a <- "BBDD Produccion/REM/Serie A/2022/" #solo cambia 1 vez 
 cola_ruta_registro_a <- " REM serie A.xlsx"
 resto_ruta_registro_b <- "BBDD Produccion/REM/Serie BS/2022/" #solo cambia 1 vez al año
 cola_ruta_registro_b <- " REM serie BS.xlsx"
-
+CC_autorizado <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/Insumos de info anual/Centros de costos autorizados.xlsx")
 
 
 graba <- paste0(ruta_base,resto,mes_archivo,"//Insumos de Informacion/960_Indirectos.xlsx")
@@ -459,10 +459,74 @@ contraloria <- data.frame(
 )
 
 
+
+
+errores_en_reportes <- data.frame("PERC ASOCIADO"= "Gato", "Cantidad"=0, "Item"="Gato", "reporte"= "Gato")
+colnames(errores_en_reportes)[1] <- "PERC ASOCIADO"
+
+i=1
+while(i < 13) {
+
+  if (i == 1) {z = anatomia_patologica_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 2) {z = alimentacion_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 3) {z = aseo_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 4) {z = cmenor_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 5) {z = esterilizacion_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 6) {z = farmacia_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 7) {z = imagenologia_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 8) {z = laboratorio_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 9) {z = psicosocial_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 10) {z = rehabilitacion_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 11) {z = transporte_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1}
+  if (i == 12) {z = UMT_perc
+  z$reporte <- z$`PERC ASOCIADO` %in% CC_autorizado$CC | z$`PERC ASOCIADO` %in% CC_autorizado$CC_antiguo
+  errores_en_reportes <- rbind(errores_en_reportes, z)
+  i = i+1
+  errores_en_reportes <- errores_en_reportes %>% filter(reporte == FALSE)}
+}
+
+
+
+
+
 openxlsx::write.xlsx(unidades, graba, colNames = TRUE, sheetName = "indirectos", overwrite = TRUE)
 
 
 
 # Borrar Data -------------------------------------------------------------
 
-rm(alimentacion_perc, anatomia_patologica_perc, aseo_perc, cmenor_perc, equipos_medicos_perc, esterilizacion, esterilizacion_perc, farmacia_perc, imagenologia_perc, laboratorio_perc, lavanderia, rehabilitacion_perc, t1, t2, t3, transporte_perc, UMT_perc, unid_reportar, psicosocial_perc, farmacia1, farmacia2, UMT1, UMT2, graba, cola_ruta_registro_a, cola_ruta_registro_b, resto_ruta_registro_a, resto_ruta_registro_b, ODOURG1, URG, uti, uci, uticv, ucicv, p_cardio, p_dermato, p_gastro, p_neumo, p_neurologia, p_oto, P_tmt)
+rm(alimentacion_perc, anatomia_patologica_perc, aseo_perc, cmenor_perc, equipos_medicos_perc, esterilizacion, esterilizacion_perc, farmacia_perc, imagenologia_perc, laboratorio_perc, lavanderia, rehabilitacion_perc, t1, t2, t3, transporte_perc, UMT_perc, unid_reportar, psicosocial_perc, farmacia1, farmacia2, UMT1, UMT2, graba, cola_ruta_registro_a, cola_ruta_registro_b, resto_ruta_registro_a, resto_ruta_registro_b, ODOURG1, URG, uti, uci, uticv, ucicv, p_cardio, p_dermato, p_gastro, p_neumo, p_neurologia, p_oto, p_tmt, c, d, z, CC_autorizado, contraloria, a, b, i, mes_archivo,
+   mes_ruta_registros, ruta_base, resto)

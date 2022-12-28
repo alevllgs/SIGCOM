@@ -7,7 +7,7 @@ library(openxlsx)
 library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
-mes_archivo <- "09 Septiembre"
+mes_archivo <- "10 Octubre"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 
@@ -1454,13 +1454,15 @@ medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(deve
 
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
 
-rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`,a, am, b,
-   Cant_RRHH, ConsumoxCC, cuenta_insumos, cuentas, cuentas_cae, cuentas_clinico,
-   cuentas_qx, cuentas_total, Farmacia, ggenerales, graba, i, insumos, M2_Pab_EqMed,
-   mes_archivo, Metros_pabellon, proporcion_exacta, q, qx, resto, RRHH_sigfe, ruta_base,
-   CAE_prorratear, cant_RRHH, CCC, CxCC, CxCC_H, df, EqMed, EqMedCorrec,
-   EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2, cuentas_no_critico)
+
 
 sum(Compras_Servicios$Devengado)
-ifelse(medicamentos$devengo_medicamentos<=0, toupper("No existe devengo de Medicamentos"),tolower("Medicamentos correctos"))
-rm(medicamentos)
+medicamentos <- ifelse(medicamentos$devengo_medicamentos<=0, toupper("No existe devengo de Medicamentos"),tolower("Medicamentos correctos"))
+
+rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`,a, am, b,
+   Cant_RRHH, ConsumoxCC, cuenta_insumos, cuentas, cuentas_cae, cuentas_clinico,
+   cuentas_qx, cuentas_total, Farmacia, ggenerales, graba, i, insumos,
+   mes_archivo, Metros_pabellon, proporcion_exacta, q, qx, resto, RRHH_sigfe, ruta_base,
+   CAE_prorratear, cant_RRHH, CCC, CxCC, CxCC_H, df, EqMed, EqMedCorrec,
+   EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2,
+   cuentas_no_critico, urg, urg_odo, uticv, ucicv)

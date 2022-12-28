@@ -8,7 +8,7 @@ library(xlsx)
 library(readxl)
 
 dias_mes <- 21
-mes <- "09 Septiembre"
+mes <- "11 Noviembre"
 anio <- "2022"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 
@@ -49,6 +49,7 @@ colnames(empleados)[22] <- "categoria_de_empleado"
 empleados <- empleados %>% mutate("Categoría de Empleado" = case_when(
   #00102 Medico Especialista
   categoria_de_empleado=="MEDICO CIRUJANO"~"00102",
+  categoria_de_empleado=="MEDICO TRAUMATOLOGICO Y ORTOPEDIA"~"00102", 
   categoria_de_empleado=="CIRUJANO INFANTIL"~"00102",
   categoria_de_empleado=="NEUROCIRUJANO"~"00102",
   categoria_de_empleado=="PEDIATRIA"~"00102",
@@ -86,6 +87,7 @@ empleados <- empleados %>% mutate("Categoría de Empleado" = case_when(
   #00302 Profesional en Salud
   categoria_de_empleado=="TECNOLOGO MEDICO"~"00302",
   categoria_de_empleado=="KINESIOLOGO"~"00302",
+  categoria_de_empleado=="KINESIOLOGIA"~"00302",
   categoria_de_empleado=="ENFERMERA"~"00302",
   categoria_de_empleado=="TERAPEUTA OCUPACIONAL"~"00302",
   categoria_de_empleado=="PSICOLOGOS"~"00302",
@@ -97,6 +99,7 @@ empleados <- empleados %>% mutate("Categoría de Empleado" = case_when(
   categoria_de_empleado=="FONOAUDILOGO"~"00302",
   #00305 Odontologos
   categoria_de_empleado=="ODONTOLOGIA GENERAL NIÑOS"~"00305",
+  categoria_de_empleado=="ODONTOGO"~"00305",
   categoria_de_empleado=="CIRUJANO DENTISTA"~"00305",
   categoria_de_empleado=="ODONTOLOGIA"~"00305",
   categoria_de_empleado=="DENTISTA CONSULTORIO"~"00305",
@@ -456,6 +459,10 @@ openxlsx::write.xlsx(planilla1,paste0(directorio,"/01.xlsx"),
 
 
 no_asignada_profesion <- empleados %>% filter(`Categoría de Empleado` == "Asignar Clasificacion")
+
+if(length(no_asignada_profesion$proceso) > 0 |  length(no_programados$Nombre) > 0)
+{beepr::beep(sound = 7)}
+
 
 rm(df, GG1, GG2, M2Pab, prop_pab, nombres, e, M2_Pab_EqMed, Metros_pabellon, 
    `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, 

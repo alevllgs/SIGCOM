@@ -7,10 +7,10 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2022"
-mes <- "09"
+mes <- "10"
 Sheet_remota <- "Teleconsultas"
-Sheet_censo <- "SEP"
-rango_censo <- "B9:P24" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
+Sheet_censo <- "OCT"
+rango_censo <- "B6:P21" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
 
 
 
