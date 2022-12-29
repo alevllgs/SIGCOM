@@ -128,11 +128,11 @@ p_gastro <-
 
 p_tmt <- 
   read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
-             sheet = "B", range = "C2650:C2650", col_names = FALSE, na = "0") +
+             sheet = "B", range = "C2650:C2650", col_names = FALSE) +
   read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
-             sheet = "B", range = "C2870:C2870", col_names = FALSE, na = "0") +
+             sheet = "B", range = "C2870:C2870", col_names = FALSE) +
   read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
-             sheet = "B", range = "C2882:C2882", col_names = FALSE, na = "0")
+             sheet = "B", range = "C2882:C2882", col_names = FALSE)
 p_tmt <- p_tmt %>%   mutate(`PERC ASOCIADO`="15316-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
          Cantidad = `...1`,
          Item = "262_1-PROCEDIMIENTOS DE TRAUMATOLOGÍA | Procedimiento") %>% select(-`...1`)

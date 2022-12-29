@@ -7,7 +7,7 @@ library(openxlsx)
 library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
-mes_archivo <- "10 Octubre"
+mes_archivo <- "11 Noviembre"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2022/"
 
@@ -1455,9 +1455,11 @@ medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(deve
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
 
 
-
 sum(Compras_Servicios$Devengado)
 medicamentos <- ifelse(medicamentos$devengo_medicamentos<=0, toupper("No existe devengo de Medicamentos"),tolower("Medicamentos correctos"))
+
+if(medicamentos == "No existe devengo de Medicamentos" | length(Compras_Servicios$`Centro de Costo`) > 0){
+  beepr::beep(sound = 7)}
 
 rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`,a, am, b,
    Cant_RRHH, ConsumoxCC, cuenta_insumos, cuentas, cuentas_cae, cuentas_clinico,

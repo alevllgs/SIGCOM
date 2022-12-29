@@ -183,6 +183,11 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="CONS. ENFERMEDADES INFECCIOSAS"~"15113-CONSULTA INFECTOLOGÍA",
              
              servicio=="ATENCION MEDICA-PEDIATRICA DEL PERSONAL"~"15302-CONSULTA PEDIATRÍA GENERAL",
+             
+             servicio=="ATENCIONES DE AUGE"~"116-HOSPITALIZACIÓN PEDIATRÍA",
+             servicio=="MEDICO QUIRURGICO I"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+             servicio=="MEDICO QUIRURGIC III"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+             servicio=="MEDICO QUIRURGICO II"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
 
              TRUE ~ "Asignar CC"
 ))

@@ -460,8 +460,8 @@ openxlsx::write.xlsx(planilla1,paste0(directorio,"/01.xlsx"),
 
 no_asignada_profesion <- empleados %>% filter(`Categoría de Empleado` == "Asignar Clasificacion")
 
-if(length(no_asignada_profesion$proceso) > 0 |  length(no_programados$Nombre) > 0)
-{beepr::beep(sound = 7)}
+if(length(no_asignada_profesion$proceso) > 0 |  length(no_programados$Nombre) > 0){
+  beepr::beep(sound = 7)}
 
 
 rm(df, GG1, GG2, M2Pab, prop_pab, nombres, e, M2_Pab_EqMed, Metros_pabellon, 
