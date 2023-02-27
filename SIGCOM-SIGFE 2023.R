@@ -784,7 +784,7 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                       CC=="CAE CONS. NEUROLOGIA"~"331-CONSULTA NEUROLOGÍA PEDIÁTRICA",
                       CC=="CAE LAB. EEG NEUROLOGIA"~"269-PROCEDIMIENTOS DE NEUROLOGÍA",
                       CC=="CAE CONS. OTORRINOLARINGOLOGIA"~"319-CONSULTA OTORRINOLARINGOLOGÍA",
-                      CC=="CENTRAL DE PROCEDIMIENTOS"~"473-QUIRÓFANOS MENOR AMBULATORIA",
+
                       CC=="CAE ODONTOLOGIA"~"356-CONSULTA ODONTOLOGÍA",
                       CC=="CAE SALUD MENTAL AMBULATORIO"~"280-CONSULTA PSIQUIATRÍA",
                       CC=="SALUD MENTAL HOSPITALIZADOS"~"149-HOSPITALIZACIÓN PSIQUIATRÍA",
@@ -859,7 +859,13 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                       CC=="CAE PROCED. NEFROLOGIA"~"285-CONSULTA NEFROLOGÍA",
                       CC=="GESTION DE USUARIOS"~"670-ADMINISTRACIÓN",
                       CC=="ADM CARDIOLOGIA"~"276-CONSULTA CARDIOLOGÍA",
+                      
                       CC=="UNIDAD PRE QUIRURGICA"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
+                      CC=="MEDICO QUIRURGICO I"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+                      CC=="MEDICO QUIRURGICO II"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+                      CC=="MEDICO QUIRURGICO III"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+                      CC=="CENTRAL DE PROCEDIMIENTOS"~"473-QUIRÓFANOS MENOR AMBULATORIA",
+                      
                       CC=="CAE ESPECIALIDADES 2"~"Cae Prorratear",
                       CC=="CAE ADMINISTRACION"~"Cae Prorratear",
                       CC=="PABELLONES"~"Pabellón Prorratear",
@@ -986,7 +992,7 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
                       CC=="CAE CONS. NEUROLOGIA"~"331-CONSULTA NEUROLOGÍA PEDIÁTRICA",
                       CC=="CAE LAB. EEG NEUROLOGIA"~"269-PROCEDIMIENTOS DE NEUROLOGÍA",
                       CC=="CAE CONS. OTORRINOLARINGOLOGIA"~"319-CONSULTA OTORRINOLARINGOLOGÍA",
-                      CC=="CENTRAL DE PROCEDIMIENTOS"~"473-QUIRÓFANOS MENOR AMBULATORIA",
+                      
                       CC=="CAE ODONTOLOGIA"~"356-CONSULTA ODONTOLOGÍA",
                       CC=="CAE SALUD MENTAL AMBULATORIO"~"280-CONSULTA PSIQUIATRÍA",
                       CC=="SALUD MENTAL HOSPITALIZADOS"~"149-HOSPITALIZACIÓN PSIQUIATRÍA",
@@ -1062,7 +1068,12 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
                       CC=="CAE PROCED. NEFROLOGIA"~"285-CONSULTA NEFROLOGÍA",
                       CC=="GESTION DE USUARIOS"~"670-ADMINISTRACIÓN",
                       CC=="ADM CARDIOLOGIA"~"276-CONSULTA CARDIOLOGÍA",
+                      
                       CC=="UNIDAD PRE QUIRURGICA"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
+                      CC=="MEDICO QUIRURGICO I"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+                      CC=="MEDICO QUIRURGICO II"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+                      CC=="MEDICO QUIRURGICO III"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+                      CC=="CENTRAL DE PROCEDIMIENTOS"~"473-QUIRÓFANOS MENOR AMBULATORIA",
                       
                       CC=="CAE ESPECIALIDADES 2"~"Cae Prorratear",
                       CC=="CAE ADMINISTRACION"~"Cae Prorratear",
@@ -1454,14 +1465,28 @@ medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(deve
 
 openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
 
-
+##### Alarmas
 sum(Compras_Servicios$Devengado)
 medicamentos <- ifelse(medicamentos$devengo_medicamentos<=0, toupper("No existe devengo de Medicamentos"),tolower("Medicamentos correctos"))
 
 if(medicamentos == "No existe devengo de Medicamentos" | length(Compras_Servicios$`Centro de Costo`) > 0){
   beepr::beep(sound = 7)}
 
-rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`,a, am, b,
+Compras <- GG1 %>% filter(Cuenta == "60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS" |
+                            Cuenta == "61-COMPRA DE CONSULTAS MÉDICAS" |
+                            Cuenta == "62-COMPRA DE CONSULTAS NO MÉDICAS" |
+                            Cuenta == "63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS" |
+                            Cuenta == "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO" |
+                            Cuenta == "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO" |
+                            Cuenta == "66-COMPRA DE OTROS SERVICIOS")
+
+if(sum(Compras$Devengado)  > 0){
+  beepr::beep(sound = 3)
+  Alerta_compras <- "Existen compras que justificar"}
+
+
+rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`)
+rm(a, am, b,
    Cant_RRHH, ConsumoxCC, cuenta_insumos, cuentas, cuentas_cae, cuentas_clinico,
    cuentas_qx, cuentas_total, Farmacia, ggenerales, graba, i, insumos,
    mes_archivo, Metros_pabellon, proporcion_exacta, q, qx, resto, RRHH_sigfe, ruta_base,

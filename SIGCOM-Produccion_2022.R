@@ -7,9 +7,9 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2022"
-mes <- "11"
+mes <- "12"
 Sheet_remota <- "Teleconsultas"
-Sheet_censo <- "NOV"
+Sheet_censo <- "DIC"
 rango_censo <- "B6:P21" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
 
 

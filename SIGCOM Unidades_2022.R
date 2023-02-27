@@ -4,7 +4,7 @@ library(dplyr)
 
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "11 Noviembre"
+mes_archivo <- "12 Diciembre"
 mes_ruta_registros <- "2022-11"
 
 #Nocambian
