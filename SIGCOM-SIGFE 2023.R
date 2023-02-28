@@ -9,7 +9,7 @@ library(xlsx)
 # SIGFE listas-------------------------------------------------------------------
 mes_archivo <- "12 Diciembre"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
-resto <- "BBDD Produccion/PERC/PERC 2022/"
+resto <- "BBDD Produccion/PERC/PERC 2023/"
 
 options(scipen=999)
 SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xlsx"), skip = 6)
