@@ -440,42 +440,14 @@ SIGFE <- SIGFE %>% select(cod_sigfe, Devengado) %>%
   filter(SIGCOM != "Familia" & Devengado>0)
 
 # M2 --------------------------------------------------------------
-M2 <- read_excel(M2)
-M2Pab <- read_excel(M2Pab) %>% filter(SIGCOM != "Total")
-M2Pab <- mutate_all(M2Pab, ~replace(., is.na(.), 0))
-Metros_pabellon <- 11*45
 
-"473-QUIRÓFANOS MENOR AMBULATORIA" <- sum(M2Pab$`473-QUIRÓFANOS MENOR AMBULATORIA`)
-"471-QUIRÓFANOS MAYOR AMBULATORIA" <- sum(M2Pab$`471-QUIRÓFANOS MAYOR AMBULATORIA`)
-
-M2Pab <- M2Pab %>% select(SIGCOM, `Distribución cirugias Electivas`) %>% 
-  group_by(SIGCOM) %>% 
-  summarise("Distribución cirugias Electivas" =sum(`Distribución cirugias Electivas`)) %>% 
-  ungroup()
-
-M2Pab$`Distribución cirugias Electivas` <- ifelse(M2Pab$`Distribución cirugias Electivas`==0, M2Pab$`Distribución cirugias Electivas`+0.5, M2Pab$`Distribución cirugias Electivas`) 
-
-
-df <- tibble(SIGCOM= as.character(c("473-QUIRÓFANOS MENOR AMBULATORIA", "471-QUIRÓFANOS MAYOR AMBULATORIA")), 
-"Distribución cirugias Electivas"= c(`473-QUIRÓFANOS MENOR AMBULATORIA`, `471-QUIRÓFANOS MAYOR AMBULATORIA`))
-
-M2Pab <- rbind(M2Pab, df)
-
-M2Pab$Area <- "Quirofanos"
-
-M2Pab <- M2Pab %>% mutate(Area = Area, CC = SIGCOM, 
-                          M2=`Distribución cirugias Electivas`/sum(`Distribución cirugias Electivas`)*Metros_pabellon) %>% 
-  select(Area, CC, M2)
-  
-M2 <- M2 %>% filter(Area != "Quirofanos")
-M2 <- rbind(M2, M2Pab)
-
-M2$prop <- M2$M2/sum(M2$M2) #asigna proporción a los M2
+M2Pab <- read_excel(M2Pab)
+M2Pab <- M2Pab %>% mutate(Area = "Quirofanos", CC = SIGCOM, prop = prop_total) %>% 
+  select(-SIGCOM, -prop_total)
 
 CAE_prorratear <- M2 %>% filter(Area == "Consultas" | Area == "Procedimientos")
 CAE_prorratear$prop <- CAE_prorratear$M2/sum(CAE_prorratear$M2)
 
-M2Pab$prop <- M2Pab$M2/sum(M2Pab$M2)
 
 # Prorrateo Gastos Generales por M2 ---------------------------------------
 
@@ -1262,17 +1234,12 @@ GG1 <- GG1 %>% filter(`Centro de Costo`!="Pabellón Prorratear" &
 
 #PABELLON
 
-qx <- c("464-QUIRÓFANOS CARDIOVASCULAR",
-        "467-QUIRÓFANOS DIGESTIVA", 
+qx <- c("471-QUIRÓFANOS MAYOR AMBULATORIA",
         "475-QUIRÓFANOS NEUROCIRUGÍA",
-        "478-QUIRÓFANOS OFTALMOLOGÍA",
-        "480-QUIRÓFANOS OTORRINOLARINGOLOGÍA",
+        "484-QUIRÓFANOS TORACICA",
         "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
         "486-QUIRÓFANOS UROLOGÍA",
-        "493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
-        "495-QUIRÓFANOS CIRUGÍA VASCULAR",
-        "473-QUIRÓFANOS MENOR AMBULATORIA",
-        "471-QUIRÓFANOS MAYOR AMBULATORIA")
+        "493-QUIRÓFANOS CIRUGÍA PLÁSTICA")
 
 
 for (i in qx) {
