@@ -28,7 +28,7 @@ dir.create(directorio)
 
 # Captura de producción ambulatoria ---------------------------------------
 
-
+#A32_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A32 BBDD.xlsx")
 A07_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A07 BBDD.xlsx")
 A07_PERC$Fecha=as.character(A07_PERC$Fecha)
 A07_PERC <- A07_PERC %>% select(Fecha, Especialidad, Total) %>% 
