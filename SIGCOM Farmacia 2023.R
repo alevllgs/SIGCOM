@@ -1,7 +1,7 @@
 library(readxl)
 library(tidyverse)
 
-mes_archivo <- "12 Diciembre"
+mes_archivo <- "01 Enero"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2023/"
 
@@ -158,6 +158,7 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="S.PEDIATRIA GRAL D"~"116-HOSPITALIZACIÓN PEDIATRÍA",
              servicio=="UTI CARDIOVASCULAR"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
              servicio=="URGENCIA (ATEN.CERRADA)"~"216-EMERGENCIAS PEDIÁTRICAS",
+             servicio=="CLAVE ROJA"~"216-EMERGENCIAS PEDIÁTRICAS",
              
              servicio=="CONSUMO GENERAL DERMATOLOGIA CAE"~"15106-CONSULTA DERMATOLOGÍA",
              servicio=="CONSUMO GRAL. ORTOP. Y TRAUMA"~"15316-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
@@ -184,7 +185,6 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="MEDICO QUIRURGICO I"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
              servicio=="MEDICO QUIRURGIC III"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
              servicio=="MEDICO QUIRURGICO II"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-
              TRUE ~ "Asignar CC"
 ))
 
@@ -309,9 +309,8 @@ colnames(farmacia_perc)[2] <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
 openxlsx::write.xlsx(farmacia_perc,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/901_Farmacia.xlsx"), overwrite = T)
 openxlsx::write.xlsx(gasto_farmacia,paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx"), overwrite = T)
 
-rm(df,prop, GG2, GG44, farmacia3, M2, M2_Pab, M2Pab, CAE_prorratear, 
-   `471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`, a,  
-   am, Metros_pabellon, q, qx, prescripciones, recetas, farmacia, c, d, p_tmt)
+rm(prop, GG2, GG44, farmacia3, M2, M2Pab, CAE_prorratear, a,  
+   am, q, qx, prescripciones, recetas, farmacia, resto, ruta_base, i)
 
 
 

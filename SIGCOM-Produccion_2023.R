@@ -1,4 +1,4 @@
-library(tidyverse)
+  library(tidyverse)
 library(readxl)
 library(lubridate)
 library(janitor)
@@ -6,13 +6,11 @@ library(dplyr)
 library(openxlsx)
 library(xlsx)
 
-anio <- "2022"
-mes <- "12"
+anio <- "2023"
+mes <- "01"
 Sheet_remota <- "Teleconsultas"
-Sheet_censo <- "DIC"
+Sheet_censo <- "ENE"
 rango_censo <- "B6:P21" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
-
-
 
 mes_completo <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 mes_completo <- mes_completo[as.numeric(mes)]
@@ -24,7 +22,6 @@ Graba <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC ",
 directorio <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/",mes," ",mes_completo,"/Complemento Subir")
 
 dir.create(directorio)
-
 
 # Captura de producción ambulatoria ---------------------------------------
 
@@ -98,7 +95,6 @@ A07_PERC <- A07_PERC %>% select(Fecha, Especialidad, Total) %>%
   group_by(Fecha, `Centro de Producción`) %>% 
   summarise("Valor" = sum(Total))
   
-
 A09I_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A09 BBDD_03.xlsx")
 A09I_PERC$Fecha=as.character(A09I_PERC$Fecha)
 A09I_PERC <- A09I_PERC %>% filter(Fecha == Fecha_filtro) %>% 
@@ -110,7 +106,81 @@ A09I_PERC <- A09I_PERC %>% filter(Fecha == Fecha_filtro) %>%
 Produccion_SIGCOM <- rbind(A07_PERC, A09I_PERC) %>% 
   add_column("Unidades de Producción" = "1__Consulta", .after = 2)
 
-  
+
+# A32 ---------------------------------------------------------------------
+
+A32_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Ambulatorio/A32 BBDD.xlsx")
+A32_PERC$Fecha=as.character(A32_PERC$Fecha)
+A32_PERC <- A32_PERC %>% mutate(Total = Atenciones_Remotas) %>% select(Fecha, Especialidad, Total) %>% 
+  filter(Fecha == Fecha_filtro) %>%
+  mutate("Centro de Producción" = case_when(
+    Especialidad == "PEDIATRÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "ENFERMEDAD RESPIRATORIA PEDIÁTRICA (BRONCOPULMONAR INFANTIL)" ~ "15111__15111 - CONSULTA NEUMOLOGÍA",
+    Especialidad == "ENFERMEDAD RESPIRATORIA DE ADULTO (BRONCOPULMONAR)" ~ "15111__15111 - CONSULTA NEUMOLOGÍA",
+    Especialidad == "CARDIOLOGÍA PEDIÁTRICA" ~ "15105__15105 - CONSULTA CARDIOLOGÍA",
+    Especialidad == "CARDIOLOGÍA ADULTO" ~ "15105__15105 - CONSULTA CARDIOLOGÍA",
+    Especialidad == "ENDOCRINOLOGÍA PEDIÁTRICA" ~ "15110__15110 - CONSULTA ENDOCRINOLOGÍA",
+    Especialidad == "ENDOCRINOLOGÍA ADULTO" ~ "15110__15110 - CONSULTA ENDOCRINOLOGÍA",
+    Especialidad == "GASTROENTEROLOGÍA PEDIÁTRICA" ~ "15119__15119 - CONSULTA GASTROENTEROLOGÍA",
+    Especialidad == "GASTROENTEROLOGÍA ADULTO" ~ "15119__15119 - CONSULTA GASTROENTEROLOGÍA",
+    Especialidad == "GENÉTICA CLÍNICA" ~ "15115__15115 - CONSULTA GENÉTICA",
+    Especialidad == "HEMATO-ONCOLOGÍA INFANTIL" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+    Especialidad == "HEMATOLOGÍA ADULTO" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+    Especialidad == "ONCOLOGÍA MÉDICA" ~ "15135__15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+    Especialidad == "NEFROLOGÍA PEDIÁTRICA" ~ "15114__15114 - CONSULTA NEFROLOGÍA",
+    Especialidad == "NEFROLOGÍA ADULTO" ~ "15114__15114 - CONSULTA NEFROLOGÍA",
+    Especialidad == "NUTRIÓLOGO PEDIÁTRICO" ~ "15008__15008 - CONSULTA NUTRICIÓN",
+    Especialidad == "NUTRIÓLOGO ADULTO" ~ "15008__15008 - CONSULTA NUTRICIÓN",
+    Especialidad == "REUMATOLOGÍA PEDIÁTRICA" ~ "15104__15104 - CONSULTA REUMATOLOGÍA",
+    Especialidad == "REUMATOLOGÍA ADULTO" ~ "15104__15104 - CONSULTA REUMATOLOGÍA",
+    Especialidad == "DERMATOLOGÍA" ~ "15106__15106 - CONSULTA DERMATOLOGÍA",
+    Especialidad == "INFECTOLOGÍA PEDIÁTRICA" ~ "15113__15113 - CONSULTA INFECTOLOGÍA",
+    Especialidad == "INFECTOLOGÍA ADULTO" ~ "15113__15113 - CONSULTA INFECTOLOGÍA",
+    Especialidad == "MEDICINA FÍSICA Y REHABILITACIÓN PEDIÁTRICA (FISIATRÍA PEDIÁTRICA)" ~ "15118__15118 - CONSULTA FISIATRÍA",
+    Especialidad == "MEDICINA FÍSICA Y REHABILITACIÓN ADULTO (FISIATRÍA ADULTO)" ~ "15118__15118 - CONSULTA FISIATRÍA",
+    Especialidad == "NEUROLOGÍA PEDIÁTRICA" ~ "15305__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA",
+    Especialidad == "NEUROLOGÍA ADULTO" ~ "15305__15305 - CONSULTA NEUROLOGÍA PEDIÁTRICA",
+    Especialidad == "PSIQUIATRÍA PEDIÁTRICA Y DE LA ADOLESCENCIA" ~ "15109__15109 - CONSULTA PSIQUIATRÍA",
+    Especialidad == "PSIQUIATRÍA ADULTO" ~ "15109__15109 - CONSULTA PSIQUIATRÍA",
+    Especialidad == "CIRUGÍA PEDIÁTRICA" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+    Especialidad == "CIRUGÍA GENERAL ADULTO" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+    Especialidad == "CIRUGÍA DIGESTIVA (ALTA)" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+    Especialidad == "CIRUGÍA DE CABEZA, CUELLO Y MAXILOFACIAL" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+    Especialidad == "COLOPROCTOLOGÍA (CIRUGIA DIGESTIVA BAJA)" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+    Especialidad == "CIRUGÍA TÓRAX" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+    Especialidad == "CIRUGÍA VASCULAR PERIFÉRICA" ~ "15409__15409 - CONSULTA CIRUGÍA PEDIÁTRICA",
+    Especialidad == "CIRUGÍA PLÁSTICA Y REPARADORA PEDIÁTRICA" ~ "15208__15208 - CONSULTA CIRUGÍA PLÁSTICA",
+    Especialidad == "CIRUGÍA PLÁSTICA Y REPARADORA ADULTO" ~ "15208__15208 - CONSULTA CIRUGÍA PLÁSTICA",
+    Especialidad == "NEUROCIRUGÍA" ~ "15121__15121 - CONSULTA NEUROCIRUGÍA",
+    Especialidad == "ANESTESIOLOGÍA" ~ "15125__15125 - CONSULTA ANESTESIOLOGIA",
+    Especialidad == "UROLOGÍA PEDIÁTRICA" ~ "15203__15203 - CONSULTA UROLOGÍA",
+    Especialidad == "UROLOGÍA ADULTO" ~ "15203__15203 - CONSULTA UROLOGÍA",
+    Especialidad == "OFTALMOLOGÍA" ~ "15209__15209 - CONSULTA OFTALMOLOGÍA",
+    Especialidad == "OTORRINOLARINGOLOGÍA" ~ "15211__15211 - CONSULTA OTORRINOLARINGOLOGÍA",
+    Especialidad == "TRAUMATOLOGÍA Y ORTOPEDIA PEDIÁTRICA" ~ "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+    Especialidad == "TRAUMATOLOGÍA Y ORTOPEDIA ADULTO" ~ "15316__15316 - CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+    Especialidad == "MEDICINA INTERNA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "NEONATOLOGÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "INMUNOLOGÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "GERIATRÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "CIRUGÍA CARDIOVASCULAR" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "OBSTETRICIA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "GINECOLOGÍA PEDIÁTRICA Y DE LA ADOLESCENCIA" ~ "15502__15502 - CONSULTA GINECOLOGICA",
+    Especialidad == "GINECOLOGÍA ADULTO" ~ "15502__15502 - CONSULTA GINECOLOGICA",
+    Especialidad == "MEDICINA FAMILIAR DEL NIÑO" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "MEDICINA FAMILIAR" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "MEDICINA FAMILIAR ADULTO" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "DIABETOLOGÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "MEDICINA NUCLEAR (EXCLUYE INFORMES)" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "IMAGENOLOGÍA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    Especialidad == "RADIOTERAPIA ONCOLÓGICA" ~ "15302__15302 - CONSULTA PEDIATRÍA GENERAL",
+    TRUE ~ "Asignar Centro de Costo")) %>%  
+  group_by(Fecha, `Centro de Producción`) %>% 
+  summarise("Valor" = sum(Total)) %>% 
+  add_column("Unidades de Producción" = "2__Atención", .after = 2)
+
+Produccion_SIGCOM <- rbind(Produccion_SIGCOM, A32_PERC)
+
 # Captura producción de Urgencia ------------------------------------------
 A08_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Urgencia/A08 BBDD_01.xlsx")
 A08_PERC$Fecha=as.character(A08_PERC$Fecha)
@@ -125,8 +195,6 @@ Censo_hrrio_BBDD <- read_excel(Censo,sheet = Sheet_censo, range = rango_censo)
 
 Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA` <- 
   as.double(Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA`)
-
-
 
 ifelse(is.null(Censo_hrrio_BBDD$`UNIDAD DE EMERGENCIA`)==TRUE,
        Censo_hrrio_BBDD$"116__01401 - HOSPITALIZACIÓN PEDIATRÍA" <- 
@@ -152,7 +220,6 @@ Censo_hrrio_BBDD$"149__01610 - HOSPITALIZACIÓN PSIQUIATRÍA" <-
   Censo_hrrio_BBDD$`SALUD MENTAL CORTA ESTADÍA`+
   Censo_hrrio_BBDD$`SALUD MENTAL MEDIANA ESTADÍA`
 
-
 Censo_hrrio_BBDD$"170__05005 - UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA" <- 
   Censo_hrrio_BBDD$`UNIDAD DE CUIDADO INTENSIVO PEDIATRICO`
 
@@ -164,8 +231,6 @@ Censo_hrrio_BBDD$"198__05305 - UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" <-
 
 Censo_hrrio_BBDD$"177__05012 - UNIDAD DE CUIDADOS CORONARIOS" <- 
   Censo_hrrio_BBDD$`UNIDAD DE CUIDADO INTERMEDIO CARDIOVASCULAR`
-
-
 
 Censo_hrrio_BBDD <- Censo_hrrio_BBDD %>% 
   select(`Información Estadística`,`116__01401 - HOSPITALIZACIÓN PEDIATRÍA`,
@@ -202,7 +267,6 @@ Censo_No_Critico <- Censo_hrrio_BBDD %>% filter(Fecha == Fecha_filtro) %>%
   group_by(Fecha, `Centro de Producción`, `Unidades de Producción`) %>% 
   summarise("Valor" = sum(Total))
 
-
 Censo_Critico <- Censo_hrrio_BBDD %>% filter(Fecha == Fecha_filtro) %>% 
   mutate("Centro de Producción" = case_when(
     Unidad == "170__05005 - UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA" ~  "170__05005 - UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
@@ -237,7 +301,6 @@ Egreso <- Censo_hrrio_BBDD %>% filter(Fecha == Fecha_filtro) %>%
   summarise("Valor" = sum(Total))
 
 Censo_Critico <- rbind(Censo_Critico, Egreso)
-
 
 # TELEMEDICINA ------------------------------------------------------------
 
