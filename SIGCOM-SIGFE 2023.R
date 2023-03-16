@@ -7,20 +7,23 @@ library(openxlsx)
 library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
-mes_archivo <- "12 Diciembre"
+anio <- "2023"
+mes_archivo <- "01"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2023/"
+mes_completo <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
+mes_completo <- mes_completo[as.numeric(mes_archivo)]
 
 options(scipen=999)
-SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xlsx"), skip = 6)
-M2 <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx")
-ConsumoxCC <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/02 Consumo x CC del mes.xlsx")
-Cant_RRHH <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/912_SIRH_R.xlsx")
-Farmacia <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/900_gasto_farmacia.xlsx")
-graba <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/920_SIGFE_R.xlsx")
+SIGFE <- read_excel(paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/01 Ejecucion Presupuestaria.xlsx"), skip = 6)
+M2 <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/03 M2.xlsx")
+ConsumoxCC <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/02 Consumo x CC del mes.xlsx")
+Cant_RRHH <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/912_SIRH_R.xlsx")
+Farmacia <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/900_gasto_farmacia.xlsx")
+graba <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/920_SIGFE_R.xlsx")
 CxCC_H <- paste0(ruta_base,resto,"/Insumos de info anual/CxCC_historico.xlsx")
-M2Pab <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/89_Pabellon.xlsx")
-EqMed <- paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/99_Equipos_Medicos.xlsx")
+M2Pab <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/89_Pabellon.xlsx")
+EqMed <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/99_Equipos_Medicos.xlsx")
 
 SIGFE2 <- str_split_fixed(SIGFE$`Concepto Presupuestario`, " ", n=2)
 SIGFE <- cbind(SIGFE, SIGFE2)
@@ -444,11 +447,18 @@ SIGFE <- SIGFE %>% select(cod_sigfe, Devengado) %>%
 M2Pab <- read_excel(M2Pab)
 M2Pab <- M2Pab %>% mutate(Area = "Quirofanos", CC = SIGCOM, prop = prop_total) %>% 
   select(-SIGCOM, -prop_total)
-
-CAE_prorratear <- M2 %>% filter(Area == "Consultas" | Area == "Procedimientos")
+M2 <- read_excel(M2) %>% filter(CC != "Pabellón Prorratear")
+M2$prop <- M2$M2/sum(M2$M2)
+CAE_prorratear <- M2 %>% filter(Area == "Ambulatorio" | Area == "Procedimientos")
 CAE_prorratear$prop <- CAE_prorratear$M2/sum(CAE_prorratear$M2)
 
+M2Pab$Area <- "Quirofanos"
+M2Pab <- M2Pab %>% 
+  add_column("M2" = 495*M2Pab$prop, .after = 2) #crea metros cuadrados segun la disponibilidad de pabellon
 
+M2 <- M2 %>% filter(Area != "Quirofanos")
+M2 <- rbind(M2, M2Pab)
+M2$prop <- prop.table(M2$M2)
 # Prorrateo Gastos Generales por M2 ---------------------------------------
 
 cuentas <- c("48-SERVICIO DE AGUA",
@@ -555,6 +565,7 @@ GG1 <- rbind(GG1,GG2)}
 #FARMACIA
 Farm <- read_excel(Farmacia)
 
+# Farmacia ----------------------------------------------------------------
 b <- "30-MEDICAMENTOS"
 if(b %in% SIGFE$SIGCOM)
 {GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
@@ -575,8 +586,7 @@ GG2 <- GG2 %>% summarise("Centro de Costo" = Farm$perc,
                          "Cuenta"=b, "Tipo" = 2)
 GG1 <- rbind(GG1,GG2)}
 
-
-# EQUIPOS MEDICOS
+# Equipos Medicos ---------------------------------------------------------
 EqMed <- read_excel(EqMed, na = " ")
 EqMed <- mutate_all(EqMed, ~replace(., is.na(.), 0))
 
@@ -649,15 +659,21 @@ GG1 <- rbind(GG1,GG2)}
 
 # Consumo x CC ------------------------------------------------------------
 
-CxCC <- read_excel(ConsumoxCC, range = "A3:M5000", na = "eliminar")
+CxCC <- read_excel(ConsumoxCC, range = "A3:M5000", na = "eliminar") 
 CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>% 
-  mutate(item_pres=`ITEM PRESUPUESTARIO`, Total=`CANTIDAD DESPACHADA`*PRECIO, CC=`CENTRO DE COSTO`) %>% 
+  mutate(item_pres=`ITEM PRESUPUESTARIO`, Total=`CANTIDAD DESPACHADA`*PRECIO, CC=`CENTRO DE COSTO`) %>%     
   mutate(ItemxCC = case_when(item_pres ==	"4001000"	~	"24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
                              item_pres ==	"4007002"	~	"29-MATERIALES Y ELEMENTOS DE ASEO",
                              item_pres ==	"4008000"	~	"31-MENAJE PARA OFICINA, CASINO Y OTROS",
+                             item_pres ==	"3001000"	~	"3-COMBUSTIBLES Y LUBRICANTES",
                                  item_pres ==	"4005000"	~	"18-MATERIAL MEDICO QUIRURGICO",
                                  item_pres ==	"4005003"	~	"18-MATERIAL MEDICO QUIRURGICO",
                                  item_pres ==	"2001000"	~	"43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
+                             item_pres ==	"4011000"	~ "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
+                             item_pres ==	"6002001"	~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
+                             item_pres ==	"6002002"	~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
+                             item_pres ==	"6004000"	~ "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
+                             item_pres ==	"12999018"	~ "66-COMPRA DE OTROS SERVICIOS",
                                  item_pres ==	"4003002"	~	"41-PRODUCTOS QUÍMICOS",
                                  item_pres ==	"12999006"	~	"57-COLOCACIÓN FAMILIAR DE MENORES Y EXTRAHOSPITALARIA",
                                  item_pres ==	"29004000"	~	"No considerar",
@@ -669,6 +685,7 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                                  item_pres ==	"4009000"	~	"27-MATERIALES INFORMATICOS",
                                  item_pres ==	"4004004"	~	"16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
                              item_pres ==	"4004003"	~	"21-MATERIALES DE CURACIÓN",
+                             item_pres ==	"4013"	~	"21-MATERIALES DE CURACIÓN",
                                  item_pres ==	"12999002"	~	"177-SERVICIO DE LABORATORIO",
                                  item_pres ==	"29051000"	~	"No considerar	",
                                  item_pres ==	"4999000"	~	"35-OTROS INSUMOS Y MATERIALES",
@@ -683,6 +700,7 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
                                  item_pres ==	"8001000"	~	"170-SERVICIO DE ASEO",
                                  item_pres ==	"1001000"	~	"46-VÍVERES",
                                  item_pres ==	"04013.00"	~	"8-EQUIPOS MENORES",
+                             item_pres ==	"4013"	~	"8-EQUIPOS MENORES",
                                  item_pres ==	"6006000"	~	"138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
                                  item_pres ==	"5003000"	~	"100-GAS PROPANO",
                                  item_pres ==	"31.02.005"	~	"No considerar",
@@ -847,6 +865,8 @@ CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>%
   group_by (item_pres, CC,ItemxCC,) %>% 
   summarise("Total" = sum(Total)) %>%
   ungroup()
+
+CxCC_no_asignado <- CxCC %>% filter(ItemxCC == "Asignar Item Presupuestario")
 #tengo que agarrar cada item de GG y multriplicarlo por SIGFE
 # despues agarro los de insumos y lo mismo
 
@@ -857,9 +877,15 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
   mutate(ItemxCC = case_when(item_pres ==	"4001000"	~	"24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
                              item_pres ==	"4007002"	~	"29-MATERIALES Y ELEMENTOS DE ASEO",
                              item_pres ==	"4008000"	~	"31-MENAJE PARA OFICINA, CASINO Y OTROS",
+                             item_pres ==	"3001000"	~	"3-COMBUSTIBLES Y LUBRICANTES",
                              item_pres ==	"4005000"	~	"18-MATERIAL MEDICO QUIRURGICO",
                              item_pres ==	"4005003"	~	"18-MATERIAL MEDICO QUIRURGICO",
                              item_pres ==	"2001000"	~	"43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
+                             item_pres ==	"4011000"	~ "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
+                             item_pres ==	"6002001"	~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
+                             item_pres ==	"6002002"	~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
+                             item_pres ==	"6004000"	~ "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
+                             item_pres ==	"12999018"	~ "66-COMPRA DE OTROS SERVICIOS",
                              item_pres ==	"4003002"	~	"41-PRODUCTOS QUÍMICOS",
                              item_pres ==	"12999006"	~	"57-COLOCACIÓN FAMILIAR DE MENORES Y EXTRAHOSPITALARIA",
                              item_pres ==	"29004000"	~	"No considerar",
@@ -871,6 +897,7 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
                              item_pres ==	"4009000"	~	"27-MATERIALES INFORMATICOS",
                              item_pres ==	"4004004"	~	"16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
                              item_pres ==	"4004003"	~	"21-MATERIALES DE CURACIÓN",
+                             item_pres ==	"4013"	~	"21-MATERIALES DE CURACIÓN",
                              item_pres ==	"12999002"	~	"177-SERVICIO DE LABORATORIO",
                              item_pres ==	"29051000"	~	"No considerar	",
                              item_pres ==	"4999000"	~	"35-OTROS INSUMOS Y MATERIALES",
@@ -885,6 +912,7 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
                              item_pres ==	"8001000"	~	"170-SERVICIO DE ASEO",
                              item_pres ==	"1001000"	~	"46-VÍVERES",
                              item_pres ==	"04013.00"	~	"8-EQUIPOS MENORES",
+                             item_pres ==	"4013"	~	"8-EQUIPOS MENORES",
                              item_pres ==	"6006000"	~	"138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
                              item_pres ==	"5003000"	~	"100-GAS PROPANO",
                              item_pres ==	"31.02.005"	~	"No considerar",
@@ -937,17 +965,11 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
                       CC=="UNIDAD PEDIATRIA GRAL C (AISLA"~"116-HOSPITALIZACIÓN PEDIATRÍA",
                       CC=="UNIDAD PEDIATRIA GRAL B"~"116-HOSPITALIZACIÓN PEDIATRÍA",
                       CC=="UNIDAD PEDIATRIA GRAL A"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      
-                      
-                      
                       CC=="UNIDAD DE CUIDADOS INTENSIVOS"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
                       CC=="UNIDAD TRATAMIENTO INTERMEDIO"~"196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA",
                       CC=="SALA CUIDADO PROLONGADO"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
-                      
                       CC=="U.C.I. CARDIOVASCULAR"~"177-UNIDAD DE CUIDADOS CORONARIOS",
                       CC=="UTI CARDIOVASCULAR"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
-                      
-                      
                       CC=="UNIDAD ONCOLOGIA"~"87-HOSPITALIZACIÓN ONCOLOGÍA",
                       CC=="PABELLON CARDIOLOGIA"~"464-QUIRÓFANOS CARDIOVASCULAR",
                       CC=="CIRUGIA PLASTICA Y QUEMADOS"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
@@ -1035,7 +1057,6 @@ CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) 
                       CC=="UNIDAD MEDICINA INTEGRATIVA"~"670-ADMINISTRACIÓN",
                       CC=="C.COSTO GLOBAL"~"670-ADMINISTRACIÓN",
                       CC=="GASTOS HOSPITAL"~"670-ADMINISTRACIÓN",
-                      
                       CC=="CAE QUEMADOS"~"316-CONSULTA CIRUGÍA PLÁSTICA",
                       CC=="CAE PROCED. NEFROLOGIA"~"285-CONSULTA NEFROLOGÍA",
                       CC=="GESTION DE USUARIOS"~"670-ADMINISTRACIÓN",
@@ -1235,11 +1256,14 @@ GG1 <- GG1 %>% filter(`Centro de Costo`!="Pabellón Prorratear" &
 #PABELLON
 
 qx <- c("471-QUIRÓFANOS MAYOR AMBULATORIA",
+        "473-QUIRÓFANOS MENOR AMBULATORIA",
         "475-QUIRÓFANOS NEUROCIRUGÍA",
         "484-QUIRÓFANOS TORACICA",
         "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
         "486-QUIRÓFANOS UROLOGÍA",
-        "493-QUIRÓFANOS CIRUGÍA PLÁSTICA")
+        "493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
+        "462-QUIRÓFANOS CABEZA Y CUELLO"
+)
 
 
 for (i in qx) {
@@ -1333,46 +1357,46 @@ GG1 <- GG1 %>% mutate(`Centro de Costo` =
                           `Centro de Costo` == "294-PROGRAMA MANEJO DEL DOLOR"~"15123-PROGRAMA MANEJO DEL DOLOR",
                           `Centro de Costo` == "295-CONSULTA SALUD OCUPACIONAL"~"15124-CONSULTA SALUD OCUPACIONAL",
                           `Centro de Costo` == "296-CONSULTA ANESTESIOLOGIA"~"15125-CONSULTA ANESTESIOLOGIA",
-                                                    `Centro de Costo` == "302-PROGRAMA ENFERMEDADES DE TRANSMISIÓN SEXUAL"~"15131-PROGRAMA ENFERMEDADES DE TRANSMISIÓN SEXUAL",
-                                                    `Centro de Costo` == "306-CONSULTA HEMATOLOGÍA ONCOLÓGICA"~"15135-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-                                                    `Centro de Costo` == "307-CONSULTA DE INMUNOLOGÍA"~"15136-CONSULTA DE INMUNOLOGÍA",
-                                                    `Centro de Costo` == "309-CONSULTA CIRUGÍA GENERAL"~"15201-CONSULTA CIRUGÍA GENERAL",
-                                                    `Centro de Costo` == "311-CONSULTA UROLOGÍA"~"15203-CONSULTA UROLOGÍA",
-                                                    `Centro de Costo` == "316-CONSULTA CIRUGÍA PLÁSTICA"~"15208-CONSULTA CIRUGÍA PLÁSTICA",
-                                                    `Centro de Costo` == "317-CONSULTA OFTALMOLOGÍA"~"15209-CONSULTA OFTALMOLOGÍA",
-                                                    `Centro de Costo` == "318-CONSULTA CIRUGÍA VASCULAR PERIFÉRICA"~"15210-CONSULTA CIRUGÍA VASCULAR PERIFÉRICA",
-                                                    `Centro de Costo` == "319-CONSULTA OTORRINOLARINGOLOGÍA"~"15211-CONSULTA OTORRINOLARINGOLOGÍA",
-                                                    `Centro de Costo` == "323-CONSULTA CIRUGÍA MAXILOFACIAL"~"15215-CONSULTA CIRUGÍA MAXILOFACIAL",
-                                                    `Centro de Costo` == "326-CONSULTA DE TRAUMATOLOGÍA"~"15218-CONSULTA DE TRAUMATOLOGÍA",
-                                                    `Centro de Costo` == "328-CONSULTA PEDIATRÍA GENERAL"~"15302-CONSULTA PEDIATRÍA GENERAL",
-                                                    `Centro de Costo` == "329-CONSULTA NEONATOLOGÍA"~"15303-CONSULTA NEONATOLOGÍA",
-                                                    `Centro de Costo` == "331-CONSULTA NEUROLOGÍA PEDIÁTRICA"~"15305-CONSULTA NEUROLOGÍA PEDIÁTRICA",
-                                                    `Centro de Costo` == "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA"~"15316-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
-                                                    `Centro de Costo` == "351-CONSULTA CIRUGÍA PEDIÁTRICA"~"15409-CONSULTA CIRUGÍA PEDIÁTRICA",
-                                                    `Centro de Costo` == "353-CONSULTA GINECOLOGICA"~"15502-CONSULTA GINECOLOGICA",
-                                                    `Centro de Costo` == "354-CONSULTA OBSTETRICIA"~"15503-CONSULTA OBSTETRICIA",
-                                                    `Centro de Costo` == "230-CONSULTA NUTRICIÓN"~"15008-CONSULTA NUTRICIÓN",
-                                                    `Centro de Costo` == "232-CONSULTA OTROS PROFESIONALES"~"15010-CONSULTA OTROS PROFESIONALES",
-                                                    `Centro de Costo` == "356-CONSULTA ODONTOLOGÍA"~"15602-CONSULTA ODONTOLOGÍA",
-                                                    `Centro de Costo` == "152-HOSPITALIZACIÓN EN CASA"~"2002-HOSPITALIZACIÓN EN CASA",
-                                                    `Centro de Costo` == "159-HOSPITALIZACIÓN DE DIA"~"2009-HOSPITALIZACIÓN DE DIA",
-                                                    `Centro de Costo` == "244-PROCEDIMIENTO DE NEUMOLOGÍA"~"15022-PROCEDIMIENTO DE NEUMOLOGÍA",
-                                                    `Centro de Costo` == "249-PROCEDIMIENTOS DE DERMATOLOGÍA"~"15027-PROCEDIMIENTOS DE DERMATOLOGÍA",
-                                                    `Centro de Costo` == "250-PROCEDIMIENTOS DE GASTROENTEROLOGÍA"~"15028-PROCEDIMIENTOS DE GASTROENTEROLOGÍA",
-                                                    `Centro de Costo` == "251-PROCEDIMIENTOS DE GINECOLOGÍA"~"15029-PROCEDIMIENTOS DE GINECOLOGÍA",
-                                                    `Centro de Costo` == "258-PROCEDIMIENTOS DE OFTALMOLOGÍA"~"15036-PROCEDIMIENTOS DE OFTALMOLOGÍA",
-                                                    `Centro de Costo` == "261-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA"~"15039-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA",
-                                                    `Centro de Costo` == "263-PROCEDIMIENTOS DE UROLOGÍA"~"15041-PROCEDIMIENTOS DE UROLOGÍA",
-                                                    `Centro de Costo` == "269-PROCEDIMIENTOS DE NEUROLOGÍA"~"15047-PROCEDIMIENTOS DE NEUROLOGÍA",
-                                                    `Centro de Costo` == "542-IMAGENOLOGÍA"~"41108-IMAGENOLOGÍA",
-                                                    `Centro de Costo` == "575-BANCO DE SANGRE"~"51001-BANCO DE SANGRE",
-                                                    `Centro de Costo` == "593-SERVICIO FARMACEUTICO"~"55101-SERVICIO FARMACEUTICO",
-                                                    `Centro de Costo` == "662-CENTRAL DE ESTERILIZACIÓN"~"95301-CENTRAL DE ESTERILIZACIÓN",
-                                                    `Centro de Costo` == "657-LAVANDERIA Y ROPERIA"~"95201-LAVANDERIA Y ROPERIA",
-                                                    `Centro de Costo` == "664-TRANSPORTE GENERAL"~"95401-TRANSPORTE GENERAL",
-                                                    `Centro de Costo` == "665-MANTENIMIENTO"~"95501-MANTENIMIENTO",
-                                                    `Centro de Costo` == "713-TRABAJO SOCIAL"~"99544-TRABAJO SOCIAL",
-                                                    TRUE ~ `Centro de Costo`))
+                          `Centro de Costo` == "302-PROGRAMA ENFERMEDADES DE TRANSMISIÓN SEXUAL"~"15131-PROGRAMA ENFERMEDADES DE TRANSMISIÓN SEXUAL",
+                          `Centro de Costo` == "306-CONSULTA HEMATOLOGÍA ONCOLÓGICA"~"15135-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
+                          `Centro de Costo` == "307-CONSULTA DE INMUNOLOGÍA"~"15136-CONSULTA DE INMUNOLOGÍA",
+                          `Centro de Costo` == "309-CONSULTA CIRUGÍA GENERAL"~"15201-CONSULTA CIRUGÍA GENERAL",
+                          `Centro de Costo` == "311-CONSULTA UROLOGÍA"~"15203-CONSULTA UROLOGÍA",
+                          `Centro de Costo` == "316-CONSULTA CIRUGÍA PLÁSTICA"~"15208-CONSULTA CIRUGÍA PLÁSTICA",
+                          `Centro de Costo` == "317-CONSULTA OFTALMOLOGÍA"~"15209-CONSULTA OFTALMOLOGÍA",
+                          `Centro de Costo` == "318-CONSULTA CIRUGÍA VASCULAR PERIFÉRICA"~"15210-CONSULTA CIRUGÍA VASCULAR PERIFÉRICA",
+                          `Centro de Costo` == "319-CONSULTA OTORRINOLARINGOLOGÍA"~"15211-CONSULTA OTORRINOLARINGOLOGÍA",
+                          `Centro de Costo` == "323-CONSULTA CIRUGÍA MAXILOFACIAL"~"15215-CONSULTA CIRUGÍA MAXILOFACIAL",
+                          `Centro de Costo` == "326-CONSULTA DE TRAUMATOLOGÍA"~"15218-CONSULTA DE TRAUMATOLOGÍA",
+                          `Centro de Costo` == "328-CONSULTA PEDIATRÍA GENERAL"~"15302-CONSULTA PEDIATRÍA GENERAL",
+                          `Centro de Costo` == "329-CONSULTA NEONATOLOGÍA"~"15303-CONSULTA NEONATOLOGÍA",
+                          `Centro de Costo` == "331-CONSULTA NEUROLOGÍA PEDIÁTRICA"~"15305-CONSULTA NEUROLOGÍA PEDIÁTRICA",
+                          `Centro de Costo` == "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA"~"15316-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
+                          `Centro de Costo` == "351-CONSULTA CIRUGÍA PEDIÁTRICA"~"15409-CONSULTA CIRUGÍA PEDIÁTRICA",
+                          `Centro de Costo` == "353-CONSULTA GINECOLOGICA"~"15502-CONSULTA GINECOLOGICA",
+                          `Centro de Costo` == "354-CONSULTA OBSTETRICIA"~"15503-CONSULTA OBSTETRICIA",
+                          `Centro de Costo` == "230-CONSULTA NUTRICIÓN"~"15008-CONSULTA NUTRICIÓN",
+                          `Centro de Costo` == "232-CONSULTA OTROS PROFESIONALES"~"15010-CONSULTA OTROS PROFESIONALES",
+                          `Centro de Costo` == "356-CONSULTA ODONTOLOGÍA"~"15602-CONSULTA ODONTOLOGÍA",
+                          `Centro de Costo` == "152-HOSPITALIZACIÓN EN CASA"~"2002-HOSPITALIZACIÓN EN CASA",
+                          `Centro de Costo` == "159-HOSPITALIZACIÓN DE DIA"~"2009-HOSPITALIZACIÓN DE DIA",
+                          `Centro de Costo` == "244-PROCEDIMIENTO DE NEUMOLOGÍA"~"15022-PROCEDIMIENTO DE NEUMOLOGÍA",
+                          `Centro de Costo` == "249-PROCEDIMIENTOS DE DERMATOLOGÍA"~"15027-PROCEDIMIENTOS DE DERMATOLOGÍA",
+                          `Centro de Costo` == "250-PROCEDIMIENTOS DE GASTROENTEROLOGÍA"~"15028-PROCEDIMIENTOS DE GASTROENTEROLOGÍA",
+                          `Centro de Costo` == "251-PROCEDIMIENTOS DE GINECOLOGÍA"~"15029-PROCEDIMIENTOS DE GINECOLOGÍA",
+                          `Centro de Costo` == "258-PROCEDIMIENTOS DE OFTALMOLOGÍA"~"15036-PROCEDIMIENTOS DE OFTALMOLOGÍA",
+                          `Centro de Costo` == "261-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA"~"15039-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA",
+                          `Centro de Costo` == "263-PROCEDIMIENTOS DE UROLOGÍA"~"15041-PROCEDIMIENTOS DE UROLOGÍA",
+                          `Centro de Costo` == "269-PROCEDIMIENTOS DE NEUROLOGÍA"~"15047-PROCEDIMIENTOS DE NEUROLOGÍA",
+                          `Centro de Costo` == "542-IMAGENOLOGÍA"~"41108-IMAGENOLOGÍA",
+                          `Centro de Costo` == "575-BANCO DE SANGRE"~"51001-BANCO DE SANGRE",
+                          `Centro de Costo` == "593-SERVICIO FARMACEUTICO"~"55101-SERVICIO FARMACEUTICO",
+                          `Centro de Costo` == "662-CENTRAL DE ESTERILIZACIÓN"~"95301-CENTRAL DE ESTERILIZACIÓN",
+                          `Centro de Costo` == "657-LAVANDERIA Y ROPERIA"~"95201-LAVANDERIA Y ROPERIA",
+                          `Centro de Costo` == "664-TRANSPORTE GENERAL"~"95401-TRANSPORTE GENERAL",
+                          `Centro de Costo` == "665-MANTENIMIENTO"~"95501-MANTENIMIENTO",
+                          `Centro de Costo` == "713-TRABAJO SOCIAL"~"99544-TRABAJO SOCIAL",
+                          TRUE ~ `Centro de Costo`))
 
 
 
@@ -1408,7 +1432,7 @@ GG1 <- GG1 %>% filter(`Centro de Costo` != "216-EMERGENCIAS PEDIÁTRICAS" )
 GG1 <- rbind(GG1, urg_odo)
 
 
-# Elimina cuentas que no deben ir en Administración -----------------------
+# Cambia cuentas que no deben ir en Administración a Hospi Pediatria-----------------------
 
 GG1$`Centro de Costo` <- ifelse(GG1$`Centro de Costo`=="670-ADMINISTRACIÓN" & 
                                   (GG1$Cuenta == "21-MATERIALES DE CURACIÓN" |

@@ -2,12 +2,13 @@ library(readxl)
 library(tidyverse)
 library(dplyr)
 
-
 # BBDD --------------------------------------------------------------------
 mes_archivo <- "01 Enero"
 mes_ruta_registros <- "2023-01"
 
-#Nocambian
+
+
+# Rutas -------------------------------------------------------------------
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2023/"
 resto_ruta_registro_a <- "BBDD Produccion/REM/Serie A/2023/" #solo cambia 1 vez al año
@@ -15,7 +16,6 @@ cola_ruta_registro_a <- " REM serie A.xlsx"
 resto_ruta_registro_b <- "BBDD Produccion/REM/Serie BS/2023/" #solo cambia 1 vez al año
 cola_ruta_registro_b <- " REM serie BS.xlsx"
 CC_autorizado <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2023/Insumos de info anual/Centros de costos autorizados.xlsx")
-
 
 graba <- paste0(ruta_base,resto,mes_archivo,"//Insumos de Informacion/960_Indirectos.xlsx")
 
@@ -27,14 +27,13 @@ cmenor_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_regist
 
 farmacia_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/901_Farmacia.xlsx"))
 
-
-
 aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx"), 
                                sheet = "M2") %>% 
                           mutate(`PERC ASOCIADO`=CC, Cantidad = M2) %>% 
                           filter(`PERC ASOCIADO`!="648-ASEO") %>% 
                           select(`PERC ASOCIADO`, Cantidad) %>% 
-                          mutate(Item ="648_1-ASEO | Metro cuadrado")
+                          mutate(Item ="648_1-ASEO | Metro cuadrado") %>% 
+  filter(`PERC ASOCIADO` != "Pabellón Prorratear")
 
 anatomia_patologica_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/96_Anatomia_Patologica.xlsx"),
                                        range = "C4:D80") %>% 
@@ -88,62 +87,59 @@ equipos_medicos_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos 
 # Procedimientos ----------------------------------------------------------
 
 p_neurologia <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
-                          sheet = "B", range = "C1298:C1298", col_names = FALSE, na = "0") %>% 
+                          sheet = "B", range = "C1328:C1328", col_names = FALSE, na = "0") %>% 
  mutate(`PERC ASOCIADO`="15305-CONSULTA NEUROLOGÍA PEDIÁTRICA",
          Cantidad = `...1`,
         Item = "15047_1-PROCEDIMIENTOS DE NEUROLOGÍA | Procedimiento") %>% select(-`...1`)
 
-
 p_oto <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
-                           sheet = "B", range = "C1586:C1586", col_names = FALSE, na = "0") %>% 
+                           sheet = "B", range = "C1617:C1617", col_names = FALSE, na = "0") %>% 
   mutate(`PERC ASOCIADO`="15211-CONSULTA OTORRINOLARINGOLOGÍA",
          Cantidad = `...1`,
          Item = "15039_1-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA | Procedimiento") %>% select(-`...1`)
 
 
 p_dermato <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
-                    sheet = "B", range = "C1851:C1851", col_names = FALSE, na = "0") %>% 
+                    sheet = "B", range = "C1882:C1882", col_names = FALSE, na = "0") %>% 
   mutate(`PERC ASOCIADO`="15106-CONSULTA DERMATOLOGÍA",
          Cantidad = `...1`,
          Item = "15027_1-PROCEDIMIENTOS DE DERMATOLOGÍA | Procedimiento") %>% select(-`...1`)
 
 p_neumo <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
-                        sheet = "B", range = "C1973:C1973", col_names = FALSE, na = "0") %>% 
+                        sheet = "B", range = "C2211:C2211", col_names = FALSE, na = "0") %>% 
   mutate(`PERC ASOCIADO`="15111-CONSULTA NEUMOLOGÍA",
          Cantidad = `...1`,
          Item = "15022_1-PROCEDIMIENTO DE NEUMOLOGÍA | Procedimiento") %>% select(-`...1`)
 
 p_cardio <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
-                      sheet = "B", range = "C1999:C1999", col_names = FALSE, na = "0") %>% 
+                      sheet = "B", range = "C1982:C1982", col_names = FALSE, na = "0") %>% 
   mutate(`PERC ASOCIADO`="15105-CONSULTA CARDIOLOGÍA",
          Cantidad = `...1`,
          Item = "240_1-PROCEDIMIENTO DE CARDIOLOGÍA | Procedimiento") %>% select(-`...1`)
 
 p_gastro <- 
   read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b), 
-             sheet = "B", range = "C2258:C2258", col_names = FALSE, na = "0") %>% 
+             sheet = "B", range = "C2281:C2281", col_names = FALSE, na = "0") %>% 
   mutate(`PERC ASOCIADO`="15119-CONSULTA GASTROENTEROLOGÍA",
          Cantidad = `...1`,
          Item = "15028_1-PROCEDIMIENTOS DE GASTROENTEROLOGÍA | Procedimiento") %>% select(-`...1`)
 
 p_tmt <- 
   read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
-             sheet = "B", range = "C2650:C2650", col_names = FALSE) +
+             sheet = "B", range = "C2673:C2673", col_names = FALSE) +
   read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
-             sheet = "B", range = "C2870:C2870", col_names = FALSE) +
+             sheet = "B", range = "C2893:C2893", col_names = FALSE) +
   read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_registros,cola_ruta_registro_b),
-             sheet = "B", range = "C2882:C2882", col_names = FALSE)
+             sheet = "B", range = "C2905:C2905", col_names = FALSE)
 p_tmt <- p_tmt %>%   mutate(`PERC ASOCIADO`="15316-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
          Cantidad = `...1`,
          Item = "262_1-PROCEDIMIENTOS DE TRAUMATOLOGÍA | Procedimiento") %>% select(-`...1`)
-
 
 # UMT ---------------------------------------------------------------------
 
 UMT1 <- UMT_perc  %>% mutate(Cantidad =`575_1-BANCO DE SANGRE | Transfusión`) %>% 
   select(`PERC ASOCIADO`, Cantidad)
 UMT1$Item <- "575_1-BANCO DE SANGRE | Unidad"
-
 
 UMT2 <- UMT_perc  %>% mutate(Cantidad =`575_2-BANCO DE SANGRE | Exámen`) %>% 
   select(`PERC ASOCIADO`, Cantidad)
@@ -152,14 +148,12 @@ UMT2$Item <- "575_2-BANCO DE SANGRE | Exámen"
 UMT_perc <- rbind(UMT1, UMT2) %>% 
   filter(`PERC ASOCIADO`!="575-BANCO DE SANGRE" & Cantidad>0)
 
-
 # Esterilizacion ----------------------------------------------------------
 
 esterilizacion <- esterilizacion_perc  %>% 
   mutate(Cantidad =`662_2-CENTRAL DE ESTERILIZACIÓN | Metro cúbico`) %>% 
   select(`PERC ASOCIADO`, Cantidad)
 esterilizacion$Item <- "662_2-CENTRAL DE ESTERILIZACIÓN | Metro cúbico"
-
 
 lavanderia <- esterilizacion_perc  %>% 
   mutate(Cantidad =`657_1-LAVANDERIA Y ROPERIA | Kilo`) %>% 
@@ -169,25 +163,17 @@ lavanderia$Item <- "657_1-LAVANDERIA Y ROPERIA | Kilo"
 esterilizacion_perc <- esterilizacion %>% 
   filter(`PERC ASOCIADO`!="662-CENTRAL DE ESTERILIZACIÓN" & `PERC ASOCIADO`!="657-LAVANDERIA Y ROPERIA" & Cantidad>0) #no esta conectada lavanderia xq no es un CC 
 
-  
-
 # Farmacia ----------------------------------------------------------------
 
 farmacia_perc <- farmacia_perc  %>% 
   mutate(Cantidad =`593_2-SERVICIO FARMACEUTICO | Prescripción`) %>% select(`PERC ASOCIADO`, Cantidad)
 farmacia_perc$Item <- "593_2-SERVICIO FARMACEUTICO | Prescripción"
 
-
-
-
 # Rehabilitacion ----------------------------------------------------------
-
 
 colnames(rehabilitacion_perc)[1] <- "PERC ASOCIADO"
 colnames(rehabilitacion_perc)[2] <- "Cantidad"
 rehabilitacion_perc$Item <- "567_1-REHABILITACIÓN | Sesión"
-
-
 
 rehabilitacion_perc <- rehabilitacion_perc %>% 
   mutate("PERC ASOCIADO" = case_when(`PERC ASOCIADO` == "NEUROLÓGICOS TRAUMATISMO ENCÉFALO CRANEANO (TEC)"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
@@ -218,7 +204,6 @@ rehabilitacion_perc <- rehabilitacion_perc %>%
   ))
 
 
-
  if(sum(rehabilitacion_perc$Cantidad)==0)
  {
    a <- c(0.04,0.28,0.04,0.14,0.14,0.19,0.04,0.14)
@@ -232,16 +217,13 @@ rehabilitacion_perc <- rehabilitacion_perc %>%
           "196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA")
    
    c <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_ruta_registros,cola_ruta_registro_a), 
-                 sheet = "A28", range = "B209:B209", col_names = FALSE)
+                 sheet = "A28", range = "B194:B194", col_names = FALSE)
    d <- read_excel(paste0(ruta_base,resto_ruta_registro_a,mes_ruta_registros,cola_ruta_registro_a), 
-                 sheet = "A28", range = "B224:B224", col_names = FALSE)
+                 sheet = "A28", range = "B214:B214", col_names = FALSE)
    rehabilitacion_perc <- data.frame(`PERC ASOCIADO`=b, "Cantidad"=round(a*c$...1), "Item"="567_1-REHABILITACIÓN | Sesión")
    }
 
 colnames(rehabilitacion_perc)[1] <- "PERC ASOCIADO"
-
-
-
 
 # Cirugias Menores --------------------------------------------------------
 
@@ -252,28 +234,27 @@ cmenor_perc <- cmenor_perc %>% select(`PERC ASOCIADO`, Cantidad) %>% filter(Cant
 cmenor_perc$Item <- "473_1-QUIRÓFANOS MENOR AMBULATORIA | Intervencion quirurgica"
 
 cmenor_perc <- cmenor_perc %>% 
-  mutate("PERC ASOCIADO" = case_when(`PERC ASOCIADO` == "CIRUGIA OFTALMOLOGICA"~"475-QUIRÓFANOS NEUROCIRUGÍA",
-                                     `PERC ASOCIADO` == "CIRUGIA OTORRINOLOGICA"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
-                                     `PERC ASOCIADO` == "CIRUGIA DE CABEZA Y CUELLO"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
-                                     `PERC ASOCIADO` == "NEUROLÓGICOS DISRAFIA"~"495-QUIRÓFANOS CIRUGÍA VASCULAR",
-                                     `PERC ASOCIADO` == "CIRUGIA PLASTICA Y REPARADORA"~"493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
-                                     `PERC ASOCIADO` == "TEGUMENTOS"~"495-QUIRÓFANOS CIRUGÍA VASCULAR",
-                                     `PERC ASOCIADO` == "CIRUGIA CARDIOVASCULAR"~"464-QUIRÓFANOS CARDIOVASCULAR",
-                                     `PERC ASOCIADO` == "CIRUGIA DE TORAX"~"495-QUIRÓFANOS CIRUGÍA VASCULAR",
-                                     `PERC ASOCIADO` == "CIRUGIA ABDOMINAL"~"467-QUIRÓFANOS DIGESTIVA",
-                                     `PERC ASOCIADO` == "CIRUGIA PROCTOLOGICA"~"495-QUIRÓFANOS CIRUGÍA VASCULAR",
-                                     `PERC ASOCIADO` == "CIRUGIA UROLOGICA Y SUPRARRENAL"~"486-QUIRÓFANOS UROLOGÍA",
-                                     `PERC ASOCIADO` == "CIRUGIA DE LA MAMA"~"495-QUIRÓFANOS CIRUGÍA VASCULAR",
-                                     `PERC ASOCIADO` == "CIRUGIA GINECOLOGICA"~"486-QUIRÓFANOS UROLOGÍA",
-                                     `PERC ASOCIADO` == "CIRUGIA OBSTETRICA"~"495-QUIRÓFANOS CIRUGÍA VASCULAR",
-                                     `PERC ASOCIADO` == "TRAUMATOLOGIA"~"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
-                                     `PERC ASOCIADO` == "ODONTOLOGIA (COD 27-03) Aranc.Fonasa"~"356-CONSULTA ODONTOLOGÍA",
+  mutate("PERC ASOCIADO" = case_when(`PERC ASOCIADO` == "CIRUGIA OFTALMOLOGICA"~"462-QUIRÓFANOS CABEZA Y CUELLO",
+                                     `PERC ASOCIADO` == "CIRUGIA OTORRINOLOGICA"~"462-QUIRÓFANOS CABEZA Y CUELLO",
+                                     `PERC ASOCIADO` == "CIRUGIA DE CABEZA Y CUELLO"~"462-QUIRÓFANOS CABEZA Y CUELLO",
+                                     `PERC ASOCIADO` == "NEUROLÓGICOS DISRAFIA"~"475-QUIRÓFANOS NEUROCIRUGÍA",
+                                     `PERC ASOCIADO` == "CIRUGIA OBSTETRICA"~"484-QUIRÓFANOS TORACICA",
+                                     `PERC ASOCIADO` == "CIRUGIA ABDOMINAL"~"484-QUIRÓFANOS TORACICA",
+                                     `PERC ASOCIADO` == "CIRUGIA PROCTOLOGICA"~"484-QUIRÓFANOS TORACICA",
+                                     `PERC ASOCIADO` == "CIRUGIA DE TORAX"~"484-QUIRÓFANOS TORACICA",
+                                     `PERC ASOCIADO` == "CIRUGIA DE LA MAMA"~"484-QUIRÓFANOS TORACICA",
                                      `PERC ASOCIADO` == "RETIRO ELEMENTOS OSTEOSINTESIS"~"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
-                                     `PERC ASOCIADO` == "ODONTOLOGIA"~"356-CONSULTA ODONTOLOGÍA",
-                                     TRUE ~ "Asignar Centro de Costo"
-  ))
-
-
+                                     `PERC ASOCIADO` == "RETIRO ELEMENTOS OSTEOSINTESIS"~"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
+                                     `PERC ASOCIADO` == "TRAUMATOLOGIA"~"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
+                                     `PERC ASOCIADO` == "CIRUGIA PLASTICA Y REPARADORA"~"493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
+                                     `PERC ASOCIADO` == "TEGUMENTOS"~"486-QUIRÓFANOS UROLOGÍA",
+                                     `PERC ASOCIADO` == "DERMATOLOGÍA Y TEGUMENTOS"~"486-QUIRÓFANOS UROLOGÍA",
+                                     `PERC ASOCIADO` == "CIRUGIA GINECOLOGICA"~"486-QUIRÓFANOS UROLOGÍA",
+                                     `PERC ASOCIADO` == "CIRUGIA UROLOGICA Y SUPRARRENAL"~"486-QUIRÓFANOS UROLOGÍA",
+                                     `PERC ASOCIADO` == "CIRUGIA CARDIOVASCULAR"~"464-QUIRÓFANOS CARDIOVASCULAR",
+                                     `PERC ASOCIADO` == "ODONTOLOGIA (COD 27-03) Aranc.Fonasa"~"462-QUIRÓFANOS CABEZA Y CUELLO",
+                                     `PERC ASOCIADO` == "ODONTOLOGIA"~"462-QUIRÓFANOS CABEZA Y CUELLO",
+                                     TRUE ~ "Asignar Centro de Costo"))
 
 # Transporte --------------------------------------------------------------
 
@@ -287,8 +268,6 @@ t3 <- transporte_perc  %>% mutate(Cantidad =`664_3-TRANSPORTE GENERAL | Viajes`)
 t3$Item <- "664_3-TRANSPORTE GENERAL | Viajes"
 
 transporte_perc <- rbind(t1, t2, t3) %>% filter(Cantidad>0 & `PERC ASOCIADO`!="664-TRANSPORTE GENERAL")
-
-
 
 # Juntar ------------------------------------------------------------------
 
@@ -323,12 +302,7 @@ unidades <- unidades %>% filter(`PERC ASOCIADO` != "170-UNIDAD DE CUIDADOS INTEN
 
 unidades <- rbind(unidades, uti)
 
-
-
-
-
 # Separar Odonto Urgencia -------------------------------------------------
-
 
 ODOURG1 <- unidades %>% filter(`PERC ASOCIADO`== "216-EMERGENCIAS PEDIÁTRICAS") %>% 
   mutate(`PERC ASOCIADO` ="357-EMERGENCIAS ODONTOLOGICAS", Cantidad = round(Cantidad*0.1))
@@ -340,7 +314,7 @@ unidades <- unidades %>% filter(`PERC ASOCIADO`!= "216-EMERGENCIAS PEDIÁTRICAS"
 unidades <- rbind(ODOURG1, URG, unidades)
 
 
-# Elimino parametros que no se ocuparan en 2022 ---------------------------
+# Elimino parametros que no se ocuparan en 2023 ---------------------------
 
 unidades <- unidades %>% filter(
   Item != "593_1-SERVICIO FARMACEUTICO | Receta" &
@@ -357,7 +331,7 @@ unidades <- unidades %>% filter(
                      Item == "575_2-BANCO DE SANGRE | Exámen"~"51001_1-BANCO DE SANGRE | Exámen",
                      TRUE ~ Item))
                      
-# Asigna CC actualizados al 2022 ------------------------------------------
+# Asigna CC actualizados al 2023 ------------------------------------------
 unidades <- unidades %>% mutate(`PERC ASOCIADO` = 
                         case_when(
                           `PERC ASOCIADO` ==	"478-QUIRÓFANOS OFTALMOLOGÍA"	~	"471-QUIRÓFANOS MAYOR AMBULATORIA",
@@ -428,8 +402,6 @@ unidades <- unidades %>% mutate(`PERC ASOCIADO` =
                           TRUE ~ `PERC ASOCIADO`))
 
 #CONTRALORIA
-
-
 unid_reportar <- c(     
 "473_1-QUIRÓFANOS MENOR AMBULATORIA | Intervencion quirurgica",        
 "593_2-SERVICIO FARMACEUTICO | Prescripción",
@@ -520,11 +492,9 @@ while(i < 13) {
 }
 
 errores_en_reportes <- errores_en_reportes %>% filter(`PERC ASOCIADO` != "586-DIALISIS PERITONEAL" &
-                                                        `PERC ASOCIADO` != "260-PROCEDIMIENTO ONCOLOGÍA")
+                                                       `PERC ASOCIADO` != "260-PROCEDIMIENTO ONCOLOGÍA")
 
 openxlsx::write.xlsx(unidades, graba, colNames = TRUE, sheetName = "indirectos", overwrite = TRUE)
-
-
 
 # Borrar Data -------------------------------------------------------------
 
