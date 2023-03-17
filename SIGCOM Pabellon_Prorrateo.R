@@ -13,11 +13,16 @@ anio <- "2023"
 mes <- "01"
 propocion_CMA <- 2 #proporcion de 2CMA = 1CNA
 prop_urg <- 0.5 #proporcion con 50% de la urgencia a TMT y 50% a cirugia
+prop_CME_a_CMA <- 0.3 #definir
+
+
+# Rutas Automaticas -------------------------------------------------------
 mes_completo <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 mes_completo <- mes_completo[as.numeric(mes)]
 Fecha_filtro <- paste0(anio,"-",mes,"-01")
 archivoBS <-paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/REM/Serie BS/",anio,"/",anio,"-",mes," REM serie BS.xlsx")
 graba <-paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC ",anio,"/",mes," ",mes_completo,"/Insumos de Informacion/89_Pabellon.xlsx")
+ruta_pdf <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC ",anio,"/",mes," ",mes_completo,"/Insumos de Informacion/88_Oferta_Pabellones.pdf")
 
 # Producción Pabellones ---------------------------------------------------
 
@@ -153,10 +158,10 @@ rm(B_qx1,B_qx2,B_qx3,B_qx4,B_qx5,B_qx6,B_qx7,B_qx8,B_qx9, B_qx10,
 B_qx <- B_qx %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producción`) %>% 
   summarise("Valor" = sum(Valor))
 
-Produccion_SIGCOM <- rbind( Produccion_SIGCOM, B_qx)
-
 B_qx <- B_qx %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producción`) %>% 
   summarise("Valor" = sum(Valor))
+
+B_qx$Fecha <- NULL
 
 #Crea una proporcion donde 2CMA=CNA
 B_qx$prop_CMA_vs_CNA <- prop.table(ifelse(B_qx$`Centro de Producción`!= "471__33012 - QUIRÓFANOS MAYOR AMBULATORIA", B_qx$Valor*propocion_CMA,B_qx$Valor))
@@ -164,7 +169,7 @@ prop_CMA <- sum(ifelse(B_qx$`Centro de Producción`== "471__33012 - QUIRÓFANOS 
 
 # Leer Oferta de Pabellones -----------------------------------------------
 
-leer_pdf <- pdf_text("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2023/12 Diciembre/Insumos de Informacion/88_Oferta_Pabellones.pdf") %>% 
+leer_pdf <- pdf_text(ruta_pdf) %>% 
   str_remove_all("       HOSPITAL DE NIÑOS ROBERTO DEL RÍO") %>% 
   str_remove_all("       Unidad de anestesia y pabellón") %>%
   str_split("\n")
@@ -239,7 +244,18 @@ ocupacion_pabellones <- ocupacion_pabellones %>% select(SIGCOM, prop_total) %>%
   summarise(prop_total=sum(prop_total)) %>% 
   ungroup() 
 
-ocupacion_pabellones <- ocupacion_pabellones %>% filter(SIGCOM != "464-QUIRÓFANOS CARDIOVASCULAR")  
+ocupacion_CME <- ocupacion_pabellones %>% filter(SIGCOM == "471-QUIRÓFANOS MAYOR AMBULATORIA")
+ocupacion_CME$prop_total <- ocupacion_CME$prop_total*(1-prop_CME_a_CMA)
+CME <- data.frame(SIGCOM = "473-QUIRÓFANOS MENOR AMBULATORIA", prop_total = ocupacion_CME$prop_total*(prop_CME_a_CMA))
+
+ocupacion_CME <- rbind(ocupacion_CME, CME)
+ocupacion_pabellones <- ocupacion_pabellones %>% 
+  filter(SIGCOM != "471-QUIRÓFANOS MAYOR AMBULATORIA")
+
+ocupacion_pabellones <- rbind(ocupacion_pabellones, ocupacion_CME)
+  
+
+
 ocupacion_pabellones$prop_total <-  prop.table(ocupacion_pabellones$prop_total)
 
 openxlsx::write.xlsx(ocupacion_pabellones, graba, colNames = TRUE, sheetName = "pabellon", overwrite = TRUE)

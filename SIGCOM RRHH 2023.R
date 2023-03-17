@@ -7,16 +7,17 @@ library(openxlsx)
 library(xlsx)
 library(readxl)
 
-dias_mes <- 21
-mes <- "12 Diciembre"
-anio <- "2022"
+dias_mes <- 22
+mes <- "01"
+anio <- "2023"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 
-
-empleados <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/",mes,"/Insumos de Informacion/11 Empleados mes.xlsx")))
+mes_completo <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
+mes_completo <- mes_completo[as.numeric(mes)]
+empleados <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/",mes," ",mes_completo,"/Insumos de Informacion/11 Empleados mes.xlsx")))
 pt <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/Insumos de info anual/12 Programacion Total.xlsx")))
 
-directorio <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC 2022/",mes,"/Complemento Subir")
+directorio <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC ",anio,"/",mes," ",mes_completo,"/Complemento Subir")
 
 dir.create(directorio)
 
