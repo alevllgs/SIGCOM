@@ -25,6 +25,8 @@ Asignaciones <- paste0(ruta_base,resto,"/Insumos de info anual/Asignaciones.xlsx
 M2 <- paste0(ruta_base,resto,"/Insumos de info anual/M2.xlsx")
 M2Pab <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/89_Pabellon.xlsx")
 EqMed <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/99_Equipos_Medicos.xlsx")
+item <- paste0(ruta_base,resto,"/Insumos de info anual/item_presupuestarios_centros_de_costo.xlsx")
+
 
 SIGFE2 <- str_split_fixed(SIGFE$`Concepto Presupuestario`, " ", n=2)
 SIGFE <- cbind(SIGFE, SIGFE2)
@@ -217,6 +219,42 @@ RRHH_sigfe <- c("221299900301",
                 "221299900302",
                 "221299901601",
                 "221299901602")
+
+cuentas <- c("52-ARRENDAMIENTOS",
+             "60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS",
+             "61-COMPRA DE CONSULTAS MÉDICAS",
+             "62-COMPRA DE CONSULTAS NO MÉDICAS",
+             "63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS",
+             "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO",
+             "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO",
+             "66-COMPRA DE OTROS SERVICIOS",
+             "129-MANTENIMIENTO EQUIPO DE CÓMPUTO",
+             "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
+             "132-MANTENIMIENTO MUEBLES Y ENSERES",
+             "135-MANTENIMIENTO Y REPARACION DE VEHICULOS", 
+             "147-OTROS MANTENIMIENTOS",
+             "151-PASAJES, FLETES Y BODEGAJE",
+             "149-PASAJES Y TRASLADOS DE PACIENTES",
+             "178-SERVICIO DE LAVANDERÍA",
+             "3-COMBUSTIBLES Y LUBRICANTES", 
+             "8-EQUIPOS MENORES", 
+             "9-GASES MEDICINALES",
+             "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
+             "15-MATERIAL DE ODONTOLOGÍA",
+             "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
+             "18-MATERIAL MEDICO QUIRURGICO",
+             "21-MATERIALES DE CURACIÓN",
+             "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
+             "25-MATERIALES DE USO O CONSUMO",
+             "27-MATERIALES INFORMATICOS",
+             "28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
+             "29-MATERIALES Y ELEMENTOS DE ASEO", 
+             "31-MENAJE PARA OFICINA, CASINO Y OTROS",
+             "35-OTROS INSUMOS Y MATERIALES",
+             "41-PRODUCTOS QUÍMICOS",
+             "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
+             "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
+             "46-VÍVERES")
 
 # SIGFE Formulas ----------------------------------------------------------
 
@@ -443,6 +481,114 @@ SIGFE <- SIGFE %>% select(cod_sigfe, Devengado) %>%
     TRUE ~ "Asignar Centro de Costo")) %>% 
   filter(SIGCOM != "Familia" & Devengado>0)
 
+
+
+# Consumo por CC ----------------------------------------------------------
+#Agrupa las cuentas de SIGFE
+SIGFE_agrupado <- SIGFE %>% 
+  group_by ("Item" = SIGCOM) %>% 
+  summarise("Devengado" = sum(Devengado)) %>%
+  ungroup()
+
+CxCC <- read_excel(ConsumoxCC, range = "A3:M5000", na = "eliminar")
+item_pres_int <- read_excel(item, sheet = "item_presupuestario")
+item_pres_int$cod_sigfe <- as.character(item_pres_int$cod_sigfe)
+
+#Verifican que esten todos los CC y los item presupuestarios
+CxCC_no_asignado <- CxCC
+CxCC_no_asignado$no_asignado <- ifelse(CxCC$`ITEM PRESUPUESTARIO` %in% item_pres_int$item_presupuestario, "esta", "no esta") 
+CxCC_no_asignado <- CxCC_no_asignado %>% filter(`ITEM PRESUPUESTARIO` != "NA" & no_asignado == "no esta")
+
+consumo_interno <- read_excel(item, sheet = "centros_de_costos")
+Cent_Cost_no_asignado <- CxCC
+Cent_Cost_no_asignado$no_asignado <- ifelse(Cent_Cost_no_asignado$`CENTRO DE COSTO` %in% consumo_interno$cc_hospital, "esta", "no esta") 
+Cent_Cost_no_asignado <- Cent_Cost_no_asignado %>% filter(`ITEM PRESUPUESTARIO` != "NA" & no_asignado == "no esta")
+
+SIGFE <- SIGFE %>% inner_join(item_pres_int, by = "cod_sigfe") %>% select(-item_sigcom)
+SIGFE$consumido <- ifelse(SIGFE$item_presupuestario %in% as.character(CxCC$`ITEM PRESUPUESTARIO`), "esta", "no esta")
+
+CxCC$item_presupuestario <- as.character(CxCC$`ITEM PRESUPUESTARIO`)
+CxCC <- CxCC %>% inner_join(SIGFE, by = "item_presupuestario") %>% select(-consumido, -Devengado, -`ITEM PRESUPUESTARIO`, -COD.PRODUCTO, -`COD. CENTRO COSTO`, -RUBRO, -BODEGA) %>% mutate(pxq = PRECIO*`CANTIDAD DESPACHADA`)
+CxCC <- CxCC %>% inner_join(consumo_interno, by = c(`CENTRO DE COSTO` = "cc_hospital"))
+
+consumido <- SIGFE %>% filter(consumido == "esta") 
+
+consolidado <- data.frame(
+  "Centro de Costo" = "eliminar", 
+  "Devengado" = 0, 
+  "Cuenta" = "eliminar",
+  "Tipo" = 1)
+colnames(consolidado)[1] <- "Centro de Costo"
+
+for (i in cuentas) {
+  if(i %in% consumido$SIGCOM){
+    aux_prorrateo <- CxCC %>% filter(SIGCOM == i)
+    aux_prorrateo$prop <- prop.table(aux_prorrateo$pxq)
+    aux_prorrateo <- aux_prorrateo %>% 
+      group_by ("cc_sigcom" = cc_sigcom) %>% 
+      summarise("prop" = sum(prop)) %>%
+      ungroup()
+    valor_sigfe <- sum(ifelse(SIGFE$SIGCOM == i, SIGFE$Devengado, 0))
+    tabla_prorrateo <- aux_prorrateo %>% 
+      mutate("Centro de Costo" = cc_sigcom , "Devengado" = prop*valor_sigfe, "Cuenta" = i,
+             "Tipo" = 2) %>% select(-cc_sigcom, -prop)
+    consolidado <- rbind(consolidado, tabla_prorrateo) %>%  filter(Cuenta != "eliminar")
+  }
+}
+
+#esto va dentro del for
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  if(i %in% SIGFE$SIGCOM & i %in% CxCC$ItemxCC){
+    CCC <- CxCC %>% filter(ItemxCC == i) %>% 
+      select(CC, Total) %>% 
+      group_by (CC) %>% 
+      summarise(Total =sum(Total)) %>%
+      mutate("prop" = Total/sum(Total))
+    GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
+                             Devengado = Devengado*CCC$prop, 
+                             "Cuenta"=i, "Tipo" = 2) 
+    GG1 <- rbind(GG1,GG2)}
+  
+  else if (i %in% SIGFE$SIGCOM & i %in% CxCC_H$ItemxCC){
+    CCC <- CxCC_H %>% filter(ItemxCC == i) %>% 
+      select(CC, Total) %>% 
+      group_by (CC) %>% 
+      summarise(Total =sum(Total)) %>%
+      mutate("prop" = Total/sum(Total))
+    GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
+                             Devengado = Devengado*CCC$prop, 
+                             "Cuenta"=i, "Tipo" = 2) 
+    GG1 <- rbind(GG1,GG2)} 
+  
+  else if (i %in% SIGFE$SIGCOM){
+    proporcion_exacta <- ifelse(i %in% cuentas_cae, "prorrateo_cae",
+                                ifelse(i %in% cuentas_clinico, "prorrateo_clinico",
+                                       ifelse(i %in% cuentas_qx, "prorrateo_qx", 
+                                              ifelse(i %in% cuentas_no_critico, "prorrateo_no_critico", "todos"))))
+
 # M2 --------------------------------------------------------------
 
 #Asigna los metros a los pabellones segun el tiempo asignado en la tabla quirurgica
@@ -468,11 +614,6 @@ GG1_nulo <- GG1
 GG44 <- GG1_nulo
 GG33 <- GG1_nulo
 
-#Agrupa las cuentas de SIGFE
-SIGFE_agrupado <- SIGFE %>% 
-  group_by ("Item" = SIGCOM) %>% 
-  summarise("Devengado" = sum(Devengado)) %>%
-  ungroup()
 
 # Distribucion por M2 -----------------------------------------------------
 asignaciones <- read_excel(Asignaciones)
@@ -585,14 +726,6 @@ asignaciones <- asignaciones %>% full_join(SIGFE_agrupado, by="Item")
 asignaciones <- asignaciones %>% full_join(GG1_agrupado, by="Item") %>% filter(Devengado != "NA")
 asignaciones$diferencia <- asignaciones$Devengado - asignaciones$Prorrateado
 rm(SIGFE_agrupado, GG1_agrupado)
-
-
-
-
-
-
-
-
 
 
 cuentas <- c("48-SERVICIO DE AGUA",
