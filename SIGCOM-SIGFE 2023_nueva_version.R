@@ -26,7 +26,7 @@ M2 <- paste0(ruta_base,resto,"/Insumos de info anual/M2.xlsx")
 M2Pab <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/89_Pabellon.xlsx")
 EqMed <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/99_Equipos_Medicos.xlsx")
 item <- paste0(ruta_base,resto,"/Insumos de info anual/item_presupuestarios_centros_de_costo.xlsx")
-
+produccion_cae <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/950_Produccion.xlsx")
 
 SIGFE2 <- str_split_fixed(SIGFE$`Concepto Presupuestario`, " ", n=2)
 SIGFE <- cbind(SIGFE, SIGFE2)
@@ -254,7 +254,16 @@ cuentas <- c("52-ARRENDAMIENTOS",
              "41-PRODUCTOS QUÍMICOS",
              "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
              "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
-             "46-VÍVERES")
+             "46-VÍVERES",
+             
+             "100-GAS PROPANO",
+             "48-SERVICIO DE AGUA",
+             "92-SERVICIO DE ENERGÍA",
+             "170-SERVICIO DE ASEO",
+             "182-SERVICIO DE VIGILANCIA Y SEGURIDAD"
+             
+             
+             )
 
 # SIGFE Formulas ----------------------------------------------------------
 
@@ -511,7 +520,23 @@ CxCC$item_presupuestario <- as.character(CxCC$`ITEM PRESUPUESTARIO`)
 CxCC <- CxCC %>% inner_join(SIGFE, by = "item_presupuestario") %>% select(-consumido, -Devengado, -`ITEM PRESUPUESTARIO`, -COD.PRODUCTO, -`COD. CENTRO COSTO`, -RUBRO, -BODEGA) %>% mutate(pxq = PRECIO*`CANTIDAD DESPACHADA`)
 CxCC <- CxCC %>% inner_join(consumo_interno, by = c(`CENTRO DE COSTO` = "cc_hospital"))
 
-consumido <- SIGFE %>% filter(consumido == "esta") 
+consumido <- SIGFE %>% filter(consumido == "esta")
+consumido <- consumido %>% 
+  group_by ("SIGCOM" = SIGCOM) %>% 
+  summarise("Devengado" = sum(Devengado)) %>%
+  ungroup()
+
+no_considera_consumo <- consumido %>% filter(SIGCOM == "100-GAS PROPANO" | SIGCOM == "48-SERVICIO DE AGUA" | SIGCOM == "92-SERVICIO DE ENERGÍA" | SIGCOM == "170-SERVICIO DE ASEO") %>% mutate("SIGCOM" = SIGCOM) %>% select(SIGCOM, Devengado)
+
+consumido <- consumido %>% filter(SIGCOM != "100-GAS PROPANO" & SIGCOM != "48-SERVICIO DE AGUA" & SIGCOM != "92-SERVICIO DE ENERGÍA" & SIGCOM != "170-SERVICIO DE ASEO")
+
+no_consumido <- SIGFE %>% filter(consumido == "no esta")
+no_consumido <- no_consumido %>% 
+  group_by ("SIGCOM" = SIGCOM) %>% 
+  summarise("Devengado" = sum(Devengado)) %>%
+  ungroup()
+
+no_consumido <- rbind(no_considera_consumo, no_consumido)
 
 consolidado <- data.frame(
   "Centro de Costo" = "eliminar", 
@@ -520,7 +545,7 @@ consolidado <- data.frame(
   "Tipo" = 1)
 colnames(consolidado)[1] <- "Centro de Costo"
 
-for (i in cuentas) {
+for (i in unique(CxCC$SIGCOM)) {
   if(i %in% consumido$SIGCOM){
     aux_prorrateo <- CxCC %>% filter(SIGCOM == i)
     aux_prorrateo$prop <- prop.table(aux_prorrateo$pxq)
@@ -528,66 +553,13 @@ for (i in cuentas) {
       group_by ("cc_sigcom" = cc_sigcom) %>% 
       summarise("prop" = sum(prop)) %>%
       ungroup()
-    valor_sigfe <- sum(ifelse(SIGFE$SIGCOM == i, SIGFE$Devengado, 0))
+    valor_sigfe <- sum(ifelse(consumido$SIGCOM == i, consumido$Devengado, 0))
     tabla_prorrateo <- aux_prorrateo %>% 
       mutate("Centro de Costo" = cc_sigcom , "Devengado" = prop*valor_sigfe, "Cuenta" = i,
              "Tipo" = 2) %>% select(-cc_sigcom, -prop)
     consolidado <- rbind(consolidado, tabla_prorrateo) %>%  filter(Cuenta != "eliminar")
   }
 }
-
-#esto va dentro del for
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  if(i %in% SIGFE$SIGCOM & i %in% CxCC$ItemxCC){
-    CCC <- CxCC %>% filter(ItemxCC == i) %>% 
-      select(CC, Total) %>% 
-      group_by (CC) %>% 
-      summarise(Total =sum(Total)) %>%
-      mutate("prop" = Total/sum(Total))
-    GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-      summarise(Devengado = sum(Devengado)) %>% 
-      filter(SIGCOM == i)
-    GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                             Devengado = Devengado*CCC$prop, 
-                             "Cuenta"=i, "Tipo" = 2) 
-    GG1 <- rbind(GG1,GG2)}
-  
-  else if (i %in% SIGFE$SIGCOM & i %in% CxCC_H$ItemxCC){
-    CCC <- CxCC_H %>% filter(ItemxCC == i) %>% 
-      select(CC, Total) %>% 
-      group_by (CC) %>% 
-      summarise(Total =sum(Total)) %>%
-      mutate("prop" = Total/sum(Total))
-    GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-      summarise(Devengado = sum(Devengado)) %>% 
-      filter(SIGCOM == i)
-    GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                             Devengado = Devengado*CCC$prop, 
-                             "Cuenta"=i, "Tipo" = 2) 
-    GG1 <- rbind(GG1,GG2)} 
-  
-  else if (i %in% SIGFE$SIGCOM){
-    proporcion_exacta <- ifelse(i %in% cuentas_cae, "prorrateo_cae",
-                                ifelse(i %in% cuentas_clinico, "prorrateo_clinico",
-                                       ifelse(i %in% cuentas_qx, "prorrateo_qx", 
-                                              ifelse(i %in% cuentas_no_critico, "prorrateo_no_critico", "todos"))))
 
 # M2 --------------------------------------------------------------
 
@@ -600,6 +572,18 @@ M2 <- read_excel(M2) %>% filter(Area !="Quirofanos")
 M2 <- rbind(M2,M2Pab)
 M2$prop <- prop.table(M2$M2)
 rm(M2Pab) #elimino los M2 de los pabellones
+
+#Asigna metros cuadrados al cae
+prod_cae <- read_excel(produccion_cae) %>% filter(`Unidades de Producción` == "1__Consulta")
+prod_cae$Valor <- prop.table(ifelse(prod_cae$Valor == 0, 1, prod_cae$Valor))
+prod_cae$`Centro de Producción` <- substr(prod_cae$`Centro de Producción`, start = 8, stop = 600)  
+prod_cae <- prod_cae %>%
+  mutate("Area" = "Ambulatorio", "CC" = `Centro de Producción`, "M2" = 1555*Valor, "prop"=Valor) %>% 
+  select(Area, CC, M2, prop)
+
+M2 <- M2 %>% filter(Area !="Ambulatorio")
+M2 <- rbind(M2,prod_cae)
+M2$prop <- prop.table(M2$M2)
 
 # Prorrateo Gastos Generales por M2 ---------------------------------------
 
@@ -616,16 +600,18 @@ GG33 <- GG1_nulo
 
 
 # Distribucion por M2 -----------------------------------------------------
+
 asignaciones <- read_excel(Asignaciones)
+colnames(asignaciones)[1] <- "SIGCOM"
 asignacion_m2 <- read_excel(Asignaciones) %>% filter(Prorrateo == "metros_totales")
 
 aux_asignacion = asignacion_m2
 aux_distribucion = M2
 tipo = 1
 
-for (i in aux_asignacion$Item) {
-  if(i %in% SIGFE$SIGCOM){
-    variable_efimera <-  SIGFE %>% group_by(SIGCOM) %>% 
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
       summarise(Devengado = sum(Devengado)) %>% 
       filter(SIGCOM == i)
     variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
@@ -639,9 +625,9 @@ for (i in aux_asignacion$Item) {
 
 # Distribución por asignacion directa -------------------------------------
 asignacion_directa <- read_excel(Asignaciones) %>% filter(Prorrateo == "asignacion_directa")
-asignacion_directa <- asignacion_directa %>% full_join(SIGFE_agrupado, by="Item") %>% 
+asignacion_directa <- asignacion_directa %>% full_join(no_consumido, by="SIGCOM") %>% 
   filter(Prorrateo == "asignacion_directa", Devengado != "NA") %>% 
-  select("Centro de Costo" = `Centro de costo`, Devengado, "Cuenta"=Item) %>% mutate("Tipo" = 4)
+  select("Centro de Costo" = `Centro de costo`, Devengado, "Cuenta"=SIGCOM) %>% mutate("Tipo" = 4)
 
 GG1 <- rbind(GG1, asignacion_directa)
 rm(asignacion_directa, asignacion_m2, variable_efimera)
@@ -655,9 +641,9 @@ aux_asignacion = asignacion_clinica
 aux_distribucion = M2clinicos
 tipo = 2
 
-for (i in aux_asignacion$Item) {
-  if(i %in% SIGFE$SIGCOM){
-    variable_efimera <-  SIGFE %>% group_by(SIGCOM) %>% 
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
       summarise(Devengado = sum(Devengado)) %>% 
       filter(SIGCOM == i)
     variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
@@ -677,9 +663,9 @@ aux_asignacion = asignacion_pab_sin_car
 aux_distribucion = M2Pab_sin_Card
 tipo = 2
 
-for (i in aux_asignacion$Item) {
-  if(i %in% SIGFE$SIGCOM){
-    variable_efimera <-  SIGFE %>% group_by(SIGCOM) %>% 
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
       summarise(Devengado = sum(Devengado)) %>% 
       filter(SIGCOM == i)
     variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
@@ -692,16 +678,64 @@ for (i in aux_asignacion$Item) {
 
 # Distribución CAE prorratear -------------------------------------
 asignacion_cae <- read_excel(Asignaciones) %>% filter(Prorrateo == "cae_prorratear")
-M2_cae <- M2 %>% filter(Area == "Ambulatorio" & Area == "Procedimientos")
+M2_cae <- M2 %>% filter(Area == "Ambulatorio" | Area == "Procedimientos")
 M2_cae$prop <- prop.table(M2_cae$M2)
 
-aux_asignacion = asignacion_cae
-aux_distribucion = M2_cae
-tipo = 2
+aux_asignacion <-  asignacion_cae
+aux_distribucion <-  M2_cae
+tipo <-  2
 
-for (i in aux_asignacion$Item) {
-  if(i %in% SIGFE$SIGCOM){
-    variable_efimera <-  SIGFE %>% group_by(SIGCOM) %>% 
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
+                                                       Devengado = Devengado*aux_distribucion$prop, 
+                                                       "Cuenta"=i, "Tipo" = tipo) 
+    GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+  else {variable_efimera <- GG1_nulo
+  GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+}
+
+
+# Distribución UPC --------------------------------------------------------
+
+asignacion_upc <- read_excel(Asignaciones) %>% filter(Prorrateo == "upc")
+M2_upc <- M2 %>% filter(Area == "UPC")
+M2_upc$prop <- prop.table(M2_upc$M2)
+
+aux_asignacion <-  asignacion_upc
+aux_distribucion <-  M2_upc
+tipo <-  2
+
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
+                                                       Devengado = Devengado*aux_distribucion$prop, 
+                                                       "Cuenta"=i, "Tipo" = tipo) 
+    GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+  else {variable_efimera <- GG1_nulo
+  GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+}
+
+# Distribución por costo Farmacia --------------------------------------------------------------
+
+
+M2_farmacia <- read_excel(Farmacia) %>% mutate("CC" = perc, "prop" = gasto) %>% select(-perc, -gasto)
+
+asignacion_farmacia <- read_excel(Asignaciones) %>% filter(Prorrateo == "farmacia")
+
+aux_asignacion <-  asignacion_farmacia
+aux_distribucion <-  M2_farmacia
+tipo <-  2
+
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
       summarise(Devengado = sum(Devengado)) %>% 
       filter(SIGCOM == i)
     variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
@@ -715,17 +749,152 @@ for (i in aux_asignacion$Item) {
 
 
 
+
+# Distribución por Equipos Medicos ---------------------------------------------------------
+
+#PREVENTIVOS
+M2_EqMed_prev <- read_excel(EqMed) %>% 
+  filter("Área" != "Total" & `Mantención Preventiva` != "NA") %>% 
+  mutate("CC" = `PERC ASOCIADO`, "prop" = prop.table(`Mantención Preventiva`)) %>% 
+  select(CC, prop)
+
+asignacion_EqMed_prev <- read_excel(Asignaciones) %>% filter(Prorrateo == "equipos_medicos_prev")
+
+aux_asignacion <-  asignacion_EqMed_prev
+aux_distribucion <-  M2_EqMed_prev
+tipo <-  2
+
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
+                                                       Devengado = Devengado*aux_distribucion$prop, 
+                                                       "Cuenta"=i, "Tipo" = tipo) 
+    GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+  else {variable_efimera <- GG1_nulo
+  GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+}
+
+#CORRECTIVOS
+M2_EqMed_correc <- read_excel(EqMed) %>% 
+  filter("Área" != "Total" & `Mantención Correctiva` != "NA") %>% 
+  mutate("CC" = `PERC ASOCIADO`, "prop" = prop.table(`Mantención Correctiva`)) %>% 
+  select(CC, prop)
+
+asignacion_EqMed_correc <- read_excel(Asignaciones) %>% filter(Prorrateo == "equipos_medicos_correc")
+
+aux_asignacion <-  asignacion_EqMed_correc
+aux_distribucion <-  M2_EqMed_correc
+tipo <-  2
+
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
+                                                       Devengado = Devengado*aux_distribucion$prop, 
+                                                       "Cuenta"=i, "Tipo" = tipo) 
+    GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+  else {variable_efimera <- GG1_nulo
+  GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+}
+
+
+# Distribución por Cant_RRHH ----------------------------------------------
+M2_Cant_RRHH <- read_excel(Cant_RRHH) %>% mutate("CC" = perc, "prop" = horas_mensuales) %>% 
+  select(CC, prop) %>% 
+  group_by(CC) %>% 
+  summarise(prop = sum(prop)) %>% 
+  ungroup()
+M2_Cant_RRHH$prop <- prop.table(M2_Cant_RRHH$prop)
+
+asignacion_RRHH <- read_excel(Asignaciones) %>% filter(Prorrateo == "cantidad_rrhh")
+
+aux_asignacion <-  asignacion_RRHH
+aux_distribucion <-  M2_Cant_RRHH
+tipo <-  2
+
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
+                                                       Devengado = Devengado*aux_distribucion$prop, 
+                                                       "Cuenta"=i, "Tipo" = tipo) 
+    GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+  else {variable_efimera <- GG1_nulo
+  GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+}
+
+
+# Distribucion Lab, Anat y Farmacia ---------------------------------------
+
+M2_Ap_Lab_Farm <- data.frame("CC" = c("518-LABORATORIO CLÍNICO",
+                                      "544-ANATOMÍA PATOLÓGICA",
+                                      "55101-SERVICIO FARMACEUTICO"), "prop" = c(1/3, 1/3, 1/3))
+
+asignacion_Ap_Lab_Farm <- read_excel(Asignaciones) %>% filter(Prorrateo == "lab_ap_farm")
+
+aux_asignacion <-  asignacion_Ap_Lab_Farm
+aux_distribucion <-  M2_Ap_Lab_Farm
+tipo <-  2
+
+for (i in aux_asignacion$SIGCOM) {
+  if(i %in% no_consumido$SIGCOM){
+    variable_efimera <-  no_consumido %>% group_by(SIGCOM) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(SIGCOM == i)
+    variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
+                                                       Devengado = Devengado*aux_distribucion$prop, 
+                                                       "Cuenta"=i, "Tipo" = tipo) 
+    GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+  else {variable_efimera <- GG1_nulo
+  GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+}
+
+
 # Cuadratura Devengado versus prorrateado ---------------------------------
 
 GG1_agrupado <- GG1 %>% 
-  group_by ("Item" = Cuenta) %>% 
+  group_by ("SIGCOM" = Cuenta) %>% 
   summarise("Prorrateado" = sum(Devengado)) %>%
   ungroup()
 
-asignaciones <- asignaciones %>% full_join(SIGFE_agrupado, by="Item")
-asignaciones <- asignaciones %>% full_join(GG1_agrupado, by="Item") %>% filter(Devengado != "NA")
+asignaciones <- asignaciones %>% full_join(no_consumido, by="SIGCOM")
+asignaciones <- asignaciones %>% full_join(GG1_agrupado, by="SIGCOM") %>% filter(Devengado != "NA")
 asignaciones$diferencia <- asignaciones$Devengado - asignaciones$Prorrateado
-rm(SIGFE_agrupado, GG1_agrupado)
+#rm(no_consumido, GG1_agrupado)
+
+
+sum(SIGFE$Devengado) == sum(GG1$Devengado) + sum(consolidado$Devengado)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 cuentas <- c("48-SERVICIO DE AGUA",
