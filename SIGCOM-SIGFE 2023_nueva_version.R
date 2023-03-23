@@ -746,10 +746,6 @@ for (i in aux_asignacion$SIGCOM) {
   GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
 }
 
-
-
-
-
 # Distribución por Equipos Medicos ---------------------------------------------------------
 
 #PREVENTIVOS
@@ -801,7 +797,6 @@ for (i in aux_asignacion$SIGCOM) {
   else {variable_efimera <- GG1_nulo
   GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
 }
-
 
 # Distribución por Cant_RRHH ----------------------------------------------
 M2_Cant_RRHH <- read_excel(Cant_RRHH) %>% mutate("CC" = perc, "prop" = horas_mensuales) %>% 
@@ -856,7 +851,6 @@ for (i in aux_asignacion$SIGCOM) {
   GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
 }
 
-
 # Cuadratura Devengado versus prorrateado ---------------------------------
 
 GG1_agrupado <- GG1 %>% 
@@ -870,905 +864,66 @@ asignaciones$diferencia <- asignaciones$Devengado - asignaciones$Prorrateado
 #rm(no_consumido, GG1_agrupado)
 
 
-sum(SIGFE$Devengado) == sum(GG1$Devengado) + sum(consolidado$Devengado)
 
+consolidado <- rbind(consolidado, GG1)
 
+# Distribución Pabellón sin cardio -------------------------------------
 
+GG1 <- GG1 %>% filter(Cuenta == "gatito")
 
+asignacion_pab_sin_car <- consolidado %>% filter(`Centro de Costo` == "Pabellón Prorratear")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-cuentas <- c("48-SERVICIO DE AGUA",
-             "182-SERVICIO DE VIGILANCIA Y SEGURIDAD",
-             "170-SERVICIO DE ASEO",
-             "92-SERVICIO DE ENERGÍA",
-             "179-SERVICIO DE MENSAJERIA Y/O CORREO",
-             "100-GAS PROPANO",
-             "133-MANTENIMIENTO PLANTA FÍSICA",
-             "158-PUBLICIDAD Y PROPAGANDA",
-             "93-ENLACES DE TELECOMUNICACIONES",
-             "188-SERVICIOS GENERALES",
-             "192-SERVICIO DE TELECOMUNICACIONES",
-             "128-MANTENIMIENTO DE PRADOS Y JARDINES")
-
-GG1 <- data.frame(
-  "Centro de Costo" = "eliminar", 
-  "Devengado" = 0, 
-  "Cuenta" = "eliminar",
-  "Tipo" = 1)
-colnames(GG1)[1] <- "Centro de Costo"
-GG1_nulo <- GG1
-GG44 <- GG1_nulo
-GG33 <- GG1_nulo
-
-for (i in cuentas) {
-  if(i %in% SIGFE$SIGCOM){
-    GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-      summarise(Devengado = sum(Devengado)) %>% 
-      filter(SIGCOM == i)
-    GG2 <- GG2 %>% summarise("Centro de Costo" = M2$CC, 
-                             Devengado = Devengado*M2$prop, 
-                             "Cuenta"=i, "Tipo" = 1) 
-    GG1 <- rbind(GG1,GG2) %>% filter(Cuenta!="eliminar")}
-    else {GG2 <- GG1_nulo
-    GG1 <- rbind(GG1,GG2) %>% filter(Cuenta!="eliminar")}
-      
-                               
-    }
-
-# Gastos Generales con Asignación Directa ---------------------------------
-
-b <- "57-COLOCACIÓN FAMILIAR DE MENORES Y EXTRAHOSPITALARIA"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = "713-TRABAJO SOCIAL", 
-                         Devengado = Devengado, 
-                         "Cuenta"=b, "Tipo" = 4)
-GG1 <- rbind(GG1,GG2)}
-
-b <- "59-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS CRÍTICAS"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA", 
-                         Devengado = Devengado, 
-                         "Cuenta"=b, "Tipo" = 4)
-GG1 <- rbind(GG1,GG2)}
-
-b <- "145-OTROS GASTOS GENERALES"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = "670-ADMINISTRACIÓN", 
-                         Devengado = Devengado, 
-                         "Cuenta"=b, "Tipo" = 4)
-GG1 <- rbind(GG1,GG2)}
-
-b <- "168-SEGUROS GENERALES"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = "670-ADMINISTRACIÓN", 
-                         Devengado = Devengado, 
-                         "Cuenta"=b, "Tipo" = 4)
-GG1 <- rbind(GG1,GG2)}
-
-b <- "177-SERVICIO DE LABORATORIO"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = "518-LABORATORIO CLÍNICO", 
-                         Devengado = Devengado, 
-                         "Cuenta"=b, "Tipo" = 4)
-GG1 <- rbind(GG1,GG2)}
-
-b <- "181-SERVICIO DE TRANSPORTE" #No lo captura y tampoco sale en la OOTT
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = "664-TRANSPORTE GENERAL", 
-                         Devengado = Devengado, 
-                         "Cuenta"=b, "Tipo" = 4)
-GG1 <- rbind(GG1,GG2)}
-
-# Prorrateos Especificos --------------------------------------------------
-#FARMACIA
-Farm <- read_excel(Farmacia)
-
-# Farmacia ----------------------------------------------------------------
-b <- "30-MEDICAMENTOS"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = Farm$perc, 
-                         Devengado = Devengado*Farm$gasto, 
-                         "Cuenta"=b, "Tipo" = 3)
-GG1 <- rbind(GG1,GG2)}
-
-b <- "176-SERVICIO DE INTERMEDIACIÓN CENABAST"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = Farm$perc, 
-                         Devengado = Devengado*Farm$gasto, 
-                         "Cuenta"=b, "Tipo" = 2)
-GG1 <- rbind(GG1,GG2)}
-
-# Equipos Medicos ---------------------------------------------------------
-EqMed <- read_excel(EqMed, na = " ")
-EqMed <- mutate_all(EqMed, ~replace(., is.na(.), 0))
-
-EqMedPrev <- EqMed %>%  filter (`PERC ASOCIADO` != 0) %>% 
-  select(`PERC ASOCIADO`, `Mantención Preventiva`) %>% 
-  group_by (`PERC ASOCIADO`) %>% 
-  summarise("Mant_preventiva" = sum(`Mantención Preventiva`)) %>%
-    ungroup()
-
-EqMedPrev$prop <- EqMedPrev$Mant_preventiva/sum(EqMedPrev$Mant_preventiva)
-
-
-EqMedCorrec <- EqMed %>%  filter (`PERC ASOCIADO` != 0) %>% 
-  select(`PERC ASOCIADO`, `Mantención Correctiva`) %>% 
-  group_by (`PERC ASOCIADO`) %>% 
-  summarise("Mant_correctiva" = sum(`Mantención Correctiva`)) %>%
-  ungroup()
-
-EqMedCorrec$prop <- EqMedCorrec$Mant_correctiva/sum(EqMedCorrec$Mant_correctiva)
-
-b <- "137-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO CORRECTIVO"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = EqMedCorrec$`PERC ASOCIADO`, 
-                         Devengado = Devengado*EqMedCorrec$prop, 
-                         "Cuenta"=b, "Tipo" = 3)
-GG1 <- rbind(GG1,GG2)}
-
-b <- "138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = EqMedPrev$`PERC ASOCIADO`, 
-                         Devengado = Devengado*EqMedPrev$prop, 
-                         "Cuenta"=b, "Tipo" = 3)
-GG1 <- rbind(GG1,GG2)}
-
-# CAPACITACION
-
-cant_RRHH <- read_excel(Cant_RRHH)
-cant_RRHH <- cant_RRHH %>% select(perc, horas_mensuales) %>% 
-  group_by (perc) %>% 
-  summarise("horas_mensuales" = sum(horas_mensuales)) %>%
-  ungroup()
-
-cant_RRHH$prop <- cant_RRHH$horas_mensuales/sum(cant_RRHH$horas_mensuales)
-
-b <- "76-CURSOS DE CAPACITACIÓN"
-if(b %in% SIGFE$SIGCOM){
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == b)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = cant_RRHH$perc, 
-                           "Devengado" = Devengado*cant_RRHH$prop, 
-                           "Cuenta"=b, "Tipo" = 2)
-  GG1 <- rbind(GG1,GG2)} 
-
-b <- "161-SALA CUNAS Y/O SERVICIOS INFANTILES"
-if(b %in% SIGFE$SIGCOM)
-{GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-  summarise(Devengado = sum(Devengado)) %>% 
-  filter(SIGCOM == b)
-GG2 <- GG2 %>% summarise("Centro de Costo" = cant_RRHH$perc, 
-                         "Devengado" = Devengado*cant_RRHH$prop, 
-                         "Cuenta"=b, "Tipo" = 2)
-GG1 <- rbind(GG1,GG2)}
-
-# Consumo x CC ------------------------------------------------------------
-
-CxCC <- read_excel(ConsumoxCC, range = "A3:M5000", na = "eliminar") 
-CxCC <- CxCC %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>% 
-  mutate(item_pres=`ITEM PRESUPUESTARIO`, Total=`CANTIDAD DESPACHADA`*PRECIO, CC=`CENTRO DE COSTO`) %>%     
-  mutate(ItemxCC = case_when(item_pres ==	"4001000"	~	"24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
-                             item_pres ==	"4007002"	~	"29-MATERIALES Y ELEMENTOS DE ASEO",
-                             item_pres ==	"4008000"	~	"31-MENAJE PARA OFICINA, CASINO Y OTROS",
-                             item_pres ==	"3001000"	~	"3-COMBUSTIBLES Y LUBRICANTES",
-                                 item_pres ==	"4005000"	~	"18-MATERIAL MEDICO QUIRURGICO",
-                                 item_pres ==	"4005003"	~	"18-MATERIAL MEDICO QUIRURGICO",
-                                 item_pres ==	"2001000"	~	"43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
-                             item_pres ==	"4011000"	~ "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
-                             item_pres ==	"6002001"	~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
-                             item_pres ==	"6002002"	~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
-                             item_pres ==	"6004000"	~ "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
-                             item_pres ==	"12999018"	~ "66-COMPRA DE OTROS SERVICIOS",
-                                 item_pres ==	"4003002"	~	"41-PRODUCTOS QUÍMICOS",
-                                 item_pres ==	"12999006"	~	"57-COLOCACIÓN FAMILIAR DE MENORES Y EXTRAHOSPITALARIA",
-                                 item_pres ==	"29004000"	~	"No considerar",
-                                 item_pres ==	"4012000"	~	"35-OTROS INSUMOS Y MATERIALES",
-                                 item_pres ==	"2002002"	~	"43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
-                                 item_pres ==	"2905001001"	~	"No considerar",
-                                 item_pres ==	"9005002"	~	"52-ARRENDAMIENTOS",
-                                 item_pres ==	"4010000"	~	"28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-                                 item_pres ==	"4009000"	~	"27-MATERIALES INFORMATICOS",
-                                 item_pres ==	"4004004"	~	"16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
-                             item_pres ==	"4004003"	~	"21-MATERIALES DE CURACIÓN",
-                             item_pres ==	"4013"	~	"21-MATERIALES DE CURACIÓN",
-                                 item_pres ==	"12999002"	~	"177-SERVICIO DE LABORATORIO",
-                                 item_pres ==	"29051000"	~	"No considerar	",
-                                 item_pres ==	"4999000"	~	"35-OTROS INSUMOS Y MATERIALES",
-                                 item_pres ==	"9005000"	~	"52-ARRENDAMIENTOS",
-                                 item_pres ==	"12999003"	~	"65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO",
-                                 item_pres ==	"4005002"	~	"18-MATERIAL MEDICO QUIRURGICO",
-                                 item_pres ==	"4004001"	~	"30-MEDICAMENTOS",
-                                 item_pres ==	"29005002"	~	"No considerar",
-                                 item_pres ==	"8007000"	~	"151-PASAJES, FLETES Y BODEGAJE",
-                                 item_pres ==	"400400101"	~	"30-MEDICAMENTOS",
-                                 item_pres ==	"4004002"	~	"15-MATERIAL DE ODONTOLOGÍA",
-                                 item_pres ==	"8001000"	~	"170-SERVICIO DE ASEO",
-                                 item_pres ==	"1001000"	~	"46-VÍVERES",
-                                 item_pres ==	"04013.00"	~	"8-EQUIPOS MENORES",
-                             item_pres ==	"4013"	~	"8-EQUIPOS MENORES",
-                                 item_pres ==	"6006000"	~	"138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
-                                 item_pres ==	"5003000"	~	"100-GAS PROPANO",
-                                 item_pres ==	"31.02.005"	~	"No considerar",
-                                 item_pres ==	"4010000"	~	"28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-                                 item_pres ==	"4012000"	~	"35-OTROS INSUMOS Y MATERIALES",
-                                 item_pres ==	"2905001001"	~	"No considerar",
-                                 item_pres ==	"9006000"	~	"52-ARRENDAMIENTOS",
-                                 item_pres ==	"5002000"	~	"48-SERVICIO DE AGUA",
-                                 item_pres ==	"5001000"	~	"92-SERVICIO DE ENERGÍA",
-                                 item_pres ==	"31.02.004"	~	"No considerar",
-                                 item_pres ==	"12999014"	~	"59-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS CRÍTICAS",
-                                 item_pres ==	"4007002"	~	"29-MATERIALES Y ELEMENTOS DE ASEO	",
-                                 item_pres ==	"8001000"	~	"170-SERVICIO DE ASEO",
-                                 item_pres ==	"11002001.1"	~	"76-CURSOS DE CAPACITACIÓN",
-                                 item_pres ==	"9005002"	~	"52-ARRENDAMIENTOS",
-                                 item_pres ==	"6006001"	~	"138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
-                                 item_pres ==	"14001.00"	~	"28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-                                 item_pres ==	"29004000"	~	"No considerar",
-                                 item_pres ==	"5004000"	~	"179-SERVICIO DE MENSAJERIA Y/O CORREO",
-                                 item_pres ==	"31.02.005"	~	"No considerar",
-                                 item_pres ==	"31.02.006"	~	"No considerar",
-                                 item_pres ==	"6001000"	~	"133-MANTENIMIENTO PLANTA FÍSICA",
-                                 item_pres ==	"6006002"	~	"137-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO CORRECTIVO",
-                                 item_pres ==	"29005002"	~	"No considerar",
-                                 item_pres ==	"31.02.004"	~	"No considerar",
-                                 item_pres ==	"31.02.999"	~	"No considerar",
-                                 item_pres ==	"4012000"	~	"35-OTROS INSUMOS Y MATERIALES",
-                                 item_pres ==	"6006000"	~	"138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
-                                 item_pres ==	"2905001001"	~	"No considerar",
-                                 item_pres ==	"12999010"	~	"149-PASAJES Y TRASLADOS DE PACIENTES",
-                                 item_pres ==	"8002000"	~	"182-SERVICIO DE VIGILANCIA Y SEGURIDAD",
-                                 item_pres ==	"6002000"	~	"135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
-                                 item_pres ==	"6007000"	~	"147-OTROS MANTENIMIENTOS",
-                                 item_pres ==	"29059000"	~	"No considerar",
-                                 item_pres ==	"11001000"	~	"76-CURSOS DE CAPACITACIÓN",
-                                 item_pres ==	"12999009"	~	"Agrupado",
-                                 item_pres ==	"7003000"	~	"Agrupado",
-                             item_pres ==	"12999002"	~	"66-COMPRA DE OTROS SERVICIOS",
-                             item_pres ==	"12.999.002"	~	"66-COMPRA DE OTROS SERVICIOS",
-                             item_pres ==	"11003000"	~	"66-COMPRA DE OTROS SERVICIOS",
-                             item_pres ==	"9999000"	~	"66-COMPRA DE OTROS SERVICIOS",
-                                 TRUE ~ "Asignar Item Presupuestario"),
-         CC=case_when(CC=="DIRECCION HOSP. ROBERTO DEL RI"~"670-ADMINISTRACIÓN",
-                      CC=="RELACIONES PUBLICAS"~"670-ADMINISTRACIÓN",
-                      CC=="OIRS"~"670-ADMINISTRACIÓN",
-                      CC=="SD.GESTION DEL CUIDADO"~"670-ADMINISTRACIÓN",
-                      CC=="ANATOMIA PATOLOGICA"~"544-ANATOMÍA PATOLÓGICA",
-                      CC=="SERVICIO SOCIAL PACIENTES"~"713-TRABAJO SOCIAL",
-                      CC=="ADM PEDIATRIA"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="UNIDAD PEDIATRIA GRAL C (AISLA"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="UNIDAD PEDIATRIA GRAL B"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="UNIDAD PEDIATRIA GRAL A"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="UNIDAD DE CUIDADOS INTENSIVOS"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
-                      CC=="UNIDAD TRATAMIENTO INTERMEDIO"~"196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA",
-                      CC=="SALA CUIDADO PROLONGADO"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
-                      CC=="U.C.I. CARDIOVASCULAR"~"177-UNIDAD DE CUIDADOS CORONARIOS",
-                      CC=="UTI CARDIOVASCULAR"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
-                      CC=="UNIDAD ONCOLOGIA"~"87-HOSPITALIZACIÓN ONCOLOGÍA",
-                      CC=="PABELLON CARDIOLOGIA"~"464-QUIRÓFANOS CARDIOVASCULAR",
-                      CC=="CIRUGIA PLASTICA Y QUEMADOS"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="TRAUMATOLOGIA GENERAL"~"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
-                      CC=="CAE CONS. BRONCOPULMONAR"~"282-CONSULTA NEUMOLOGÍA",
-                      CC=="CAE LAB. BRONCOPULMONAR"~"244-PROCEDIMIENTO DE NEUMOLOGÍA",
-                      CC=="CAE CARDIOLOGIA"~"276-CONSULTA CARDIOLOGÍA",
-                      CC=="CAE CIRUGIA GENERAL"~"351-CONSULTA CIRUGÍA PEDIÁTRICA",
-                      CC=="CAE DERMATOLOGIA"~"277-CONSULTA DERMATOLOGÍA",
-                      CC=="CAE ENDOCRINOLOGIA"~"281-CONSULTA ENDOCRINOLOGÍA",
-                      CC=="CAE GASTROENTEROLOGIA"~"290-CONSULTA GASTROENTEROLOGÍA",
-                      CC=="CAE ONCOLOGIA"~"306-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-                      CC=="CAE CONS. NEFROLOGIA"~"285-CONSULTA NEFROLOGÍA",
-                      CC=="CAE CONS. NEUROLOGIA"~"331-CONSULTA NEUROLOGÍA PEDIÁTRICA",
-                      CC=="CAE LAB. EEG NEUROLOGIA"~"269-PROCEDIMIENTOS DE NEUROLOGÍA",
-                      CC=="CAE CONS. OTORRINOLARINGOLOGIA"~"319-CONSULTA OTORRINOLARINGOLOGÍA",
-
-                      CC=="CAE ODONTOLOGIA"~"356-CONSULTA ODONTOLOGÍA",
-                      CC=="CAE SALUD MENTAL AMBULATORIO"~"280-CONSULTA PSIQUIATRÍA",
-                      CC=="SALUD MENTAL HOSPITALIZADOS"~"149-HOSPITALIZACIÓN PSIQUIATRÍA",
-                      CC=="IMAGENOLOGIA"~"542-IMAGENOLOGÍA",
-                      CC=="UNIDAD DE EMERGENCIA"~"216-EMERGENCIAS PEDIÁTRICAS",
-                      CC=="LABORATORIO CLINICO"~"518-LABORATORIO CLÍNICO",
-                      CC=="LABORATORIO HEMATOLOGIA"~"518-LABORATORIO CLÍNICO",
-                      CC=="LABORATORIO MICROBIOLOGIA"~"518-LABORATORIO CLÍNICO",
-                      CC=="LABORATORIO URGENCIA Y QCA"~"518-LABORATORIO CLÍNICO",
-                      CC=="LAB.CITOMETRIA DE FLUJO"~"518-LABORATORIO CLÍNICO",
-                      CC=="BANCO DE SANGRE"~"575-BANCO DE SANGRE",
-                      CC=="PERSONAL"~"670-ADMINISTRACIÓN",
-                      CC=="ABASTECIMIENTO"~"670-ADMINISTRACIÓN",
-                      CC=="FARMACIA"~"593-SERVICIO FARMACEUTICO",
-                      CC=="ESTERILIZACION"~"662-CENTRAL DE ESTERILIZACIÓN",
-                      CC=="ALIMENTACION"~"652-SERVICIO DE ALIMENTACIÓN",
-                      CC=="RECURSOS FISICOS"~"670-ADMINISTRACIÓN",
-                      CC=="INFRAESTRUCTURA"~"670-ADMINISTRACIÓN",
-                      CC=="HIGIENE HOSPITALARIA"~"648-ASEO",
-                      CC=="TRANSPORTE Y COMUNICACIONES"~"664-TRANSPORTE GENERAL",
-                      CC=="JARDIN INFANTIL DR. A. VIGNAU"~"670-ADMINISTRACIÓN",
-                      CC=="SOME"~"670-ADMINISTRACIÓN",
-                      CC=="INFORMATICA"~"670-ADMINISTRACIÓN",
-                      CC=="RESIDENCIA MEDICA 4TO PISO"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="PABELLON HEMODINAMIA"~"240-PROCEDIMIENTO DE CARDIOLOGÍA",
-                      CC=="CAE CENTRO HEMOFILICO"~"306-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-                      CC=="CAPACITACION"~"670-ADMINISTRACIÓN",
-                      CC=="EQUIPOS MEDICOS"~"665-MANTENIMIENTO",
-                      CC=="CAE VIH"~"284-CONSULTA INFECTOLOGÍA",
-                      CC=="UNIDAD PEDIATRIA GENERAL D"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="COMERCIALIZACION"~"670-ADMINISTRACIÓN",
-                      CC=="GESTION INGRESO Y PERMANENCIA"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD COORDINACION GES"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD DE GESTION DE DEMANDA"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD DE REHABILITACION"~"567-REHABILITACIÓN",
-                      CC=="EQUIPOS INDUSTRIALES"~"670-ADMINISTRACIÓN",
-                      CC=="SERVICIOS GENERALES"~"664-TRANSPORTE GENERAL",
-                      CC=="AUDITORIA"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD CONTROL DEL GESTION"~"670-ADMINISTRACIÓN",
-                      CC=="ADM QUIRURGICO"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="CAE UROLOGIA"~"311-CONSULTA UROLOGÍA",
-                      CC=="CAE CONS. OFTALMOLOGIA"~"317-CONSULTA OFTALMOLOGÍA",
-                      CC=="SERVICIO SOCIAL PERSONAL"~"713-TRABAJO SOCIAL",
-                      CC=="CONTABILIDAD Y PRESUPUESTO"~"670-ADMINISTRACIÓN",
-                      CC=="SEGURIDAD"~"670-ADMINISTRACIÓN",
-                      CC=="ASEO Y ORNATO PATIOS Y JARDINE"~"648-ASEO",
-                      CC=="BIBLIOTECA"~"670-ADMINISTRACIÓN",
-                      CC=="RESIDENCIA ENFERMERAS"~"670-ADMINISTRACIÓN",
-                      CC=="ESTADISTICA"~"670-ADMINISTRACIÓN",
-                      CC=="S.D.RR.HH"~"670-ADMINISTRACIÓN",
-                      CC=="CHILE CRECE CONTIGO"~"713-TRABAJO SOCIAL",
-                      CC=="UNIDAD ANALISIS REG.CLINICO"~"670-ADMINISTRACIÓN",
-                      CC=="INFRAESTRUCTURA HOSPITAL"~"670-ADMINISTRACIÓN",
-                      CC=="PREV.RIESGO Y S.OCUPACIONAL"~"670-ADMINISTRACIÓN",
-                      CC=="SALA REAS"~"670-ADMINISTRACIÓN",
-                      CC=="EQUIPOS INDUSTRIALES(HOSPITAL)"~"670-ADMINISTRACIÓN",
-                      CC=="I.A.A.S"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD ASISTENCIAL DOCENTE"~"670-ADMINISTRACIÓN",
-                      CC=="LAB.BIOLOGIA MOLECULAR"~"518-LABORATORIO CLÍNICO",
-                      CC=="CAE PREMATUROS"~"328-CONSULTA PEDIATRÍA GENERAL",
-                      CC=="VACUNATORIO"~"328-CONSULTA PEDIATRÍA GENERAL",
-                      CC=="OFICINA DE SUELDOS"~"670-ADMINISTRACIÓN",
-                      CC=="SUBDIRECCION ADMINISTRATIVA"~"670-ADMINISTRACIÓN",
-                      CC=="SUBDIRECCION MEDICA"~"670-ADMINISTRACIÓN",
-                      CC=="EQUIPAMIENTO HOSPITAL"~"670-ADMINISTRACIÓN",
-                      CC=="BODEGAS ABASTECIMIENTO"~"670-ADMINISTRACIÓN",
-                      CC=="CIRUGIA GENERAL"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="UNIDAD MEDICINA INTEGRATIVA"~"670-ADMINISTRACIÓN",
-                      CC=="C.COSTO GLOBAL"~"670-ADMINISTRACIÓN",
-                      CC=="GASTOS HOSPITAL"~"670-ADMINISTRACIÓN",
-                      CC=="CAE QUEMADOS"~"316-CONSULTA CIRUGÍA PLÁSTICA",
-                      CC=="CAE PROCED. NEFROLOGIA"~"285-CONSULTA NEFROLOGÍA",
-                      CC=="GESTION DE USUARIOS"~"670-ADMINISTRACIÓN",
-                      CC=="ADM CARDIOLOGIA"~"276-CONSULTA CARDIOLOGÍA",
-                      
-                      CC=="UNIDAD PRE QUIRURGICA"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
-                      CC=="MEDICO QUIRURGICO I"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="MEDICO QUIRURGICO II"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="MEDICO QUIRURGICO III"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="CENTRAL DE PROCEDIMIENTOS"~"473-QUIRÓFANOS MENOR AMBULATORIA",
-                      
-                      CC=="CAE ESPECIALIDADES 2"~"Cae Prorratear",
-                      CC=="CAE ADMINISTRACION"~"Cae Prorratear",
-                      CC=="PABELLONES"~"Pabellón Prorratear",
-                      TRUE ~ "Asignar CC"
-         )) %>% 
-  select(item_pres, CC,ItemxCC, Total) %>% 
-  group_by (item_pres, CC,ItemxCC,) %>% 
-  summarise("Total" = sum(Total)) %>%
-  ungroup()
-
-CxCC_no_asignado <- CxCC %>% filter(ItemxCC == "Asignar Item Presupuestario")
-#tengo que agarrar cada item de GG y multriplicarlo por SIGFE
-# despues agarro los de insumos y lo mismo
-
-# CxCC Historico ----------------------------------------------------------
-CxCC_H <- read_excel(CxCC_H, range = "A3:M90000", na = "eliminar")
-CxCC_H <- CxCC_H %>%  filter (`ITEM PRESUPUESTARIO` != "eliminar", PRECIO != 0) %>% 
-  mutate(item_pres=`ITEM PRESUPUESTARIO`, Total=`CANTIDAD DESPACHADA`*PRECIO, CC=`CENTRO DE COSTO`) %>% 
-  mutate(ItemxCC = case_when(item_pres ==	"4001000"	~	"24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
-                             item_pres ==	"4007002"	~	"29-MATERIALES Y ELEMENTOS DE ASEO",
-                             item_pres ==	"4008000"	~	"31-MENAJE PARA OFICINA, CASINO Y OTROS",
-                             item_pres ==	"3001000"	~	"3-COMBUSTIBLES Y LUBRICANTES",
-                             item_pres ==	"4005000"	~	"18-MATERIAL MEDICO QUIRURGICO",
-                             item_pres ==	"4005003"	~	"18-MATERIAL MEDICO QUIRURGICO",
-                             item_pres ==	"2001000"	~	"43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
-                             item_pres ==	"4011000"	~ "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
-                             item_pres ==	"6002001"	~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
-                             item_pres ==	"6002002"	~ "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
-                             item_pres ==	"6004000"	~ "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
-                             item_pres ==	"12999018"	~ "66-COMPRA DE OTROS SERVICIOS",
-                             item_pres ==	"4003002"	~	"41-PRODUCTOS QUÍMICOS",
-                             item_pres ==	"12999006"	~	"57-COLOCACIÓN FAMILIAR DE MENORES Y EXTRAHOSPITALARIA",
-                             item_pres ==	"29004000"	~	"No considerar",
-                             item_pres ==	"4012000"	~	"35-OTROS INSUMOS Y MATERIALES",
-                             item_pres ==	"2002002"	~	"43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
-                             item_pres ==	"2905001001"	~	"No considerar",
-                             item_pres ==	"9005002"	~	"52-ARRENDAMIENTOS",
-                             item_pres ==	"4010000"	~	"28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-                             item_pres ==	"4009000"	~	"27-MATERIALES INFORMATICOS",
-                             item_pres ==	"4004004"	~	"16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
-                             item_pres ==	"4004003"	~	"21-MATERIALES DE CURACIÓN",
-                             item_pres ==	"4013"	~	"21-MATERIALES DE CURACIÓN",
-                             item_pres ==	"12999002"	~	"177-SERVICIO DE LABORATORIO",
-                             item_pres ==	"29051000"	~	"No considerar	",
-                             item_pres ==	"4999000"	~	"35-OTROS INSUMOS Y MATERIALES",
-                             item_pres ==	"9005000"	~	"52-ARRENDAMIENTOS",
-                             item_pres ==	"12999003"	~	"65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO",
-                             item_pres ==	"4005002"	~	"18-MATERIAL MEDICO QUIRURGICO",
-                             item_pres ==	"4004001"	~	"30-MEDICAMENTOS",
-                             item_pres ==	"29005002"	~	"No considerar",
-                             item_pres ==	"8007000"	~	"151-PASAJES, FLETES Y BODEGAJE",
-                             item_pres ==	"400400101"	~	"30-MEDICAMENTOS",
-                             item_pres ==	"4004002"	~	"15-MATERIAL DE ODONTOLOGÍA",
-                             item_pres ==	"8001000"	~	"170-SERVICIO DE ASEO",
-                             item_pres ==	"1001000"	~	"46-VÍVERES",
-                             item_pres ==	"04013.00"	~	"8-EQUIPOS MENORES",
-                             item_pres ==	"4013"	~	"8-EQUIPOS MENORES",
-                             item_pres ==	"6006000"	~	"138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
-                             item_pres ==	"5003000"	~	"100-GAS PROPANO",
-                             item_pres ==	"31.02.005"	~	"No considerar",
-                             item_pres ==	"4010000"	~	"28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-                             item_pres ==	"4012000"	~	"35-OTROS INSUMOS Y MATERIALES",
-                             item_pres ==	"2905001001"	~	"No considerar",
-                             item_pres ==	"9006000"	~	"52-ARRENDAMIENTOS",
-                             item_pres ==	"5002000"	~	"48-SERVICIO DE AGUA",
-                             item_pres ==	"5001000"	~	"92-SERVICIO DE ENERGÍA",
-                             item_pres ==	"31.02.004"	~	"No considerar",
-                             item_pres ==	"12999014"	~	"59-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS CRÍTICAS",
-                             item_pres ==	"4007002"	~	"29-MATERIALES Y ELEMENTOS DE ASEO	",
-                             item_pres ==	"8001000"	~	"170-SERVICIO DE ASEO",
-                             item_pres ==	"11002001.1"	~	"76-CURSOS DE CAPACITACIÓN",
-                             item_pres ==	"9005002"	~	"52-ARRENDAMIENTOS",
-                             item_pres ==	"6006001"	~	"138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
-                             item_pres ==	"14001.00"	~	"28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-                             item_pres ==	"29004000"	~	"No considerar",
-                             item_pres ==	"5004000"	~	"179-SERVICIO DE MENSAJERIA Y/O CORREO",
-                             item_pres ==	"31.02.005"	~	"No considerar",
-                             item_pres ==	"31.02.006"	~	"No considerar",
-                             item_pres ==	"6001000"	~	"133-MANTENIMIENTO PLANTA FÍSICA",
-                             item_pres ==	"6006002"	~	"137-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO CORRECTIVO",
-                             item_pres ==	"29005002"	~	"No considerar",
-                             item_pres ==	"31.02.004"	~	"No considerar",
-                             item_pres ==	"31.02.999"	~	"No considerar",
-                             item_pres ==	"4012000"	~	"35-OTROS INSUMOS Y MATERIALES",
-                             item_pres ==	"6006000"	~	"138-MANTENIMIENTO Y REPARACIÓN MÁQUINA Y EQUIPO PREVENTIVO",
-                             item_pres ==	"2905001001"	~	"No considerar",
-                             item_pres ==	"12999010"	~	"149-PASAJES Y TRASLADOS DE PACIENTES",
-                             item_pres ==	"8002000"	~	"182-SERVICIO DE VIGILANCIA Y SEGURIDAD",
-                             item_pres ==	"6002000"	~	"135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
-                             item_pres ==	"6007000"	~	"147-OTROS MANTENIMIENTOS",
-                             item_pres ==	"29059000"	~	"No considerar",
-                             item_pres ==	"11001000"	~	"76-CURSOS DE CAPACITACIÓN",
-                             item_pres ==	"12999009"	~	"Agrupado",
-                             item_pres ==	"7003000"	~	"Agrupado",
-                             item_pres ==	"12999002"	~	"66-COMPRA DE OTROS SERVICIOS",
-                             item_pres ==	"12.999.002"	~	"66-COMPRA DE OTROS SERVICIOS",
-                             item_pres ==	"11003000"	~	"66-COMPRA DE OTROS SERVICIOS",
-                             item_pres ==	"9999000"	~	"66-COMPRA DE OTROS SERVICIOS",
-                             TRUE ~ "Asignar Item Presupuestario"),
-         CC=case_when(CC=="DIRECCION HOSP. ROBERTO DEL RI"~"670-ADMINISTRACIÓN",
-                      CC=="RELACIONES PUBLICAS"~"670-ADMINISTRACIÓN",
-                      CC=="OIRS"~"670-ADMINISTRACIÓN",
-                      CC=="SD.GESTION DEL CUIDADO"~"670-ADMINISTRACIÓN",
-                      CC=="ANATOMIA PATOLOGICA"~"544-ANATOMÍA PATOLÓGICA",
-                      CC=="SERVICIO SOCIAL PACIENTES"~"713-TRABAJO SOCIAL",
-                      CC=="ADM PEDIATRIA"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="UNIDAD PEDIATRIA GRAL C (AISLA"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="UNIDAD PEDIATRIA GRAL B"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="UNIDAD PEDIATRIA GRAL A"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="UNIDAD DE CUIDADOS INTENSIVOS"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
-                      CC=="UNIDAD TRATAMIENTO INTERMEDIO"~"196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA",
-                      CC=="SALA CUIDADO PROLONGADO"~"170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA",
-                      CC=="U.C.I. CARDIOVASCULAR"~"177-UNIDAD DE CUIDADOS CORONARIOS",
-                      CC=="UTI CARDIOVASCULAR"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
-                      CC=="UNIDAD ONCOLOGIA"~"87-HOSPITALIZACIÓN ONCOLOGÍA",
-                      CC=="PABELLON CARDIOLOGIA"~"464-QUIRÓFANOS CARDIOVASCULAR",
-                      CC=="CIRUGIA PLASTICA Y QUEMADOS"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="TRAUMATOLOGIA GENERAL"~"485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
-                      CC=="CAE CONS. BRONCOPULMONAR"~"282-CONSULTA NEUMOLOGÍA",
-                      CC=="CAE LAB. BRONCOPULMONAR"~"244-PROCEDIMIENTO DE NEUMOLOGÍA",
-                      CC=="CAE CARDIOLOGIA"~"276-CONSULTA CARDIOLOGÍA",
-                      CC=="CAE CIRUGIA GENERAL"~"351-CONSULTA CIRUGÍA PEDIÁTRICA",
-                      CC=="CAE DERMATOLOGIA"~"277-CONSULTA DERMATOLOGÍA",
-                      CC=="CAE ENDOCRINOLOGIA"~"281-CONSULTA ENDOCRINOLOGÍA",
-                      CC=="CAE GASTROENTEROLOGIA"~"290-CONSULTA GASTROENTEROLOGÍA",
-                      CC=="CAE ONCOLOGIA"~"306-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-                      CC=="CAE CONS. NEFROLOGIA"~"285-CONSULTA NEFROLOGÍA",
-                      CC=="CAE CONS. NEUROLOGIA"~"331-CONSULTA NEUROLOGÍA PEDIÁTRICA",
-                      CC=="CAE LAB. EEG NEUROLOGIA"~"269-PROCEDIMIENTOS DE NEUROLOGÍA",
-                      CC=="CAE CONS. OTORRINOLARINGOLOGIA"~"319-CONSULTA OTORRINOLARINGOLOGÍA",
-                      
-                      CC=="CAE ODONTOLOGIA"~"356-CONSULTA ODONTOLOGÍA",
-                      CC=="CAE SALUD MENTAL AMBULATORIO"~"280-CONSULTA PSIQUIATRÍA",
-                      CC=="SALUD MENTAL HOSPITALIZADOS"~"149-HOSPITALIZACIÓN PSIQUIATRÍA",
-                      CC=="IMAGENOLOGIA"~"542-IMAGENOLOGÍA",
-                      CC=="UNIDAD DE EMERGENCIA"~"216-EMERGENCIAS PEDIÁTRICAS",
-                      CC=="LABORATORIO CLINICO"~"518-LABORATORIO CLÍNICO",
-                      CC=="LABORATORIO HEMATOLOGIA"~"518-LABORATORIO CLÍNICO",
-                      CC=="LABORATORIO MICROBIOLOGIA"~"518-LABORATORIO CLÍNICO",
-                      CC=="LABORATORIO URGENCIA Y QCA"~"518-LABORATORIO CLÍNICO",
-                      CC=="LAB.CITOMETRIA DE FLUJO"~"518-LABORATORIO CLÍNICO",
-                      CC=="BANCO DE SANGRE"~"575-BANCO DE SANGRE",
-                      CC=="PERSONAL"~"670-ADMINISTRACIÓN",
-                      CC=="ABASTECIMIENTO"~"670-ADMINISTRACIÓN",
-                      CC=="FARMACIA"~"593-SERVICIO FARMACEUTICO",
-                      CC=="ESTERILIZACION"~"662-CENTRAL DE ESTERILIZACIÓN",
-                      CC=="ALIMENTACION"~"652-SERVICIO DE ALIMENTACIÓN",
-                      CC=="RECURSOS FISICOS"~"670-ADMINISTRACIÓN",
-                      CC=="INFRAESTRUCTURA"~"670-ADMINISTRACIÓN",
-                      CC=="HIGIENE HOSPITALARIA"~"648-ASEO",
-                      CC=="TRANSPORTE Y COMUNICACIONES"~"664-TRANSPORTE GENERAL",
-                      CC=="JARDIN INFANTIL DR. A. VIGNAU"~"670-ADMINISTRACIÓN",
-                      CC=="SOME"~"670-ADMINISTRACIÓN",
-                      CC=="INFORMATICA"~"670-ADMINISTRACIÓN",
-                      CC=="RESIDENCIA MEDICA 4TO PISO"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="PABELLON HEMODINAMIA"~"240-PROCEDIMIENTO DE CARDIOLOGÍA",
-                      CC=="CAE CENTRO HEMOFILICO"~"306-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-                      CC=="CAPACITACION"~"670-ADMINISTRACIÓN",
-                      CC=="EQUIPOS MEDICOS"~"665-MANTENIMIENTO",
-                      CC=="CAE VIH"~"284-CONSULTA INFECTOLOGÍA",
-                      CC=="UNIDAD PEDIATRIA GENERAL D"~"116-HOSPITALIZACIÓN PEDIATRÍA",
-                      CC=="COMERCIALIZACION"~"670-ADMINISTRACIÓN",
-                      CC=="GESTION INGRESO Y PERMANENCIA"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD COORDINACION GES"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD DE GESTION DE DEMANDA"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD DE REHABILITACION"~"567-REHABILITACIÓN",
-                      CC=="EQUIPOS INDUSTRIALES"~"670-ADMINISTRACIÓN",
-                      CC=="SERVICIOS GENERALES"~"664-TRANSPORTE GENERAL",
-                      CC=="AUDITORIA"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD CONTROL DEL GESTION"~"670-ADMINISTRACIÓN",
-                      CC=="ADM QUIRURGICO"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="CAE UROLOGIA"~"311-CONSULTA UROLOGÍA",
-                      CC=="CAE CONS. OFTALMOLOGIA"~"317-CONSULTA OFTALMOLOGÍA",
-                      CC=="SERVICIO SOCIAL PERSONAL"~"713-TRABAJO SOCIAL",
-                      CC=="CONTABILIDAD Y PRESUPUESTO"~"670-ADMINISTRACIÓN",
-                      CC=="SEGURIDAD"~"670-ADMINISTRACIÓN",
-                      CC=="ASEO Y ORNATO PATIOS Y JARDINE"~"648-ASEO",
-                      CC=="BIBLIOTECA"~"670-ADMINISTRACIÓN",
-                      CC=="RESIDENCIA ENFERMERAS"~"670-ADMINISTRACIÓN",
-                      CC=="ESTADISTICA"~"670-ADMINISTRACIÓN",
-                      CC=="S.D.RR.HH"~"670-ADMINISTRACIÓN",
-                      CC=="CHILE CRECE CONTIGO"~"713-TRABAJO SOCIAL",
-                      CC=="UNIDAD ANALISIS REG.CLINICO"~"670-ADMINISTRACIÓN",
-                      CC=="INFRAESTRUCTURA HOSPITAL"~"670-ADMINISTRACIÓN",
-                      CC=="PREV.RIESGO Y S.OCUPACIONAL"~"670-ADMINISTRACIÓN",
-                      CC=="SALA REAS"~"670-ADMINISTRACIÓN",
-                      CC=="EQUIPOS INDUSTRIALES(HOSPITAL)"~"670-ADMINISTRACIÓN",
-                      CC=="I.A.A.S"~"670-ADMINISTRACIÓN",
-                      CC=="UNIDAD ASISTENCIAL DOCENTE"~"670-ADMINISTRACIÓN",
-                      CC=="LAB.BIOLOGIA MOLECULAR"~"518-LABORATORIO CLÍNICO",
-                      CC=="CAE PREMATUROS"~"328-CONSULTA PEDIATRÍA GENERAL",
-                      CC=="VACUNATORIO"~"328-CONSULTA PEDIATRÍA GENERAL",
-                      CC=="OFICINA DE SUELDOS"~"670-ADMINISTRACIÓN",
-                      CC=="SUBDIRECCION ADMINISTRATIVA"~"670-ADMINISTRACIÓN",
-                      CC=="SUBDIRECCION MEDICA"~"670-ADMINISTRACIÓN",
-                      CC=="EQUIPAMIENTO HOSPITAL"~"670-ADMINISTRACIÓN",
-                      CC=="BODEGAS ABASTECIMIENTO"~"670-ADMINISTRACIÓN",
-                      CC=="CIRUGIA GENERAL"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="UNIDAD MEDICINA INTEGRATIVA"~"670-ADMINISTRACIÓN",
-                      CC=="C.COSTO GLOBAL"~"670-ADMINISTRACIÓN",
-                      CC=="GASTOS HOSPITAL"~"670-ADMINISTRACIÓN",
-                      CC=="CAE QUEMADOS"~"316-CONSULTA CIRUGÍA PLÁSTICA",
-                      CC=="CAE PROCED. NEFROLOGIA"~"285-CONSULTA NEFROLOGÍA",
-                      CC=="GESTION DE USUARIOS"~"670-ADMINISTRACIÓN",
-                      CC=="ADM CARDIOLOGIA"~"276-CONSULTA CARDIOLOGÍA",
-                      
-                      CC=="UNIDAD PRE QUIRURGICA"~"471-QUIRÓFANOS MAYOR AMBULATORIA",
-                      CC=="MEDICO QUIRURGICO I"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="MEDICO QUIRURGICO II"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="MEDICO QUIRURGICO III"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
-                      CC=="CENTRAL DE PROCEDIMIENTOS"~"473-QUIRÓFANOS MENOR AMBULATORIA",
-                      
-                      CC=="CAE ESPECIALIDADES 2"~"Cae Prorratear",
-                      CC=="CAE ADMINISTRACION"~"Cae Prorratear",
-                      CC=="PABELLONES"~"Pabellón Prorratear",
-                      TRUE ~ "Asignar CC"
-         )) %>% 
-  select(item_pres, CC,ItemxCC, Total) %>% 
-  group_by (item_pres, CC,ItemxCC,) %>% 
-  summarise("Total" = sum(Total)) %>%
-  ungroup()
-
-# Prorrateos GG x CxCC -------------------------------------------------------
-
-cuentas <- c("52-ARRENDAMIENTOS",
-             "60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS",
-             "61-COMPRA DE CONSULTAS MÉDICAS",
-             "62-COMPRA DE CONSULTAS NO MÉDICAS",
-             "63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS",
-             "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO",
-             "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO",
-             "66-COMPRA DE OTROS SERVICIOS",
-             "129-MANTENIMIENTO EQUIPO DE CÓMPUTO",
-             "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
-             "132-MANTENIMIENTO MUEBLES Y ENSERES",
-             "135-MANTENIMIENTO Y REPARACION DE VEHICULOS", 
-             "147-OTROS MANTENIMIENTOS",
-             "151-PASAJES, FLETES Y BODEGAJE",
-             "149-PASAJES Y TRASLADOS DE PACIENTES",
-             "178-SERVICIO DE LAVANDERÍA",
-             "3-COMBUSTIBLES Y LUBRICANTES", 
-             "8-EQUIPOS MENORES", 
-             "9-GASES MEDICINALES",
-             "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
-             "15-MATERIAL DE ODONTOLOGÍA",
-             "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
-             "18-MATERIAL MEDICO QUIRURGICO",
-             "21-MATERIALES DE CURACIÓN",
-             "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
-             "25-MATERIALES DE USO O CONSUMO",
-             "27-MATERIALES INFORMATICOS",
-             "28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-             "29-MATERIALES Y ELEMENTOS DE ASEO", 
-             "31-MENAJE PARA OFICINA, CASINO Y OTROS",
-             "35-OTROS INSUMOS Y MATERIALES",
-             "41-PRODUCTOS QUÍMICOS",
-             "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
-             "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
-             "46-VÍVERES")
-
-cuentas_total <- c("52-ARRENDAMIENTOS", 
-                   "129-MANTENIMIENTO EQUIPO DE CÓMPUTO",
-                   "131-MANTENIMIENTO MAQUINARIA Y EQUIPO",
-                   "132-MANTENIMIENTO MUEBLES Y ENSERES",
-                   "135-MANTENIMIENTO Y REPARACION DE VEHICULOS",
-                   "147-OTROS MANTENIMIENTOS",
-                   "151-PASAJES, FLETES Y BODEGAJE",
-                   
-                   "3-COMBUSTIBLES Y LUBRICANTES", 
-                   "8-EQUIPOS MENORES", 
-                   "9-GASES MEDICINALES",
-                   "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
-                   "15-MATERIAL DE ODONTOLOGÍA",
-                   "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
-                   "18-MATERIAL MEDICO QUIRURGICO",
-                   "21-MATERIALES DE CURACIÓN",
-                   "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
-                   "25-MATERIALES DE USO O CONSUMO",
-                   "27-MATERIALES INFORMATICOS",
-                   "28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-                   "29-MATERIALES Y ELEMENTOS DE ASEO",
-                   "31-MENAJE PARA OFICINA, CASINO Y OTROS",
-                   "35-OTROS INSUMOS Y MATERIALES",
-                   "41-PRODUCTOS QUÍMICOS",
-                   "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
-                   "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
-                   "46-VÍVERES")
-
-cuentas_clinico <- c("149-PASAJES Y TRASLADOS DE PACIENTES",
-                     "178-SERVICIO DE LAVANDERÍA",
-                     "15-MATERIAL DE ODONTOLOGÍA",
-                     "16-MATERIAL DE OSTEOSÍNTESIS Y PRÓTESIS",
-                     "18-MATERIAL MEDICO QUIRURGICO",
-                     "21-MATERIALES DE CURACIÓN",
-                     "9-GASES MEDICINALES")
-
-cuentas_qx <- c("63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS",
-             "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO",
-             "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO")
-
-cuentas_cae <- c("61-COMPRA DE CONSULTAS MÉDICAS",
-             "62-COMPRA DE CONSULTAS NO MÉDICAS")
-
-cuentas_no_critico <- c("60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS")
-
-cuenta_insumos <- c("3-COMBUSTIBLES Y LUBRICANTES", 
-                    "8-EQUIPOS MENORES", 
-                    "11-LIBROS, TEXTOS, UTILES DE ENSEÑANZA Y PUBLICACIONES",
-                    "24-MATERIALES DE OFICINA, PRODUCTOS DE PAPEL E IMPRESOS",
-                    "25-MATERIALES DE USO O CONSUMO",
-                    "27-MATERIALES INFORMATICOS",
-                    "28-MATERIALES PARA MANTENIMIENTO Y REPARACIONES DE INMUEBLES",
-                    "29-MATERIALES Y ELEMENTOS DE ASEO",
-                    "31-MENAJE PARA OFICINA, CASINO Y OTROS",
-                    "35-OTROS INSUMOS Y MATERIALES",
-                    "41-PRODUCTOS QUÍMICOS",
-                    "43-PRODUCTOS TEXTILES, VESTUARIO Y CALZADO",
-                    "44-REPUESTOS Y ACCESORIOS PARA MANTENIMIENTO Y REPARACIONES DE VEHICULOS",
-                    "46-VÍVERES")
- 
-
-for (i in cuentas) {
-  
-  if(i %in% SIGFE$SIGCOM & i %in% CxCC$ItemxCC){
-  CCC <- CxCC %>% filter(ItemxCC == i) %>% 
-    select(CC, Total) %>% 
-    group_by (CC) %>% 
-    summarise(Total =sum(Total)) %>%
-    mutate("prop" = Total/sum(Total))
-  GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-    summarise(Devengado = sum(Devengado)) %>% 
-    filter(SIGCOM == i)
-  GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                           Devengado = Devengado*CCC$prop, 
-                           "Cuenta"=i, "Tipo" = 2) 
-  GG1 <- rbind(GG1,GG2)}
-  
-  else if (i %in% SIGFE$SIGCOM & i %in% CxCC_H$ItemxCC){
-      CCC <- CxCC_H %>% filter(ItemxCC == i) %>% 
-        select(CC, Total) %>% 
-        group_by (CC) %>% 
-        summarise(Total =sum(Total)) %>%
-        mutate("prop" = Total/sum(Total))
-      GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-        summarise(Devengado = sum(Devengado)) %>% 
-        filter(SIGCOM == i)
-      GG2 <- GG2 %>% summarise("Centro de Costo" = CCC$CC, 
-                               Devengado = Devengado*CCC$prop, 
-                               "Cuenta"=i, "Tipo" = 2) 
-      GG1 <- rbind(GG1,GG2)} 
-  
-  else if (i %in% SIGFE$SIGCOM){
-    proporcion_exacta <- ifelse(i %in% cuentas_cae, "prorrateo_cae",
-                                ifelse(i %in% cuentas_clinico, "prorrateo_clinico",
-                                       ifelse(i %in% cuentas_qx, "prorrateo_qx", 
-                                              ifelse(i %in% cuentas_no_critico, "prorrateo_no_critico", "todos"))))
-    
-    if (proporcion_exacta == "prorrateo_cae"){M2_exacto <- M2 %>% filter(Area == "Consultas")} 
-    else if (proporcion_exacta == "prorrateo_clinico"){
-      M2_exacto <- M2 %>% filter(Area != "Apoyo")}
-    else if (proporcion_exacta == "prorrateo_qx"){
-      M2_exacto <- M2 %>% filter(Area == "Quirofanos")}
-    else if (proporcion_exacta == "prorrateo_no_critico"){
-      M2_exacto <- M2 %>% filter(Area == "Hospitalización")}
-    else{
-      M2_exacto <- M2 %>% filter(Area!="No_existe")}
-    
-    M2_exacto$prop <- M2_exacto$M2/sum(M2_exacto$M2)
-    
-    GG2 <-  SIGFE %>% group_by(SIGCOM) %>% 
-      summarise(Devengado = sum(Devengado)) %>% 
-      filter(SIGCOM == i)
-    GG2 <- GG2 %>% summarise("Centro de Costo" = M2_exacto$CC, 
-                             Devengado = Devengado*M2_exacto$prop, 
-                             "Cuenta"=i, "Tipo" = 2)
-    GG1 <- rbind(GG1,GG2)}
-  
-  else  {GG2 <- GG1_nulo
-  GG1 <- rbind(GG1,GG2) %>% filter(Cuenta!="eliminar")}
+if ("15-MATERIAL DE ODONTOLOGÍA" %in% asignacion_pab_sin_car$Cuenta){
+  GG1 <- asignacion_pab_sin_car %>% filter(Cuenta == "15-MATERIAL DE ODONTOLOGÍA")
+  GG1$`Centro de Costo` <- "462-QUIRÓFANOS CABEZA Y CUELLO"
+  asignacion_pab_sin_car <- asignacion_pab_sin_car %>% filter(Cuenta != "15-MATERIAL DE ODONTOLOGÍA")
   }
 
+aux_asignacion = asignacion_pab_sin_car
+aux_distribucion = M2Pab_sin_Card
+tipo = 2
 
-# Centros de Costo Globales -----------------------------------------------
-
-Compras_Servicios <- GG1 %>% filter (Cuenta == "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO" |
-                                       Cuenta == "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO")
-sum(Compras_Servicios$Devengado)
-
-GG1 <- GG1 %>% filter (Cuenta != "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO" &
-                         Cuenta != "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO")
-
-GG4 <- GG1 %>% filter (`Centro de Costo`== "Pabellón Prorratear")
-GG3 <- GG1 %>% filter (`Centro de Costo`== "Cae Prorratear")
-
-GG1 <- GG1 %>% filter(`Centro de Costo`!="Pabellón Prorratear" & 
-                        `Centro de Costo`!="Cae Prorratear")
-
-#PABELLON
-
-qx <- c("471-QUIRÓFANOS MAYOR AMBULATORIA",
-        "473-QUIRÓFANOS MENOR AMBULATORIA",
-        "475-QUIRÓFANOS NEUROCIRUGÍA",
-        "484-QUIRÓFANOS TORACICA",
-        "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA",
-        "486-QUIRÓFANOS UROLOGÍA",
-        "493-QUIRÓFANOS CIRUGÍA PLÁSTICA",
-        "462-QUIRÓFANOS CABEZA Y CUELLO"
-)
-
-
-for (i in qx) {
-  # qx <- "464-QUIRÓFANOS CARDIOVASCULAR"
-  q <- sum(ifelse(M2Pab$CC == i, M2Pab$prop, 0))
-  GG2 <- GG4 %>% filter(`Centro de Costo`=="Pabellón Prorratear") %>% 
-    summarise("Centro de Costo" = i,
-              Devengado = Devengado*q,
-              "Cuenta"= Cuenta,"Tipo" = 2)
-  GG44 <- rbind(GG44, GG2) %>% filter(Cuenta!="eliminar")
+for (i in aux_asignacion$Cuenta) {
+  if(i %in% aux_asignacion$Cuenta){
+    variable_efimera <-  aux_asignacion %>% group_by(Cuenta) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(Cuenta == i)
+    variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
+                                                       Devengado = Devengado*aux_distribucion$prop, 
+                                                       "Cuenta"=i, "Tipo" = tipo) 
+    GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+  else {variable_efimera <- GG1_nulo
+  GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
 }
 
+# Distribución CAE prorratear -------------------------------------
+asignacion_cae <- consolidado %>% filter(`Centro de Costo` == "Cae Prorratear") 
 
-am <- c("240-PROCEDIMIENTO DE CARDIOLOGÍA",
-        "244-PROCEDIMIENTO DE NEUMOLOGÍA",
-        "249-PROCEDIMIENTOS DE DERMATOLOGÍA",
-        "250-PROCEDIMIENTOS DE GASTROENTEROLOGÍA",
-        "261-PROCEDIMIENTOS DE OTORRINOLARINGOLOGÍA",
-        "262-PROCEDIMIENTOS DE TRAUMATOLOGÍA",
-        "269-PROCEDIMIENTOS DE NEUROLOGÍA",
-        "351-CONSULTA CIRUGÍA PEDIÁTRICA",
-        "230-CONSULTA NUTRICIÓN",
-        "275-CONSULTA REUMATOLOGÍA",
-        "276-CONSULTA CARDIOLOGÍA",
-        "277-CONSULTA DERMATOLOGÍA",
-        "280-CONSULTA PSIQUIATRÍA",
-        "281-CONSULTA ENDOCRINOLOGÍA",
-        "282-CONSULTA NEUMOLOGÍA",
-        "284-CONSULTA INFECTOLOGÍA",
-        "285-CONSULTA NEFROLOGÍA",
-        "286-CONSULTA GENÉTICA",
-        "289-CONSULTA FISIATRÍA",
-        "290-CONSULTA GASTROENTEROLOGÍA",
-        "292-CONSULTA NEUROCIRUGÍA",
-        "296-CONSULTA ANESTESIOLOGIA",
-        "306-CONSULTA HEMATOLOGÍA ONCOLÓGICA",
-        "311-CONSULTA UROLOGÍA",
-        "316-CONSULTA CIRUGÍA PLÁSTICA",
-        "317-CONSULTA OFTALMOLOGÍA",
-        "319-CONSULTA OTORRINOLARINGOLOGÍA",
-        "328-CONSULTA PEDIATRÍA GENERAL",
-        "331-CONSULTA NEUROLOGÍA PEDIÁTRICA",
-        "342-CONSULTA TRAUMATOLOGÍA PEDIÁTRICA",
-        "353-CONSULTA GINECOLOGICA",
-        "356-CONSULTA ODONTOLOGÍA",
-        "359-TELEMEDICINA")
+aux_asignacion <-  asignacion_cae
+aux_distribucion <-  M2_cae
+tipo <-  2
 
-
-for (i in am) {
-
-  a <- sum(ifelse(CAE_prorratear$CC == i, CAE_prorratear$prop, 0))
-  GG2 <- GG3 %>% filter(`Centro de Costo`=="Cae Prorratear") %>% 
-    summarise("Centro de Costo" = i,
-              Devengado = Devengado*a,
-              "Cuenta"= Cuenta,"Tipo" = 2)
-  GG33 <- rbind(GG33, GG2) %>% filter(Cuenta!="eliminar")
+for (i in aux_asignacion$Cuenta) {
+  if(i %in% aux_asignacion$Cuenta){
+    variable_efimera <-  aux_asignacion %>% group_by(Cuenta) %>% 
+      summarise(Devengado = sum(Devengado)) %>% 
+      filter(Cuenta == i)
+    variable_efimera <- variable_efimera %>% summarise("Centro de Costo" = aux_distribucion$CC, 
+                                                       Devengado = Devengado*aux_distribucion$prop, 
+                                                       "Cuenta"=i, "Tipo" = tipo) 
+    GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
+  else {variable_efimera <- GG1_nulo
+  GG1 <- rbind(GG1,variable_efimera) %>% filter(Cuenta!="eliminar")}
 }
 
-GG1 <- rbind(GG33,GG44,GG1)
+consolidado <- consolidado %>% filter(`Centro de Costo` != "Cae Prorratear" & `Centro de Costo` != "Pabellón Prorratear")
+consolidado <- rbind(consolidado, GG1)
 
-  
-#Redondeo el Devengado 
-GG1 <- GG1 %>%  filter (Devengado != 0) %>% 
-  summarise("Centro de Costo"= `Centro de Costo`,"Devengado" = round(Devengado),
-            "Cuenta"=Cuenta,"Tipo"=Tipo) %>%
-  ungroup()
 
-# Asigna CC actualizados al 2022 ------------------------------------------
-GG1 <- GG1 %>% mutate(`Centro de Costo` = 
+
+# Asigna CC actualizados al 2023 ------------------------------------------
+consolidado <- consolidado %>% mutate(`Centro de Costo` = 
                         case_when(
                           `Centro de Costo` ==	"478-QUIRÓFANOS OFTALMOLOGÍA"	~	"471-QUIRÓFANOS MAYOR AMBULATORIA",
                           `Centro de Costo` ==	"480-QUIRÓFANOS OTORRINOLARINGOLOGÍA"	~	"471-QUIRÓFANOS MAYOR AMBULATORIA",
@@ -1836,87 +991,66 @@ GG1 <- GG1 %>% mutate(`Centro de Costo` =
 
 
 
-# Asigna proporcion uti/uci cardio ----------------------------------------
-
-ucicv <- GG1 %>% filter(`Centro de Costo`=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>%
-  mutate(`Centro de Costo`= "177-UNIDAD DE CUIDADOS CORONARIOS", Devengado=Devengado*0.44, Cuenta=Cuenta, Tipo=Tipo)
-
-uticv <- GG1 %>% filter(`Centro de Costo`=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>%
-  mutate(`Centro de Costo`=  `Centro de Costo`, Devengado=Devengado*0.56, Cuenta=Cuenta, Tipo=Tipo)
-
-ucicv <- rbind(ucicv,uticv)
-
-GG1 <- GG1 %>% filter(`Centro de Costo` != "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" )
-
-GG1 <- rbind(GG1, ucicv)
-
-
 
 # #Asigna costos a Urgencia Odontologica ----------------------------------
 
 
-urg_odo <- GG1 %>% filter(`Centro de Costo`=="216-EMERGENCIAS PEDIÁTRICAS") %>%
+urg_odo <- consolidado %>% filter(`Centro de Costo`=="216-EMERGENCIAS PEDIÁTRICAS") %>%
   mutate(`Centro de Costo`= "357-EMERGENCIAS ODONTOLOGICAS", Devengado=Devengado*0.1, Cuenta=Cuenta, Tipo=Tipo)
 
-urg  <- GG1 %>% filter(`Centro de Costo`=="216-EMERGENCIAS PEDIÁTRICAS") %>%
+urg  <- consolidado %>% filter(`Centro de Costo`=="216-EMERGENCIAS PEDIÁTRICAS") %>%
   mutate(`Centro de Costo`=  `Centro de Costo`, Devengado=Devengado*0.9, Cuenta=Cuenta, Tipo=Tipo)
 
 urg_odo <- rbind(urg_odo,urg)
 
-GG1 <- GG1 %>% filter(`Centro de Costo` != "216-EMERGENCIAS PEDIÁTRICAS" )
+consolidado <- consolidado %>% filter(`Centro de Costo` != "216-EMERGENCIAS PEDIÁTRICAS" )
 
-GG1 <- rbind(GG1, urg_odo)
+consolidado <- rbind(consolidado, urg_odo)
 
 
 # Cambia cuentas que no deben ir en Administración a Hospi Pediatria-----------------------
 
-GG1$`Centro de Costo` <- ifelse(GG1$`Centro de Costo`=="670-ADMINISTRACIÓN" & 
-                                  (GG1$Cuenta == "21-MATERIALES DE CURACIÓN" |
-                                     GG1$Cuenta == "18-MATERIAL MEDICO QUIRURGICO" |
-                                     GG1$Cuenta == "30-MEDICAMENTOS" ), "116-HOSPITALIZACIÓN PEDIATRÍA", GG1$`Centro de Costo`)
+consolidado$`Centro de Costo` <- ifelse(consolidado$`Centro de Costo`=="670-ADMINISTRACIÓN" & 
+                                  (consolidado$Cuenta == "21-MATERIALES DE CURACIÓN" |
+                                     consolidado$Cuenta == "18-MATERIAL MEDICO QUIRURGICO" |
+                                     consolidado$Cuenta == "30-MEDICAMENTOS" ), "116-HOSPITALIZACIÓN PEDIATRÍA", consolidado$`Centro de Costo`)
 
 
 # Valores -----------------------------------------------------------------
 
-sum(SIGFE$Devengado)
-  
-SIGFE %>%  filter(Tipo != "Insumos") %>%
-  summarise(sum(Devengado))
-
-sum(GG1$Devengado)
-
-diferencia <- sum(SIGFE$Devengado)-sum(GG1$Devengado)-sum(Compras_Servicios$Devengado)
-diferencia
-
-medicamentos <- SIGFE %>% filter(SIGCOM == "30-MEDICAMENTOS") %>% summarise(devengo_medicamentos = sum(Devengado))
-
-openxlsx::write.xlsx(GG1, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
-
-##### Alarmas
-sum(Compras_Servicios$Devengado)
-medicamentos <- ifelse(medicamentos$devengo_medicamentos<=0, toupper("No existe devengo de Medicamentos"),tolower("Medicamentos correctos"))
-
-if(medicamentos == "No existe devengo de Medicamentos" | length(Compras_Servicios$`Centro de Costo`) > 0){
-  beepr::beep(sound = 7)}
-
-Compras <- GG1 %>% filter(Cuenta == "60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS" |
-                            Cuenta == "61-COMPRA DE CONSULTAS MÉDICAS" |
-                            Cuenta == "62-COMPRA DE CONSULTAS NO MÉDICAS" |
-                            Cuenta == "63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS" |
-                            Cuenta == "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO" |
-                            Cuenta == "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO" |
-                            Cuenta == "66-COMPRA DE OTROS SERVICIOS")
+Compras <- consolidado %>% filter(Cuenta == "60-COMPRA DE CAMAS AL EXTRA SISTEMA CAMAS NO CRÍTICAS" |
+                                    Cuenta == "61-COMPRA DE CONSULTAS MÉDICAS" |
+                                    Cuenta == "62-COMPRA DE CONSULTAS NO MÉDICAS" |
+                                    Cuenta == "63-COMPRA DE INTERVENCIONES QUIRÚRGICAS CLÍNICAS" |
+                                    Cuenta == "64-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL EXTERNO" |
+                                    Cuenta == "65-COMPRA DE INTERVENCIONES QUIRÚRGICAS INTRAHOSPITALARIAS CON PERSONAL INTERNO" |
+                                    Cuenta == "66-COMPRA DE OTROS SERVICIOS")
 
 if(sum(Compras$Devengado)  > 0){
-  beepr::beep(sound = 3)
+  beepr::beep(sound = 9)
   Alerta_compras <- "Existen compras que justificar"}
 
 
-rm(`471-QUIRÓFANOS MAYOR AMBULATORIA`, `473-QUIRÓFANOS MENOR AMBULATORIA`)
-rm(a, am, b,
-   Cant_RRHH, ConsumoxCC, cuenta_insumos, cuentas, cuentas_cae, cuentas_clinico,
-   cuentas_qx, cuentas_total, Farmacia, ggenerales, graba, i, insumos,
-   mes_archivo, Metros_pabellon, proporcion_exacta, q, qx, resto, RRHH_sigfe, ruta_base,
-   CAE_prorratear, cant_RRHH, CCC, CxCC, CxCC_H, df, EqMed, EqMedCorrec,
-   EqMedPrev, Farm, GG1_nulo, GG2, GG3, GG33, GG4, GG44, M2, M2_exacto, M2Pab, SIGFE2,
-   cuentas_no_critico, urg, urg_odo, uticv, ucicv)
+Alerta_medicamentos <- consolidado %>% filter(Cuenta == "30-MEDICAMENTOS")
+Alerta_medicamentos <- ifelse(sum(Alerta_medicamentos$Devengado) <= 0, toupper("No existe devengo de Medicamentos"),tolower("Medicamentos correctos"))
+
+if(Alerta_medicamentos == "medicamentos correctos"){
+  beepr::beep(sound = 3)}
+
+
+if(sum(SIGFE$Devengado) == sum(consolidado$Devengado)){
+  beepr::beep(sound = 3)
+  Alerta_cuadratura <- "SIGFE esta cuadrado"
+}
+
+
+openxlsx::write.xlsx(consolidado, graba, colNames = TRUE, sheetName = "SIGFE", overwrite = TRUE)
+
+##### Alarmas
+ 
+
+rm(M2_Ap_Lab_Farm, M2_cae, M2_Cant_RRHH, M2_EqMed_correc, M2_EqMed_prev, M2_farmacia, M2_upc, M2clinicos, no_considera_consumo, no_consumido)
+rm(SIGFE_agrupado, SIGFE, asignacion_Ap_Lab_Farm, asignacion_cae, asignacion_directa, asignacion_clinica, asignacion_EqMed_correc, asignacion_EqMed_prev, asignacion_farmacia, asignacion_pab_sin_car, asignacion_RRHH, asignacion_upc, asignaciones, Asignaciones)
+
+rm(tipo, valor_sigfe, produccion_cae, aux_asignacion, aux_distribucion, aux_prorrateo, Cent_Cost_no_asignado, Compras, consumido, consumo_interno, CxCC, CxCC_no_asignado, GG1, GG1_agrupado, GG1_nulo, GG33, GG44, item_pres_int, M2, M2Pab_sin_Card, prod_cae, tabla_prorrateo, urg, urg_odo, variable_efimera)
+rm(Cant_RRHH, ConsumoxCC, cuentas, CxCC_H, EqMed, Farmacia, ggenerales, graba, i, insumos, item, mes_archivo, resto, RRHH_sigfe, ruta_base)
