@@ -10,12 +10,14 @@ library(readxl)
 dias_mes <- 22
 mes <- "01"
 anio <- "2023"
-ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 
+ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
 mes_completo <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 mes_completo <- mes_completo[as.numeric(mes)]
 empleados <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/",mes," ",mes_completo,"/Insumos de Informacion/11 Empleados mes.xlsx")))
 pt <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/Insumos de info anual/12 Programacion Total.xlsx")))
+M2Pab <- paste0(ruta_base,anio,"/",mes," ",mes_completo,"/Insumos de Informacion/89_Pabellon.xlsx")
+
 
 directorio <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC ",anio,"/",mes," ",mes_completo,"/Complemento Subir")
 
@@ -182,6 +184,8 @@ empleados <- empleados %>% mutate("Categoría de Empleado" = case_when(
   categoria_de_empleado=="ADMINISTRADOR (A) PUBLICO"~"00702",
   categoria_de_empleado=="CONTADOR (A) PUBLICO (A) AUDITOR"~"00702",
   categoria_de_empleado=="INGENIERO (A) CIVIL"~"00702",
+  categoria_de_empleado=="INGENIERIA BIOMETRICA"~"00702",
+  categoria_de_empleado=="JEFE DEPTO. FINANZAS"~"00702",
   
   #00705 Personal Directivo
   categoria_de_empleado=="DIRECTOR DE HOSPITAL"~"00705",
@@ -252,19 +256,12 @@ M2Pab <- read_excel(M2Pab)
 M2Pab <- M2Pab %>% mutate(Area = "Quirofanos", CC = SIGCOM, prop = prop_total) %>% 
   select(-SIGCOM, -prop_total)
 
-#e <- "464-QUIRÓFANOS CARDIOVASCULAR"
-#GG1 <- programacion %>% filter(perc == "Pabellón Prorratear") 
-#prop_pab <- M2Pab %>% filter(CC == e)
-#GG1$H <- GG1$horas_mensuales*prop_pab$prop
-#GG1$CC <- e #asigna columna CC
-
 e <- "471-QUIRÓFANOS MAYOR AMBULATORIA"
-GG2 <- programacion %>% filter(perc == "Pabellón Prorratear") 
+GG1 <- programacion %>% filter(perc == "Pabellón Prorratear") 
 prop_pab <- M2Pab %>% filter(CC == e)
-GG2$H <- GG2$horas_mensuales*prop_pab$prop
-GG2$CC <- e #asigna columna CC
+GG1$H <- GG1$horas_mensuales*prop_pab$prop
+GG1$CC <- e #asigna columna CC
 
-GG1 <- rbind(GG1, GG2)
 
 e <- "475-QUIRÓFANOS NEUROCIRUGÍA"
 GG2 <- programacion %>% filter(perc == "Pabellón Prorratear") 
@@ -385,13 +382,14 @@ programacion <- programacion %>% filter(perc != "170-UNIDAD DE CUIDADOS INTENSIV
 
 programacion <- rbind(programacion, uti)
 
-openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/911_Planilla_1_RRHH.xlsx"), 
+openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes," ",mes_completo,"/Insumos de Informacion/911_Planilla_1_RRHH.xlsx"), 
                      colNames = TRUE, sheetName = "P1", overwrite = TRUE)
 
-openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/912_SIRH_R.xlsx"),
+openxlsx::write.xlsx(programacion, paste0(ruta_base, anio,"/",mes," ",mes_completo,"/Insumos de Informacion/912_SIRH_R.xlsx"),
                      colNames = TRUE, sheetName = "SIRH", overwrite = TRUE)
 
-openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes,"/Insumos de Informacion/913_No_Programados.xlsx"),
+no_programados <- unique(no_programados)
+openxlsx::write.xlsx(no_programados, paste0(ruta_base, anio,"/",mes," ",mes_completo,"/Insumos de Informacion/913_No_Programados.xlsx"),
                      colNames = TRUE, sheetName = "NP", overwrite = TRUE)
 
 openxlsx::write.xlsx(planilla1,paste0(directorio,"/01.xlsx"), 
