@@ -7,8 +7,8 @@ library(openxlsx)
 library(xlsx)
 library(readxl)
 
-dias_mes <- 22
-mes <- "01"
+dias_mes <- 20
+mes <- "02"
 anio <- "2023"
 
 ruta_base <- "C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC "
@@ -17,7 +17,8 @@ mes_completo <- mes_completo[as.numeric(mes)]
 empleados <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/",mes," ",mes_completo,"/Insumos de Informacion/11 Empleados mes.xlsx")))
 pt <- janitor::clean_names(read_excel(paste0(ruta_base,anio,"/Insumos de info anual/12 Programacion Total.xlsx")))
 M2Pab <- paste0(ruta_base,anio,"/",mes," ",mes_completo,"/Insumos de Informacion/89_Pabellon.xlsx")
-
+M2 <- read_excel(paste0(ruta_base,anio,"/Insumos de info anual/M2.xlsx"))
+cae_prorratear <- paste0(ruta_base,anio,"/",mes," ",mes_completo,"/Insumos de Informacion/03 M2.xlsx")
 
 directorio <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC ",anio,"/",mes," ",mes_completo,"/Complemento Subir")
 
@@ -253,104 +254,27 @@ programacion <- programacion %>% select(Identificación, Nombre, perc, horas_men
 # Pabellon
 
 M2Pab <- read_excel(M2Pab)
-M2Pab <- M2Pab %>% mutate(Area = "Quirofanos", CC = SIGCOM, prop = prop_total) %>% 
-  select(-SIGCOM, -prop_total)
+M2Pab <- M2Pab %>% 
+  filter(SIGCOM != "464-QUIRÓFANOS CARDIOVASCULAR") %>% 
+  mutate(Area = "Quirofanos", CC = SIGCOM, prop = prop.table(prop_total)) %>% 
+  select(-SIGCOM, -prop_total) 
 
-e <- "471-QUIRÓFANOS MAYOR AMBULATORIA"
-GG1 <- programacion %>% filter(perc == "Pabellón Prorratear") 
-prop_pab <- M2Pab %>% filter(CC == e)
-GG1$H <- GG1$horas_mensuales*prop_pab$prop
-GG1$CC <- e #asigna columna CC
-
-
-e <- "475-QUIRÓFANOS NEUROCIRUGÍA"
-GG2 <- programacion %>% filter(perc == "Pabellón Prorratear") 
-prop_pab <- M2Pab %>% filter(CC == e)
-GG2$H <- GG2$horas_mensuales*prop_pab$prop
-GG2$CC <- e #asigna columna CC
-
-GG1 <- rbind(GG1, GG2)
-
-e <- "484-QUIRÓFANOS TORACICA"
-GG2 <- programacion %>% filter(perc == "Pabellón Prorratear") 
-prop_pab <- M2Pab %>% filter(CC == e)
-GG2$H <- GG2$horas_mensuales*prop_pab$prop
-GG2$CC <- e #asigna columna CC
-
-GG1 <- rbind(GG1, GG2)
-
-e <- "485-QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA"
-GG2 <- programacion %>% filter(perc == "Pabellón Prorratear") 
-prop_pab <- M2Pab %>% filter(CC == e)
-GG2$H <- GG2$horas_mensuales*prop_pab$prop
-GG2$CC <- e #asigna columna CC
-
-GG1 <- rbind(GG1, GG2)
+GG1 <- programacion %>% 
+  filter(perc == "Pabellón Prorratear") %>% 
+  mutate(H = 1, CC = "CC") %>% 
+  filter(CC == "gatito") #Crea GG1 vacio
 
 
-e <- "486-QUIRÓFANOS UROLOGÍA"
-GG2 <- programacion %>% filter(perc == "Pabellón Prorratear") 
-prop_pab <- M2Pab %>% filter(CC == e)
-GG2$H <- GG2$horas_mensuales*prop_pab$prop
-GG2$CC <- e #asigna columna CC
-
-GG1 <- rbind(GG1, GG2)
-
-e <- "493-QUIRÓFANOS CIRUGÍA PLÁSTICA"
-GG2 <- programacion %>% filter(perc == "Pabellón Prorratear") 
-prop_pab <- M2Pab %>% filter(CC == e)
-GG2$H <- GG2$horas_mensuales*prop_pab$prop
-GG2$CC <- e #asigna columna CC
-
-GG1 <- rbind(GG1, GG2)
-
-# Procedimientos ----------------------------------------------------------
-# 
-# e <- "15209__15209 - CONSULTA OFTALMOLOGÍA"
-# GG2 <- programacion %>% filter(perc == "15209__15209 - CONSULTA OFTALMOLOGÍA") 
-# GG2$H <- GG2$horas_mensuales*0.7
-# GG2$CC <- e #asigna columna CC
-# 
-# GG1 <- rbind(GG1, GG2)
-# 
-# e <- "258-PROCEDIMIENTOS DE OFTALMOLOGÍA"
-# GG2 <- programacion %>% filter(perc == "15209__15209 - CONSULTA OFTALMOLOGÍA") 
-# GG2$H <- GG2$horas_mensuales*0.3
-# GG2$CC <- e #asigna columna CC
-# 
-# GG1 <- rbind(GG1, GG2)
-# 
-# e <- "311-CONSULTA UROLOGÍA"
-# GG2 <- programacion %>% filter(perc == "311-CONSULTA UROLOGÍA") 
-# GG2$H <- GG2$horas_mensuales*0.95
-# GG2$CC <- e #asigna columna CC
-# 
-# GG1 <- rbind(GG1, GG2)
-# 
-# e <- "263-PROCEDIMIENTOS DE UROLOGÍA"
-# GG2 <- programacion %>% filter(perc == "311-CONSULTA UROLOGÍA") 
-# GG2$H <- GG2$horas_mensuales*0.05
-# GG2$CC <- e #asigna columna CC
-# 
-# GG1 <- rbind(GG1, GG2)
-# 
-# e <- "353-CONSULTA GINECOLOGICA"
-# GG2 <- programacion %>% filter(perc == "353-CONSULTA GINECOLOGICA") 
-# GG2$H <- GG2$horas_mensuales*0.95
-# GG2$CC <- e #asigna columna CC
-# 
-# GG1 <- rbind(GG1, GG2)
-# 
-# e <- "251-PROCEDIMIENTOS DE GINECOLOGÍA"
-# GG2 <- programacion %>% filter(perc == "353-CONSULTA GINECOLOGICA") 
-# GG2$H <- GG2$horas_mensuales*0.05
-# GG2$CC <- e #asigna columna CC
-# 
-# GG1 <- rbind(GG1, GG2)
-
+for (i in M2Pab$CC) {
+  GG2 <- programacion %>% filter(perc == "Pabellón Prorratear") 
+  prop_pab <- M2Pab %>% filter(CC == i)
+  GG2$H <- GG2$horas_mensuales*prop_pab$prop
+  GG2$CC <- i
+  
+  GG1 <- rbind(GG1, GG2)
+}
 
 programacion <- programacion %>% filter(perc != "Pabellón Prorratear")
-
 
 GG1 <- GG1 %>% mutate("Identificación" = Identificación, "Nombre"= Nombre, 
                       "perc"=CC, "horas_mensuales"=H) %>% 
@@ -361,26 +285,55 @@ programacion <- rbind(GG1, programacion)
 
 # crea un prorrateo de UCI y UTI ------------------------------------------
 
+upc <- programacion %>% 
+  filter(perc == "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA" | perc == "196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA")
 
-uti <- programacion %>% filter(perc=="170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA") %>% 
-  mutate(Identificación= Identificación, Nombre=Nombre, perc="196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA", horas_mensuales=horas_mensuales*0.57)
+uti <- M2 %>% filter(Area == "UPC") %>% mutate(M2 = prop.table(M2)) %>% filter(CC == "196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA")
+uti <- upc %>%  mutate(perc = "196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA", horas_mensuales = upc$horas_mensuales*uti$M2)
 
-uci <- programacion %>% filter(perc=="170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA") %>% 
-  mutate(Identificación= Identificación, Nombre=Nombre, perc=perc, horas_mensuales=horas_mensuales*0.43)
+uci <- M2 %>% filter(Area == "UPC") %>% mutate(M2 = prop.table(M2)) %>% filter(CC == "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA")
+uci <- upc %>%  mutate(perc = "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA", horas_mensuales = upc$horas_mensuales*uci$M2)
 
 
-ucicv <- programacion %>% filter(perc=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>% 
-  mutate(Identificación= Identificación, Nombre=Nombre, perc="177-UNIDAD DE CUIDADOS CORONARIOS", horas_mensuales=horas_mensuales*0.44)
+upccv <- programacion %>% 
+  filter(perc == "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" | perc == "177-UNIDAD DE CUIDADOS CORONARIOS")
 
-uticv <- programacion %>% filter(perc=="198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS") %>% 
-  mutate(Identificación= Identificación, Nombre=Nombre, perc=perc, horas_mensuales=horas_mensuales*0.56)
+uticv <- M2 %>% filter(Area == "UPC_cardio") %>% mutate(M2 = prop.table(M2)) %>% 
+  filter(CC == "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS")
+uticv <- upccv %>%  mutate(perc = "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS", horas_mensuales = upccv$horas_mensuales*uticv$M2)
 
-uti <- rbind(uti, uci, ucicv, uticv)
+ucicv <- M2 %>% filter(Area == "UPC_cardio") %>% mutate(M2 = prop.table(M2)) %>% filter(CC == "177-UNIDAD DE CUIDADOS CORONARIOS")
+ucicv <- upccv %>%  mutate(perc = "177-UNIDAD DE CUIDADOS CORONARIOS", horas_mensuales = upccv$horas_mensuales*ucicv$M2)
 
-programacion <- programacion %>% filter(perc != "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA" |
-                                          perc != "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" )
 
-programacion <- rbind(programacion, uti)
+programacion <- programacion %>% 
+  filter(perc != "170-UNIDAD DE CUIDADOS INTENSIVOS PEDIATRIA" & perc != "196-UNIDAD DE TRATAMIENTO INTENSIVO PEDÍATRICA" & perc != "198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS" & perc != "177-UNIDAD DE CUIDADOS CORONARIOS")
+
+programacion <- rbind(uci, uti, ucicv,uticv, programacion)
+
+
+
+# CAE prorratear ----------------------------------------------------------
+cae_prorratear <- read_excel(cae_prorratear)
+cae_prorratear <- cae_prorratear %>% 
+  filter(Area == "Ambulatorio") %>% 
+  filter(CC != "15105 - CONSULTA CARDIOLOGÍA" & CC != "15109 - CONSULTA PSIQUIATRÍA" &
+         CC != "15118 - CONSULTA FISIATRÍA" & CC != "15135 - CONSULTA HEMATOLOGÍA ONCOLÓGICA") %>% 
+  mutate(prop = prop.table(prop))
+
+GG1 <- programacion %>% filter(perc == "gatito")
+for (i in cae_prorratear$CC) {
+  GG2 <- programacion %>% filter(perc == "CAE prorratear") 
+  prop_cae <- cae_prorratear %>% filter(CC == i)
+  GG2$horas_mensuales <- GG2$horas_mensuales*prop_cae$prop
+  GG2$perc <- i
+  
+  GG1 <- rbind(GG1, GG2)
+}
+
+
+programacion <-  rbind(GG1, programacion) %>% filter(perc != "CAE prorratear")
+# Graba -------------------------------------------------------------------
 
 openxlsx::write.xlsx(planilla1, paste0(ruta_base, anio,"/",mes," ",mes_completo,"/Insumos de Informacion/911_Planilla_1_RRHH.xlsx"), 
                      colNames = TRUE, sheetName = "P1", overwrite = TRUE)

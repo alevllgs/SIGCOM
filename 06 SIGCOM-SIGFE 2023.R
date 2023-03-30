@@ -8,7 +8,7 @@ library(xlsx)
 
 # SIGFE listas-------------------------------------------------------------------
 anio <- "2023"
-mes_archivo <- "01"
+mes_archivo <- "02"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2023/"
 mes_completo <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
@@ -20,9 +20,10 @@ ConsumoxCC <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de I
 Cant_RRHH <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/912_SIRH_R.xlsx")
 Farmacia <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/900_gasto_farmacia.xlsx")
 graba <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/920_SIGFE_R.xlsx")
+grabaM2 <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/03 M2.xlsx")
 CxCC_H <- paste0(ruta_base,resto,"/Insumos de info anual/CxCC_historico.xlsx")
-Asignaciones <- paste0(ruta_base,resto,"/Insumos de info anual/Asignaciones.xlsx")
-M2 <- paste0(ruta_base,resto,"/Insumos de info anual/M2.xlsx")
+Asignaciones <- paste0(ruta_base,resto,"Insumos de info anual/Asignaciones.xlsx")
+M2 <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/03 M2.xlsx")
 M2Pab <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/89_Pabellon.xlsx")
 EqMed <- paste0(ruta_base,resto,mes_archivo," ",mes_completo,"/Insumos de Informacion/99_Equipos_Medicos.xlsx")
 item <- paste0(ruta_base,resto,"/Insumos de info anual/item_presupuestarios_centros_de_costo.xlsx")
@@ -561,29 +562,7 @@ for (i in unique(CxCC$SIGCOM)) {
   }
 }
 
-# M2 --------------------------------------------------------------
 
-#Asigna los metros a los pabellones segun el tiempo asignado en la tabla quirurgica
-M2Pab <- read_excel(M2Pab) %>% 
-  mutate("Area" = "Quirofanos", "CC" = SIGCOM, "M2" = 495*prop_total) %>% 
-  select(-SIGCOM, -prop_total)
-#Modifica los M2 de los pabellones 
-M2 <- read_excel(M2) %>% filter(Area !="Quirofanos")
-M2 <- rbind(M2,M2Pab)
-M2$prop <- prop.table(M2$M2)
-rm(M2Pab) #elimino los M2 de los pabellones
-
-#Asigna metros cuadrados al cae
-prod_cae <- read_excel(produccion_cae) %>% filter(`Unidades de Producción` == "1__Consulta")
-prod_cae$Valor <- prop.table(ifelse(prod_cae$Valor == 0, 1, prod_cae$Valor))
-prod_cae$`Centro de Producción` <- substr(prod_cae$`Centro de Producción`, start = 8, stop = 600)  
-prod_cae <- prod_cae %>%
-  mutate("Area" = "Ambulatorio", "CC" = `Centro de Producción`, "M2" = 1555*Valor, "prop"=Valor) %>% 
-  select(Area, CC, M2, prop)
-
-M2 <- M2 %>% filter(Area !="Ambulatorio")
-M2 <- rbind(M2,prod_cae)
-M2$prop <- prop.table(M2$M2)
 
 # Prorrateo Gastos Generales por M2 ---------------------------------------
 
@@ -602,6 +581,7 @@ GG33 <- GG1_nulo
 # Distribucion por M2 -----------------------------------------------------
 
 asignaciones <- read_excel(Asignaciones)
+M2 <- read_excel(M2)
 colnames(asignaciones)[1] <- "SIGCOM"
 asignacion_m2 <- read_excel(Asignaciones) %>% filter(Prorrateo == "metros_totales")
 

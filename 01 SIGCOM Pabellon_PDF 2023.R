@@ -10,10 +10,10 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2023"
-mes <- "01"
-propocion_CMA <- 2 #proporcion de 2CMA = 1CNA
+mes <- "02"
+propocion_CMA <- 1.25 #proporcion de 1.5CMA = 1CNA
 prop_urg <- 0.5 #proporcion con 50% de la urgencia a TMT y 50% a cirugia
-prop_CME_a_CMA <- 0.3 #definir
+prop_CME_a_CMA <- 0.5 #definir
 
 
 # Rutas Automaticas -------------------------------------------------------

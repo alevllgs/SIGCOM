@@ -1,7 +1,7 @@
 library(readxl)
 library(tidyverse)
 
-mes_archivo <- "01 Enero"
+mes_archivo <- "02 Febrero"
 ruta_base <- "C:/Users/control.gestion3/OneDrive/"
 resto <- "BBDD Produccion/PERC/PERC 2023/"
 
@@ -185,6 +185,8 @@ farmacia <- farmacia %>%  select (-tipo_pac) %>%  mutate(folio = folio, valoriza
              servicio=="MEDICO QUIRURGICO I"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
              servicio=="MEDICO QUIRURGIC III"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
              servicio=="MEDICO QUIRURGICO II"~"90-HOSPITALIZACIÓN QUIRÚRGICA",
+             
+             servicio=="CONSUMO UTI CARDIOLOGIA 5 PISO"~"198-UNIDAD DE TRATAMIENTO INTENSIVO CORONARIOS",
              TRUE ~ "Asignar CC"
 ))
 

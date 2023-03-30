@@ -7,9 +7,12 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2023"
-mes <- "01"
-Sheet_censo <- "ENE"
+mes <- "02"
+Sheet_censo <- "FEB"
 rango_censo <- "B5:O20" #lo tomo de donde comienzan los encabezados de la tabla "Informacion Estadistica"
+ruta_base <- "C:/Users/control.gestion3/OneDrive/"
+resto <- "BBDD Produccion/PERC/PERC 2023/"
+
 
 
 # Rutas automaticas -------------------------------------------------------
@@ -184,7 +187,7 @@ Produccion_SIGCOM <- rbind(Produccion_SIGCOM, A32_PERC)
 A08_PERC <- read_excel("C:/Users/control.gestion3/OneDrive/BBDD Produccion/Urgencia/A08 BBDD_01.xlsx")
 A08_PERC$Fecha=as.character(A08_PERC$Fecha)
 A08_PERC <- A08_PERC %>% 
-  filter(Fecha == Fecha_filtro & (`Tipo de Atención`=="ATENCIÓN MÉDICA NIÑO Y ADULTO" | `Tipo de Atención`=="ATENCIÓN POR ODONTÓLOGO")) %>% 
+  filter(Fecha == Fecha_filtro & (`Tipo de Atención`=="ATENCIÓN MÉDICA NIÑO Y ADULTO" | `Tipo de Atención`=="ATENCIÓN POR ODONTÓLOGO/A")) %>% 
   group_by(Fecha) %>% 
   summarise("Centro de Producción" = ifelse(`Tipo de Atención`=="ATENCIÓN MÉDICA NIÑO Y ADULTO","216__10501 - EMERGENCIAS PEDIÁTRICAS", "357__15603 - EMERGENCIAS ODONTOLOGICAS" ), "Unidades de Producción" = "1__Atención","Valor" = Total)
   
@@ -452,8 +455,6 @@ B_qx <- B_qx %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producci�
 Produccion_SIGCOM <- rbind( Produccion_SIGCOM, B_qx)
 
 
-
-
 Produccion_SIGCOM$Fecha <- NULL
 
 openxlsx::write.xlsx(Produccion_SIGCOM,Graba, 
@@ -462,10 +463,71 @@ openxlsx::write.xlsx(Produccion_SIGCOM,Graba,
 openxlsx::write.xlsx(Produccion_SIGCOM,paste0(directorio,"/05.xlsx"), 
                      colNames = TRUE, sheetName = "5", overwrite = TRUE)
 
+
+
+
+# M2 --------------------------------------------------------------
+M2 <- paste0(ruta_base,resto,"/Insumos de info anual/M2.xlsx")
+M2Pab <- paste0(ruta_base,resto,mes," ",mes_completo,"/Insumos de Informacion/89_Pabellon.xlsx")
+grabaM2 <- paste0(ruta_base,resto,mes," ",mes_completo,"/Insumos de Informacion/03 M2.xlsx")
+produccion_cae <- paste0(ruta_base,resto,mes," ",mes_completo,"/Insumos de Informacion/950_Produccion.xlsx")
+
+
+#Asigna los metros a los pabellones segun el tiempo asignado en la tabla quirurgica
+M2Pab <- read_excel(M2Pab) %>% 
+  mutate("Area" = "Quirofanos", "CC" = SIGCOM, "M2" = 495*prop_total) %>% 
+  select(-SIGCOM, -prop_total)
+#Modifica los M2 de los pabellones 
+M2 <- read_excel(M2) %>% filter(Area !="Quirofanos")
+M2 <- rbind(M2,M2Pab)
+M2$prop <- prop.table(M2$M2)
+rm(M2Pab) #elimino los M2 de los pabellones
+
+#Asigna metros cuadrados al cae
+prod_cae <- read_excel(produccion_cae) %>% filter(`Unidades de Producción` == "1__Consulta")
+prod_cae$Valor <- prop.table(ifelse(prod_cae$Valor == 0, 1, prod_cae$Valor))
+prod_cae$`Centro de Producción` <- substr(prod_cae$`Centro de Producción`, start = 8, stop = 600)
+prod_cae$`Centro de Producción` <- paste0(substr(substr(prod_cae$`Centro de Producción`, start = 1, stop = 7), start = 1, stop = 5),"-",substr(prod_cae$`Centro de Producción`, start = 9, stop = 700))
+prod_cae <- prod_cae %>%
+  mutate("Area" = "Ambulatorio", "CC" = `Centro de Producción`, "M2" = 1555*Valor, "prop"=Valor) %>% 
+  select(Area, CC, M2, prop)
+
+M2 <- M2 %>% filter(Area !="Ambulatorio")
+M2 <- rbind(M2,prod_cae)
+M2$prop <- prop.table(M2$M2)
+
+
+openxlsx::write.xlsx(M2, grabaM2, colNames = TRUE, sheetName = "M2_prop", overwrite = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 rm(P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, B_qx, P,At_remota, 
    archivoBS, Fecha_filtro, remota, Sheet_remota, Egreso, Censo, Graba, rango_censo, Sheet_remota, Sheet_censo)
 
 #Ojo debo crear el CC de Procedimientos de Oftalmologia.
 # Debo eliminar la produccion de los CC de procedimientos de Uro y Gine
+
+
 
 

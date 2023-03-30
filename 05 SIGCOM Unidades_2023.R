@@ -3,8 +3,8 @@ library(tidyverse)
 library(dplyr)
 
 # BBDD --------------------------------------------------------------------
-mes_archivo <- "01 Enero"
-mes_ruta_registros <- "2023-01"
+mes_archivo <- "02 Febrero"
+mes_ruta_registros <- "2023-02"
 
 
 
@@ -27,8 +27,7 @@ cmenor_perc <- read_excel(paste0(ruta_base,resto_ruta_registro_b,mes_ruta_regist
 
 farmacia_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/901_Farmacia.xlsx"))
 
-aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx"), 
-                               sheet = "M2") %>% 
+aseo_perc <- read_excel(paste0(ruta_base,resto,mes_archivo,"/Insumos de Informacion/03 M2.xlsx")) %>% 
                           mutate(`PERC ASOCIADO`=CC, Cantidad = M2) %>% 
                           filter(`PERC ASOCIADO`!="648-ASEO") %>% 
                           select(`PERC ASOCIADO`, Cantidad) %>% 
@@ -493,6 +492,8 @@ while(i < 13) {
 
 errores_en_reportes <- errores_en_reportes %>% filter(`PERC ASOCIADO` != "586-DIALISIS PERITONEAL" &
                                                        `PERC ASOCIADO` != "260-PROCEDIMIENTO ONCOLOGÍA")
+
+unidades$`PERC ASOCIADO` <-  ifelse(unidades$`PERC ASOCIADO` == "467-QUIRÓFANOS DIGESTIVA", "484-QUIRÓFANOS TORACICA", unidades$`PERC ASOCIADO`)
 
 openxlsx::write.xlsx(unidades, graba, colNames = TRUE, sheetName = "indirectos", overwrite = TRUE)
 
