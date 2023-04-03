@@ -527,9 +527,9 @@ consumido <- consumido %>%
   summarise("Devengado" = sum(Devengado)) %>%
   ungroup()
 
-no_considera_consumo <- consumido %>% filter(SIGCOM == "100-GAS PROPANO" | SIGCOM == "48-SERVICIO DE AGUA" | SIGCOM == "92-SERVICIO DE ENERGÍA" | SIGCOM == "170-SERVICIO DE ASEO") %>% mutate("SIGCOM" = SIGCOM) %>% select(SIGCOM, Devengado)
+no_considera_consumo <- consumido %>% filter(SIGCOM == "30-MEDICAMENTOS" | SIGCOM == "100-GAS PROPANO" | SIGCOM == "48-SERVICIO DE AGUA" | SIGCOM == "92-SERVICIO DE ENERGÍA" | SIGCOM == "170-SERVICIO DE ASEO") %>% mutate("SIGCOM" = SIGCOM) %>% select(SIGCOM, Devengado)
 
-consumido <- consumido %>% filter(SIGCOM != "100-GAS PROPANO" & SIGCOM != "48-SERVICIO DE AGUA" & SIGCOM != "92-SERVICIO DE ENERGÍA" & SIGCOM != "170-SERVICIO DE ASEO")
+consumido <- consumido %>% filter(SIGCOM != "30-MEDICAMENTOS" & SIGCOM != "100-GAS PROPANO" & SIGCOM != "48-SERVICIO DE AGUA" & SIGCOM != "92-SERVICIO DE ENERGÍA" & SIGCOM != "170-SERVICIO DE ASEO")
 
 no_consumido <- SIGFE %>% filter(consumido == "no esta")
 no_consumido <- no_consumido %>% 
