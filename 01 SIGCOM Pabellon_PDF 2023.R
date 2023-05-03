@@ -10,7 +10,7 @@ library(openxlsx)
 library(xlsx)
 
 anio <- "2023"
-mes <- "02"
+mes <- "03"
 propocion_CMA <- 1.25 #proporcion de 1.5CMA = 1CNA
 prop_urg <- 0.5 #proporcion con 50% de la urgencia a TMT y 50% a cirugia
 prop_CME_a_CMA <- 0.5 #definir
@@ -27,6 +27,16 @@ ruta_pdf <- paste0("C:/Users/control.gestion3/OneDrive/BBDD Produccion/PERC/PERC
 # Producción Pabellones ---------------------------------------------------
 
 
+#B_qx0 es un dataframe en blanco para reemplazar los que no tienen producción
+B_qx0 <- data.frame("...1" = 0, "...2" = 0, "...3" = 0, "...4" = 0,"...5" = 0,
+                    "...6" = 0, "...7" = 0, "...8" = 0, "...9" = 0, "...10" = 0,
+                    "Fecha" = 0, `Centro de Producción` = 0, `Unidades de Producción` = 0, "Valor" = 0)
+colnames(B_qx0)[12] <- "Centro de Producción"
+colnames(B_qx0)[13] <- "Unidades de Producción"
+
+
+
+
 B_qx1 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O1410:X1410") 
 B_qx1 <- B_qx1 %>%   add_column("Fecha" = Fecha_filtro, .after = 10) %>% 
@@ -34,13 +44,18 @@ B_qx1 <- B_qx1 %>%   add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx1$...1 + B_qx1$...10, .after = 13) 
 
+if(length(B_qx1) < 14 ){
+  B_qx1 <- B_qx0}
 
 B_qx2 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O1545:X1545") 
 B_qx2 <- B_qx2 %>%   add_column("Fecha" = Fecha_filtro, .after = 10) %>% 
   add_column("Centro de Producción" = "462__33003 - QUIRÓFANOS CABEZA Y CUELLO", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
-  add_column("Valor" = B_qx2$...1 + B_qx2$...10, .after = 13) 
+  add_column("Valor" = B_qx2$...1 + B_qx2$...10, .after = 13)
+
+if(length(B_qx2) < 14 ){
+  B_qx2 <- B_qx0}
 
 B_qx3 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O1727:X1727")  
@@ -49,26 +64,35 @@ B_qx3 <- B_qx3 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx3$...1 + B_qx3$...10, .after = 13)
 
+if(length(B_qx3) < 14 ){
+  B_qx3 <- B_qx0}
+
 B_qx4 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O1791:X1791")  
 B_qx4 <- B_qx4 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>% 
   add_column("Centro de Producción" = "462__33003 - QUIRÓFANOS CABEZA Y CUELLO", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
-  add_column("Valor" = B_qx4$...1 + B_qx4$...10, .after = 13) 
+  add_column("Valor" = B_qx4$...1 + B_qx4$...10, .after = 13)
+if(length(B_qx4) < 14 ){
+  B_qx4 <- B_qx0}
 
 B_qx5 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O1865:X1865")  
 B_qx5 <- B_qx5 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>% 
   add_column("Centro de Producción" = "493__33034 - QUIRÓFANOS CIRUGÍA PLÁSTICA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
-  add_column("Valor" = B_qx5$...1 + B_qx5$...10, .after = 13) 
+  add_column("Valor" = B_qx5$...1 + B_qx5$...10, .after = 13)
+if(length(B_qx5) < 14 ){
+  B_qx5 <- B_qx0}
 
 B_qx6 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O1908:X1908")  
 B_qx6 <- B_qx6 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>% 
   add_column("Centro de Producción" = "486__33027 - QUIRÓFANOS UROLOGÍA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
-  add_column("Valor" = B_qx6$...1 + B_qx6$...10, .after = 13) 
+  add_column("Valor" = B_qx6$...1 + B_qx6$...10, .after = 13)
+if(length(B_qx6) < 14 ){
+  B_qx6 <- B_qx0}
 
 B_qx7 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O2067:X2067")  
@@ -76,6 +100,8 @@ B_qx7 <- B_qx7 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "464__33005 - QUIRÓFANOS CARDIOVASCULAR", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx7$...1 + B_qx7$...10, .after = 13)
+if(length(B_qx7) < 14 ){
+  B_qx7 <- B_qx0}
 
 B_qx8 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O2166:X2166")  
@@ -83,6 +109,8 @@ B_qx8 <- B_qx8 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "484__33025 - QUIRÓFANOS TORACICA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx8$...1 + B_qx8$...10, .after = 13)
+if(length(B_qx8) < 14 ){
+  B_qx8 <- B_qx0}
 
 B_qx9 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                    range = "B!O2397:X2397")  
@@ -90,6 +118,8 @@ B_qx9 <- B_qx9 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "484__33025 - QUIRÓFANOS TORACICA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx9$...1 + B_qx9$...10, .after = 13) #Abdominal
+if(length(B_qx9) < 14 ){
+  B_qx9 <- B_qx0}
 
 B_qx10 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                     range = "B!O2437:X2437")  
@@ -97,6 +127,8 @@ B_qx10 <- B_qx10 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "484__33025 - QUIRÓFANOS TORACICA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx10$...1 + B_qx10$...10, .after = 13) #Procto
+if(length(B_qx10) < 14 ){
+  B_qx10 <- B_qx0}
 
 B_qx11 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                     range = "B!O2560:X2560")  
@@ -104,6 +136,8 @@ B_qx11 <- B_qx11 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "486__33027 - QUIRÓFANOS UROLOGÍA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx11$...1 + B_qx11$...10, .after = 13) #URO
+if(length(B_qx11) < 14 ){
+  B_qx11 <- B_qx0}
 
 B_qx12 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                     range = "B!O2596:X2596")  
@@ -111,6 +145,8 @@ B_qx12 <- B_qx12 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "484__33025 - QUIRÓFANOS TORACICA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx12$...1 + B_qx12$...10, .after = 13) #Mama
+if(length(B_qx12) < 14 ){
+  B_qx12 <- B_qx0}
 
 B_qx13 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                     range = "B!O2639:X2639")  
@@ -118,6 +154,8 @@ B_qx13 <- B_qx13 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "486__33027 - QUIRÓFANOS UROLOGÍA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx13$...1 + B_qx13$...10, .after = 13) #Gine
+if(length(B_qx13) < 14 ){
+  B_qx13 <- B_qx0}
 
 B_qx14 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                     range = "B!O2654:X2654")  
@@ -125,6 +163,9 @@ B_qx14 <- B_qx14 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "484__33025 - QUIRÓFANOS TORACICA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx14$...1 + B_qx14$...10, .after = 13) #Obs
+if(length(B_qx14) < 14 ){
+  B_qx14 <- B_qx0}
+
 
 B_qx15 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                     range = "B!O2888:X2888")  
@@ -132,6 +173,9 @@ B_qx15 <- B_qx15 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "485__33026 - QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx15$...1 + B_qx15$...10, .after = 13)
+if(length(B_qx15) < 14 ){
+  B_qx15 <- B_qx0}
+
 
 B_qx16 <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                     range = "B!O2893:X2893")  
@@ -139,6 +183,8 @@ B_qx16 <- B_qx16 %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
   add_column("Centro de Producción" = "485__33026 - QUIRÓFANOS TRAUMATOLOGÍA Y ORTOPEDIA", .after = 11) %>% 
   add_column("Unidades de Producción" = "1__Intervencion quirurgica", .after = 12) %>% 
   add_column("Valor" = B_qx16$...1 + B_qx16$...10, .after = 13)
+if(length(B_qx16) < 14 ){
+  B_qx16 <- B_qx0}
 
 B_qxCMA <- read_xlsx(archivoBS, na = " ",col_names = FALSE,
                      range = "B!O2893:X2893")  #lee cualquier rango solo para darle la forma
@@ -152,8 +198,10 @@ B_qxCMA <- B_qxCMA %>%  add_column("Fecha" = Fecha_filtro, .after = 10) %>%
 B_qx <- rbind(B_qx1,B_qx2,B_qx3,B_qx4,B_qx5,B_qx6,B_qx7,B_qx8,B_qx9, B_qx10,
               B_qx11,B_qx12,B_qx13,B_qx14,B_qx15,B_qx16,B_qxCMA)
 
+B_qx <- B_qx %>% filter(`Centro de Producción` !=0)
+
 rm(B_qx1,B_qx2,B_qx3,B_qx4,B_qx5,B_qx6,B_qx7,B_qx8,B_qx9, B_qx10,
-   B_qx11,B_qx12,B_qx13,B_qx14,B_qx15,B_qx16, B_qxCMA)
+   B_qx11,B_qx12,B_qx13,B_qx14,B_qx15,B_qx16, B_qxCMA, B_qx0)
 
 B_qx <- B_qx %>% group_by(Fecha, `Centro de Producción`, `Unidades de Producción`) %>% 
   summarise("Valor" = sum(Valor))
